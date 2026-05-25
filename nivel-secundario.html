@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nivel Secundario — Colegio Parroquial Juan XXIII</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ---- AVISO SEPARACIÓN ---- */
+    .sep-banner {
+      background: var(--blue-dark);
+      color: rgba(255,255,255,.82);
+      text-align: center;
+      padding: .6rem 1rem;
+      font-size: .82rem;
+      letter-spacing: .04em;
+    }
+    .sep-banner strong { color: var(--blue-light); }
+
+    /* ---- SELECTOR PRINCIPAL — dos mitades de pantalla ---- */
+    .selector-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 78px - 36px); /* descontamos header + banner */
+    }
+
+    .modal-half {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 3rem;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .45s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Fondo con foto */
+    .modal-half::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform .6s cubic-bezier(.4,0,.2,1);
+    }
+    .modal-half:hover::before { transform: scale(1.04); }
+
+    /* Overlay */
+    .modal-half::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transition: opacity .4s;
+    }
+
+    /* Orientada */
+    .modal-orientada::before {
+      background-image: url('sec-orientada-bg.jpg');
+      background-color: #1d3557; /* fallback */
+    }
+    .modal-orientada::after {
+      background: linear-gradient(160deg, rgba(29,53,87,.82) 0%, rgba(29,53,87,.70) 100%);
+    }
+    .modal-orientada:hover::after { opacity: .88; }
+
+    /* Técnica */
+    .modal-tecnica::before {
+      background-image: url('sec-tecnica-bg.jpg');
+      background-color: #0d1b2a; /* fallback */
+    }
+    .modal-tecnica::after {
+      background: linear-gradient(160deg, rgba(13,27,42,.85) 0%, rgba(69,123,157,.68) 100%);
+    }
+    .modal-tecnica:hover::after { opacity: .92; }
+
+    /* Divisor central */
+    .modal-divider {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: rgba(255,255,255,.25);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Contenido de cada mitad */
+    .modal-content {
+      position: relative;
+      z-index: 2;
+      max-width: 460px;
+    }
+
+    .modal-eyebrow {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.65);
+      margin-bottom: 1.1rem;
+    }
+
+    .modal-icon {
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,.12);
+      border: 2px solid rgba(255,255,255,.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      transition: background .3s, transform .3s;
+    }
+    .modal-half:hover .modal-icon {
+      background: rgba(255,255,255,.2);
+      transform: scale(1.08);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 3.5vw, 3rem);
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: .9rem;
+      text-shadow: 0 2px 16px rgba(0,0,0,.4);
+    }
+    .modal-title em { font-style: italic; opacity: .85; }
+
+    .modal-desc {
+      color: rgba(255,255,255,.78);
+      font-size: .97rem;
+      line-height: 1.75;
+      margin-bottom: 2rem;
+      max-width: 380px;
+    }
+
+    .modal-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: center;
+      margin-bottom: 2.25rem;
+    }
+    .modal-pill {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      font-size: .76rem;
+      font-weight: 700;
+      padding: .3rem .9rem;
+      border-radius: 50px;
+      letter-spacing: .04em;
+    }
+
+    .modal-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: #fff;
+      color: var(--blue-dark);
+      font-weight: 700;
+      font-size: .92rem;
+      padding: .85rem 2rem;
+      border-radius: 50px;
+      transition: transform .25s, box-shadow .25s, background .25s;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    }
+    .modal-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    }
+    .modal-cta svg {
+      width: 16px; height: 16px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+      transition: transform .25s;
+    }
+    .modal-half:hover .modal-cta svg { transform: translateX(4px); }
+
+    /* Tecnica CTA en otro color */
+    .modal-tecnica .modal-cta { color: #0d1b2a; }
+
+    /* Nota inferior */
+    .modal-footer-note {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: rgba(255,255,255,.45);
+      font-size: .73rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ---- BLOQUE ACLARACIÓN SEPARACIÓN (debajo del selector) ---- */
+    .sep-section {
+      background: var(--gray-100);
+      padding: 4rem 2rem;
+    }
+    .sep-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .sep-inner h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      color: var(--blue-dark);
+      margin-bottom: 1rem;
+      grid-column: 1 / -1;
+      text-align: center;
+    }
+    .sep-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      border-top: 4px solid var(--blue-dark);
+    }
+    .sep-card.tecnica { border-top-color: var(--blue-mid); }
+    .sep-card h3 {
+      font-family: var(--font-display);
+      color: var(--blue-dark);
+      font-size: 1.1rem;
+      margin-bottom: .75rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .sep-card p { font-size: .9rem; color: #555; line-height: 1.75; margin-bottom: .75rem; }
+    .sep-card p:last-child { margin: 0; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .selector-wrap {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .modal-half {
+        min-height: 55vh;
+        padding: 3rem 1.5rem;
+      }
+      .modal-divider { display: none; }
+      .sep-inner { grid-template-columns: 1fr; }
+      .sep-inner h2 { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img src="logo.png" alt="Logo" class="logo"/>
+        <div class="brand-text">
+          <span class="school-name">Colegio Parroquial Juan XXIII</span>
+          <span class="school-motto">Educando desde xxxx</span>
+        </div>
+      </div>
+      <button class="hamburger" id="menuToggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="nivel-inicial.html" class="nav-link"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Nivel Inicial</a></li>
+          <li class="nav-item"><a href="nivel-primario.html" class="nav-link"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Nivel Primario</a></li>
+          <li class="nav-item"><a href="nivel-secundario.html" class="nav-link" style="background:rgba(255,255,255,.15);color:#fff;"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Nivel Secundario</a></li>
+          <li class="nav-item"><a href="index.html#pastoral" class="nav-link"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Pastoral</a></li>
+          <li class="nav-item"><a href="index.html#novedades" class="nav-link"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>Novedades</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- BANNER SEPARACIÓN -->
+  <div class="sep-banner">
+    El Nivel Secundario funciona en <strong>dos modalidades independientes</strong>: Secundaria Orientada y Secundaria Técnica. Elegí la que corresponde a tu hijo/a.
+  </div>
+
+  <!-- SELECTOR PANTALLA COMPLETA -->
+  <div class="selector-wrap">
+    <div class="modal-divider"></div>
+
+    <!-- ORIENTADA -->
+    <a href="sec-orientada.html" class="modal-half modal-orientada">
+      <div class="modal-content">
+        <span class="modal-eyebrow">Bachillerato</span>
+        <div class="modal-icon">🎓</div>
+        <h1 class="modal-title">Secundaria<br/><em>Orientada</em></h1>
+        <p class="modal-desc">
+          Seis años divididos en ciclo básico (1°–3°) y ciclo orientado (4°–6°), con orientaciones en Economía y Ciencias Naturales.
+        </p>
+        <div class="modal-pills">
+          <span class="modal-pill">Ciclo Básico 1°–3°</span>
+          <span class="modal-pill">Economía</span>
+          <span class="modal-pill">Ciencias Naturales</span>
+          <span class="modal-pill">Certificación de Laboratorio</span>
+        </div>
+        <span class="modal-cta">
+          Ingresar a Orientada
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+      <span class="modal-footer-note">Bachiller con orientación</span>
+    </a>
+
+    <!-- TÉCNICA -->
+    <a href="sec-tecnica.html" class="modal-half modal-tecnica">
+      <div class="modal-content">
+        <span class="modal-eyebrow">Educación Técnica</span>
+        <div class="modal-icon">⚙️</div>
+        <h1 class="modal-title">Secundaria<br/><em>Técnica</em></h1>
+        <p class="modal-desc">
+          Siete años con ciclo básico (1°–3°) y ciclo técnico (4°–7°), con especialidades en Informática, Electrónica y Multimedios.
+        </p>
+        <div class="modal-pills">
+          <span class="modal-pill">Ciclo Básico 1°–3°</span>
+          <span class="modal-pill">Informática</span>
+          <span class="modal-pill">Electrónica</span>
+          <span class="modal-pill">Multimedios</span>
+        </div>
+        <span class="modal-cta">
+          Ingresar a Técnica
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+      <span class="modal-footer-note">Técnico con especialidad</span>
+    </a>
+  </div>
+
+  <!-- BLOQUE EXPLICATIVO -->
+  <div class="sep-section">
+    <div class="sep-inner">
+      <h2>¿Cuál es la diferencia entre ambas modalidades?</h2>
+      <div class="sep-card">
+        <h3>🎓 Secundaria Orientada</h3>
+        <p>La modalidad orientada tiene una duración de <strong>6 años</strong>. Los primeros tres años conforman el Ciclo Básico Común, donde todos los alumnos comparten la misma currícula. A partir de 4° año, los estudiantes eligen entre la orientación en <strong>Economía</strong> o en <strong>Ciencias Naturales</strong>, profundizando en contenidos específicos de cada área hasta el egreso.</p>
+        <p>Al finalizar, los alumnos obtienen el título de <strong>Bachiller con orientación</strong> habilitante para el ingreso a la universidad.</p>
+      </div>
+      <div class="sep-card tecnica">
+        <h3>⚙️ Secundaria Técnica</h3>
+        <p>La modalidad técnica tiene una duración de <strong>7 años</strong>. Los primeros tres años forman el Ciclo Básico. Desde 4° año los estudiantes se incorporan a uno de los tres Ciclos Técnicos: <strong>Informática</strong>, <strong>Electrónica</strong> o <strong>Multimedios</strong>, con fuerte componente de taller y práctica profesional.</p>
+        <p>Al finalizar, los alumnos obtienen el título de <strong>Técnico</strong> en la especialidad, habilitante para el ejercicio profesional y el ingreso universitario.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" alt="Logo" class="footer-logo"/>
+        <p>Formando profesionales desde xxxx.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Secundaria</h4>
+        <ul>
+          <li><a href="sec-orientada.html">Modalidad Orientada</a></li>
+          <li><a href="sec-tecnica.html">Modalidad Técnica</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Otros niveles</h4>
+        <ul>
+          <li><a href="nivel-inicial.html">Nivel Inicial</a></li>
+          <li><a href="nivel-primario.html">Nivel Primario</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 Colegio Parroquial Juan XXIII. Todos los derechos reservados.</p></div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('mainNav');
+    toggle.addEventListener('click', () => { nav.classList.toggle('open'); toggle.classList.toggle('active'); });
+  </script>
+</body>
+</html>

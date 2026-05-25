@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colegio Parroquial JuanXXIII — Inicio</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img src="logo.png" alt="Logo del Colegio" class="logo" />
+        <div class="brand-text">
+          <span class="school-name">Colegio Parroquial Juan XXIII</span>
+          <span class="school-motto">Educando desde xxxx</span>
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="menuToggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- NAV -->
+      <nav class="main-nav" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="nivel-inicial.html" class="nav-link">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              Nivel Inicial
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="nivel-primario.html" class="nav-link">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Nivel Primario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="nivel-secundario.html" class="nav-link">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              Nivel Secundario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#pastoral" class="nav-link">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Pastoral
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#novedades" class="nav-link">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              Novedades
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== HERO con imagen de fondo ===== -->
+  <!--
+    Para usar tu propia foto: reemplazá "hero-bg.jpg" en el CSS
+    (buscar: background-image: url('hero-bg.jpg'))
+    por el nombre de tu archivo de imagen.
+    Recomendación: foto horizontal, mínimo 1400px de ancho.
+  -->
+  <section class="hero">
+    <!-- Capa de overlay oscuro sobre la imagen — controlá la opacidad en el CSS -->
+    <div class="hero-overlay" background aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Bienvenidos a nuestra comunidad</p>
+      <h1 class="hero-title">Formando personas,<br/><em>construyendo futuro.</em></h1>
+      <div class="hero-cta">
+        <a href="#novedades" class="btn btn-primary">Ver Novedades</a>
+        <a href="#secundario" class="btn btn-outline">Conocé nuestros niveles</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS STRIP ===== -->
+  <div class="stats-strip">
+    <div class="stat"><strong>+70</strong><span>años de trayectoria</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><strong>1200+</strong><span>alumnos</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><strong>3</strong><span>niveles educativos</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><strong>100+</strong><span>docentes</span></div>
+  </div>
+
+  <!-- ===== NIVELES ===== -->
+  <section class="section" id="inicial">
+    <div class="section-header">
+      <span class="section-tag">Nuestros Niveles</span>
+      <h2 class="section-title">Una educación completa<br/>en cada etapa</h2>
+    </div>
+    <div class="niveles-grid">
+      <div class="nivel-card" id="inicialCard">
+        <div class="nivel-badge" style="--accent:#E63946;">Inicial</div>
+        <div class="image-placeholder nivel-img"><span>Foto Nivel Inicial</span></div>
+        <div class="nivel-body">
+          <h3>Nivel Inicial</h3>
+          <p>Un espacio de juego, descubrimiento y afecto donde los más pequeños dan sus primeros pasos en el aprendizaje.</p>
+          <a href="nivel-inicial.html" class="link-arrow">Ver más →</a>
+        </div>
+      </div>
+      <div class="nivel-card" id="primarioCard">
+        <div class="nivel-badge" style="--accent:#1D3557;">Primario</div>
+        <div class="image-placeholder nivel-img"><span>Foto Nivel Primario</span></div>
+        <div class="nivel-body">
+          <h3 id="primario">Nivel Primario</h3>
+          <p>Consolidamos hábitos de estudio, valores y conocimientos con metodologías activas y docentes comprometidos.</p>
+          <a href="nivel-primario.html" class="link-arrow">Ver más →</a>
+        </div>
+      </div>
+      <div class="nivel-card" id="secundarioCard">
+        <div class="nivel-badge" style="--accent:#E63946;">Secundario</div>
+        <div class="image-placeholder nivel-img"><span>Foto Nivel Secundario</span></div>
+        <div class="nivel-body">
+          <h3 id="secundario">Nivel Secundario</h3>
+          <p>Preparamos a nuestros jóvenes para el mundo universitario y laboral con orientación, excelencia y autonomía.</p>
+          <a href="nivel-secundario.html" class="link-arrow">Ver más →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" alt="Logo" class="footer-logo"/>
+        <p>Formando profesionales desde xxxx.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Niveles</h4>
+        <ul>
+          <li><a href="#inicial">Nivel Inicial</a></li>
+          <li><a href="#primario">Nivel Primario</a></li>
+          <li><a href="#secundario">Nivel Secundario</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Comunidad</h4>
+        <ul>
+          <li><a href="#pastoral">Pastoral</a></li>
+          <li><a href="#novedades">Novedades</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Colegio Parroquial Juan XXIII. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('mainNav');
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('open');
+        toggle.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
