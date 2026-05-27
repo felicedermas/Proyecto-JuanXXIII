@@ -721,6 +721,118 @@
       .horarios-extra { grid-template-columns: 1fr 1fr; }
     }
   </style>
+  <style>
+  /* ── DROPDOWN NIVELES ── */
+  .nav-item.has-dropdown { position: relative; }
+
+  .nav-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem 1rem;
+    border-radius: 8px;
+    color: rgba(255,255,255,.85);
+    font-weight: 600;
+    font-size: .88rem;
+    font-family: var(--font-body);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+  .nav-dropdown-btn:hover,
+  .nav-item.has-dropdown.open .nav-dropdown-btn {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+  }
+  .nav-dropdown-btn.active-section {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+  }
+  .dropdown-chevron {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    flex-shrink: 0;
+  }
+  .nav-item.has-dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+
+  .nav-dropdown {
+    position: absolute;
+    top: calc(100% + .5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: #1d3557;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    padding: .5rem;
+    min-width: 220px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s cubic-bezier(.4,0,.2,1);
+    z-index: 200;
+  }
+  .nav-item.has-dropdown.open .nav-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .nav-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .6rem .9rem;
+    border-radius: 8px;
+    color: rgba(255,255,255,.8);
+    font-size: .88rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: background .18s, color .18s;
+    white-space: nowrap;
+  }
+  .nav-dropdown a:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .nav-dropdown a.active-link {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+  }
+  .nav-dropdown .dropdown-divider {
+    height: 1px;
+    background: rgba(255,255,255,.1);
+    margin: .35rem .4rem;
+  }
+  /* sublabel dentro del dropdown */
+  .nav-dropdown a .dd-sub {
+    font-size: .72rem;
+    font-weight: 400;
+    color: rgba(255,255,255,.45);
+    display: block;
+    margin-top: .05rem;
+  }
+
+  /* Mobile: dropdown se expande inline */
+  @media (max-width: 768px) {
+    .nav-dropdown {
+      position: static;
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
+      background: rgba(0,0,0,.15);
+      padding: 0 0 0 1rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+    .nav-item.has-dropdown.open .nav-dropdown { max-height: 300px; }
+    .nav-item.has-dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+  }
+  </style>
 </head>
 <body>
 
@@ -739,11 +851,17 @@
       </button>
       <nav class="main-nav" id="mainNav">
         <ul class="nav-list">
-          <li class="nav-item">
-            <a href="nivel-inicial.html" class="nav-link" style="background:rgba(255,255,255,.15);color:#fff;">
-              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              Nivel Inicial
-            </a>
+          <li class="nav-item"><a href="index.html" class="nav-link"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Inicio</a></li>
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn active-section">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Niveles<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-dropdown">
+              <a href="nivel-inicial.html" class="active-link"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Nivel Inicial<span class="dd-sub">Sala de 3, 4 y 5</span></a>
+              <a href="nivel-primario.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Nivel Primario<span class="dd-sub">1° a 6° grado</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="nivel-secundario.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Sec. Orientada / Técnica<span class="dd-sub">Bachillerato · 6 o 7 años</span></a>
+            </div>
           </li>
           <li class="nav-item">
             <a href="index.html#primario" class="nav-link">
@@ -764,7 +882,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="index.html#novedades" class="nav-link">
+            <a href="novedades.php" class="nav-link">
               <svg viewBox="0 0 24 24" class="nav-icon"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
               Novedades
             </a>
@@ -1259,7 +1377,7 @@
           <li><a href="index.html#primario">Nivel Primario</a></li>
           <li><a href="index.html#secundario">Nivel Secundario</a></li>
           <li><a href="index.html#pastoral">Pastoral</a></li>
-          <li><a href="index.html#novedades">Novedades</a></li>
+          <li><a href="novedades.php">Novedades</a></li>
         </ul>
       </div>
     </div>
@@ -1269,35 +1387,30 @@
   </footer>
 
   <script>
-    // Hamburger menu
-    const toggle = document.getElementById('menuToggle');
-    const nav = document.getElementById('mainNav');
+  // Hamburger
+  const toggle = document.getElementById('menuToggle');
+  const nav    = document.getElementById('mainNav');
+  if (toggle && nav) {
     toggle.addEventListener('click', () => {
       nav.classList.toggle('open');
       toggle.classList.toggle('active');
     });
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', () => {
-        nav.classList.remove('open');
-        toggle.classList.remove('active');
-      });
+  }
+
+  // Dropdown niveles
+  document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
+    const btn = item.querySelector('.nav-dropdown-btn');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      // close all others
+      document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
     });
-
-    // Anchor nav active state on scroll
-    const anchors = document.querySelectorAll('.ni-anchor-link');
-    const sections = ['proyecto','inscripciones','actividades','recorrido','horarios'].map(id => document.getElementById(id));
-
-    function updateActive() {
-      let current = '';
-      sections.forEach(sec => {
-        if (sec && window.scrollY >= sec.offsetTop - 140) current = sec.id;
-      });
-      anchors.forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-      });
-    }
-    window.addEventListener('scroll', updateActive, { passive: true });
-    updateActive();
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+  });
   </script>
 </body>
 </html>
