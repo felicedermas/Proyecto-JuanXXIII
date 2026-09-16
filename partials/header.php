@@ -63,8 +63,7 @@ function menu_es_actual(string $href): bool {
   <meta property="og:locale" content="es_AR"/>
   <meta name="twitter:card" content="summary_large_image"/>
 
-  <link rel="icon" href="img/logo.png" type="image/png"/>
-  <link rel="apple-touch-icon" href="img/logo.png"/>
+<?php require __DIR__ . '/favicon.php'; ?>
   <meta name="theme-color" content="#1D3557"/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>

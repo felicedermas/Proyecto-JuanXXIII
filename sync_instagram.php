@@ -75,6 +75,7 @@ header('Content-Type: text/html; charset=utf-8');
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sincronización con Instagram</title>
+<?php require __DIR__ . '/partials/favicon.php'; ?>
   <style>
     body { font-family: Menlo, Consolas, monospace; background:#0d1b2a; color:#e6e6e6;
            padding:2rem; line-height:1.65; margin:0; }

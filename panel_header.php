@@ -17,6 +17,7 @@ $fl = flash_get();
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><?= e($titulo_head) ?> — Colegio Parroquial Juan XXIII</title>
+<?php require __DIR__ . '/partials/favicon.php'; ?>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="panel.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>

@@ -61,6 +61,7 @@ foreach ($escenas as $s) {
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Recorrido Virtual 360° — Colegio Parroquial Juan XXIII</title>
+<?php require __DIR__ . '/partials/favicon.php'; ?>
 <link rel="stylesheet" href="pannellum/pannellum.css"/>
 <script src="pannellum/pannellum.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>

@@ -166,7 +166,7 @@ $colegio = cfg('nombre_colegio');
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inscripción <?= e(strip_tags($def['nombre'])) ?> — <?= e($colegio) ?></title>
   <meta name="description" content="Preinscripción <?= e($def['nombre']) ?> del <?= e($colegio) ?>."/>
-  <link rel="icon" href="img/logo.png" type="image/png"/>
+<?php require __DIR__ . '/favicon.php'; ?>
   <meta name="theme-color" content="#1D3557"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
