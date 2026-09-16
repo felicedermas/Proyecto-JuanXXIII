@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colegio Parroquial Juan XXIII — Inicio</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <header class="site-header">
+    <!-- Fila 1: top-bar con contacto y accesos rápidos -->
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-quick">
+          <a href="novedades.php">Novedades</a>
+          <a href="agenda.php">Agenda</a>
+          <a class="tq-plataforma" href="plataforma.html">Plataforma</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila 2: logo + nav principal a todo el ancho -->
+    <div class="header-inner two-row">
+      <div class="header-top-row">
+        <div class="brand">
+          <img src="img/logo.png" alt="Logo del Colegio" class="logo" />
+          <div class="brand-text">
+            <span class="school-name">Colegio Parroquial Juan XXIII</span>
+            <span class="school-motto">Educando desde 1962</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Personita: aparece solo si hay sesión iniciada (via JS) -->
+          <a href="panel.php" id="userBadge" class="user-badge" style="display:none;" title="Ir al panel">
+            <span class="ub-avatar" id="ubAvatar">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <span class="ub-meta">
+              <span class="ub-name" id="ubName">Mi cuenta</span>
+              <span class="ub-rol" id="ubRol"></span>
+            </span>
+          </a>
+
+          <button class="hamburger" id="menuToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <nav class="main-nav nav-row" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link" style="background:rgba(255,255,255,.15);color:#fff;">Inicio</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Institucional<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="historia.html">Historia<span class="dd-sub">Nuestra trayectoria desde 1962</span></a>
+              <a href="autoridades.html">Autoridades<span class="dd-sub">Equipo directivo y de gestión</span></a>
+              <a href="propuesta-educativa.html">Propuesta Educativa<span class="dd-sub">Proyecto pedagógico institucional</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="becas.html">Becas<span class="dd-sub">Sistema de ayudas económicas</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Niveles<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="nivel-inicial.php">Nivel Inicial<span class="dd-sub">Sala de 3, 4 y 5</span></a>
+              <a href="nivel-primario.html">Nivel Primario<span class="dd-sub">1° a 6° grado</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="nivel-secundario.html">Sec. Orientada / Técnica<span class="dd-sub">Bachillerato · 6 o 7 años</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Inscripciones<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="inscripcion-jardin.html">Inscripción Jardín<span class="dd-sub">Nivel Inicial · Sala 3, 4 y 5</span></a>
+              <a href="inscripcion-primaria.html">Inscripción Primaria<span class="dd-sub">1° a 6° grado</span></a>
+              <a href="inscripcion-sec.html">Inscripción Secundaria<span class="dd-sub">Orientada y Técnica</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="inscripcion-hermanos.html">Inscripción Hermanos<span class="dd-sub">Familias con varios hijos</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Comunidad<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown nav-dropdown--cols">
+              <div class="dd-col">
+                <span class="dd-heading">Participación</span>
+                <a href="centro-estudiantes.html">Centro de Estudiantes<span class="dd-sub">Voz y participación estudiantil</span></a>
+                <a href="feria-ciencias.html">Feria Anual de Ciencias<span class="dd-sub">Proyectos e innovación</span></a>
+                <a href="pastoral.html">Pastoral<span class="dd-sub">Vida espiritual y solidaria</span></a>
+                <a href="egresados.php">Egresados<span class="dd-sub">Historias de ex-alumnos</span></a>
+                <a href="psicopedagogia.html">Equipo de Psicopedagogía<span class="dd-sub">Acompañamiento y orientación</span></a>
+              </div>
+              <div class="dd-col">
+                <span class="dd-heading">Vida escolar</span>
+                <a href="deportes.html">Deportes<span class="dd-sub">Disciplinas y equipos</span></a>
+                <a href="trabaja-con-nosotros.html">Trabajá con Nosotros<span class="dd-sub">Sumate a nuestro equipo</span></a>
+                <a href="recorrido-virtual.html">Recorrido Virtual<span class="dd-sub">Conocé las instalaciones</span></a>
+                <a href="vinculos-institucionales.html">Vínculos Institucionales<span class="dd-sub">Instituciones y empresas aliadas</span></a>
+                <a href="plataforma.html">Plataforma<span class="dd-sub">Acceso a Xhendra</span></a>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item mobile-only"><a href="novedades.php" class="nav-link">Novedades</a></li>
+          <li class="nav-item mobile-only"><a href="agenda.php" class="nav-link">Agenda</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Contacto<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="contacto.html">Contacto<span class="dd-sub">Escribinos o llamanos</span></a>
+              <a href="ubicacion.html">Ubicación en el Mapa<span class="dd-sub">Cómo llegar al colegio</span></a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Bienvenidos a nuestra comunidad</p>
+      <h1 class="hero-title">Formando personas,<br/><em>construyendo futuro.</em></h1>
+      <div class="hero-cta">
+        <a href="novedades.php" class="btn btn-primary">Ver Novedades</a>
+        <a href="#secundario" class="btn btn-outline">Conocé nuestros niveles</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-strip">
+    <div class="stat"><strong>+70</strong><span>años de trayectoria</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><strong>1200+</strong><span>alumnos</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><strong>3</strong><span>niveles educativos</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><strong>100+</strong><span>docentes</span></div>
+  </div>
+
+  <section class="section" id="inicial">
+    <div class="section-header">
+      <span class="section-tag">Nuestros Niveles</span>
+      <h2 class="section-title">Una educación completa<br/>en cada etapa</h2>
+    </div>
+    <div class="niveles-grid">
+      <div class="nivel-card" id="inicialCard">
+        <div class="nivel-badge" style="--accent:#E63946;">Inicial</div>
+        <div class="image-placeholder nivel-img"><span>Foto Nivel Inicial</span></div>
+        <div class="nivel-body">
+          <h3>Nivel Inicial</h3>
+          <p>Un espacio de juego, descubrimiento y afecto donde los más pequeños dan sus primeros pasos en el aprendizaje.</p>
+          <a href="nivel-inicial.php" class="link-arrow">Ver más &rarr;</a>
+        </div>
+      </div>
+      <div class="nivel-card" id="primarioCard">
+        <div class="nivel-badge" style="--accent:#1D3557;">Primario</div>
+        <div class="image-placeholder nivel-img"><span>Foto Nivel Primario</span></div>
+        <div class="nivel-body">
+          <h3 id="primario">Nivel Primario</h3>
+          <p>Consolidamos hábitos de estudio, valores y conocimientos con metodologías activas y docentes comprometidos.</p>
+          <a href="nivel-primario.html" class="link-arrow">Ver más &rarr;</a>
+        </div>
+      </div>
+      <div class="nivel-card" id="secundarioCard">
+        <div class="nivel-badge" style="--accent:#E63946;">Secundario</div>
+        <div class="image-placeholder nivel-img"><span>Foto Nivel Secundario</span></div>
+        <div class="nivel-body">
+          <h3 id="secundario">Nivel Secundario</h3>
+          <p>Preparamos a nuestros jóvenes para el mundo universitario y laboral con orientación, excelencia y autonomía.</p>
+          <a href="nivel-secundario.html" class="link-arrow">Ver más &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="acceso-rapido" style="padding-top:0;">
+    <div class="section-header">
+      <span class="section-tag">Accesos rápidos</span>
+      <h2 class="section-title">Explorá la institución</h2>
+    </div>
+    <div class="card-grid">
+      <a href="propuesta-educativa.html" class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24" class=""><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><h3>Propuesta Educativa</h3><p>Conocé nuestro proyecto pedagógico integral.</p></a>
+      <a href="becas.html" class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" class=""><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/></svg></div><h3>Becas</h3><p>Sistema de ayudas económicas para las familias.</p></a>
+      <a href="feria-ciencias.html" class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24" class=""><path d="M9 2v6L4 18a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 18L15 8V2"/><line x1="8" y1="2" x2="16" y2="2"/><line x1="7" y1="14" x2="17" y2="14"/></svg></div><h3>Feria de Ciencias</h3><p>Proyectos e innovación de nuestros alumnos.</p></a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Logo" class="footer-logo"/>
+        <p>Formando profesionales desde 1962.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Institucional</h4>
+        <ul>
+          <li><a href="historia.html">Historia</a></li>
+          <li><a href="autoridades.html">Autoridades</a></li>
+          <li><a href="propuesta-educativa.html">Propuesta Educativa</a></li>
+          <li><a href="becas.html">Becas</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Comunidad</h4>
+        <ul>
+          <li><a href="centro-estudiantes.html">Centro de Estudiantes</a></li>
+          <li><a href="feria-ciencias.html">Feria de Ciencias</a></li>
+          <li><a href="trabaja-con-nosotros.html">Trabajá con Nosotros</a></li>
+          <li><a href="pastoral.html">Pastoral</a></li>
+        </ul>
+      </div>
+      <div class="footer-links footer-contact">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="contacto.html">Formulario de contacto</a></li>
+          <li><a href="ubicacion.html">Ubicación en el mapa</a></li>
+          <li><a href="tel:+541112345678">(011) 1234-5678</a></li>
+          <li><a href="mailto:info@juanxxiii.edu.ar">info@juanxxiii.edu.ar</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Colegio Parroquial Juan XXIII. Todos los derechos reservados.</p>
+      <a href="login.php" id="footerLogin" class="footer-login">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Ingresar
+      </a>
+    </div>
+  </footer>
+
+  <script>
+  const toggle = document.getElementById('menuToggle');
+  const nav    = document.getElementById('mainNav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+  }
+  // En desktop los submenús se abren por hover (CSS). El click solo actúa en mobile.
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+  document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
+    const btn = item.querySelector('.nav-dropdown-btn');
+    btn.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    if (!isMobile()) return;
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+  });
+
+  // ── Estado de sesión: muestra la "personita" si el usuario ingresó ──
+  fetch('session_status.php', { credentials: 'same-origin' })
+    .then(r => r.ok ? r.json() : { logueado: false })
+    .then(data => {
+      if (data && data.logueado) {
+        const badge  = document.getElementById('userBadge');
+        const avatar = document.getElementById('ubAvatar');
+        const name   = document.getElementById('ubName');
+        const rol    = document.getElementById('ubRol');
+        const footer = document.getElementById('footerLogin');
+        if (name)   name.textContent = data.nombre + ' ' + data.apellido;
+        if (rol)    rol.textContent  = data.rol || '';
+        if (avatar && data.iniciales) avatar.textContent = data.iniciales;
+        if (badge)  badge.style.display = 'inline-flex';
+        // En el footer, cambiar "Ingresar" por "Cerrar sesión"
+        if (footer) {
+          footer.setAttribute('href', 'logout.php');
+          footer.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Cerrar sesión';
+        }
+      }
+    })
+    .catch(() => { /* sin sesión o backend no disponible: se deja "Ingresar" */ });
+  </script>
+</body>
+</html>

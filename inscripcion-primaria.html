@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscripción Primaria — Colegio Parroquial Juan XXIII</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── DROPDOWN ── */
+  .nav-item.has-dropdown { position: relative; }
+  .nav-dropdown-btn { display:flex;align-items:center;gap:.45rem;padding:.55rem 1rem;border-radius:8px;color:rgba(255,255,255,.85);font-weight:600;font-size:.88rem;font-family:var(--font-body);background:none;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap; }
+  .nav-dropdown-btn:hover,.nav-item.has-dropdown.open .nav-dropdown-btn{background:rgba(255,255,255,.12);color:#fff;}
+  .dropdown-chevron{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s cubic-bezier(.4,0,.2,1);flex-shrink:0;}
+  .nav-item.has-dropdown.open .dropdown-chevron{transform:rotate(180deg);}
+  .nav-dropdown{position:absolute;top:calc(100% + .5rem);left:50%;transform:translateX(-50%) translateY(-6px);background:#1d3557;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:.5rem;min-width:230px;box-shadow:0 12px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s cubic-bezier(.4,0,.2,1);z-index:200;}
+  .nav-item.has-dropdown.open .nav-dropdown{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);}
+  .nav-dropdown a{display:flex;align-items:center;gap:.55rem;padding:.6rem .9rem;border-radius:8px;color:rgba(255,255,255,.8);font-size:.88rem;font-weight:600;font-family:var(--font-body);transition:background .18s,color .18s;white-space:nowrap;}
+  .nav-dropdown a:hover{background:rgba(255,255,255,.12);color:#fff;}
+  .nav-dropdown .dropdown-divider{height:1px;background:rgba(255,255,255,.1);margin:.35rem .4rem;}
+  .nav-dropdown a .dd-sub{font-size:.72rem;font-weight:400;color:rgba(255,255,255,.45);display:block;margin-top:.05rem;}
+  @media(max-width:768px){
+    .hamburger{display:flex;}
+    .nav-dropdown{position:static;transform:none;opacity:1;pointer-events:auto;box-shadow:none;border:none;border-radius:0;background:rgba(0,0,0,.15);padding:0 0 0 1rem;max-height:0;overflow:hidden;transition:max-height .3s ease;}
+    .nav-item.has-dropdown.open .nav-dropdown{max-height:420px;}
+  }
+
+  .insc-hero, .insc-page { --accent:#1D3557; --accent-light:#A8DADC; }
+
+  .insc-hero { background: var(--blue-dark); padding: 2.5rem 2rem 2.25rem; border-bottom:3px solid var(--accent,#E63946); }
+  .insc-hero-inner { max-width: 880px; margin:0 auto; display:flex; align-items:center; gap:1.25rem; }
+  .insc-hero-icon { width:56px; height:56px; flex-shrink:0; background:rgba(255,255,255,.1); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.7rem; }
+  .insc-hero h1 { font-family:var(--font-display); font-size:1.7rem; color:#fff; line-height:1.15; }
+  .insc-hero h1 em { font-style:italic; color:var(--accent-light,#ffb3b8); }
+  .insc-hero p { color:rgba(255,255,255,.6); font-size:.85rem; margin-top:.25rem; }
+
+  .insc-page { max-width: 880px; margin: 0 auto; padding: 2.5rem 2rem 4.5rem; }
+
+  .insc-banner { display:flex; gap:.75rem; align-items:flex-start; background:#fff8e6; border:1px solid #f4d77a; border-left:4px solid #e6a700; border-radius:10px; padding:1rem 1.2rem; margin-bottom:2.25rem; font-size:.88rem; color:#8a6a00; line-height:1.6; }
+  .insc-banner b { color:#705500; }
+
+  .insc-steps { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:2.25rem; }
+  .insc-step { flex:1; min-width:150px; background:var(--gray-100); border-radius:10px; padding:.9rem 1rem; border-top:3px solid var(--accent,#E63946); }
+  .insc-step .n { font-family:var(--font-display); font-weight:900; font-size:1.1rem; color:var(--accent,#E63946); }
+  .insc-step .t { font-size:.82rem; font-weight:700; color:var(--blue-dark); margin-top:.15rem; }
+  .insc-step .d { font-size:.74rem; color:#777; margin-top:.2rem; line-height:1.5; }
+
+  .insc-form { background:#fff; border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:2rem 2rem 2.25rem; }
+  .insc-fieldset { border:none; margin-bottom:2rem; }
+  .insc-fieldset:last-of-type { margin-bottom:0; }
+  .insc-legend { font-family:var(--font-display); font-size:1.15rem; color:var(--blue-dark); padding-bottom:.6rem; margin-bottom:1.25rem; border-bottom:2px solid var(--gray-200); display:flex; align-items:center; gap:.5rem; }
+  .insc-legend .ix { color:var(--accent,#E63946); }
+
+  .insc-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem 1.25rem; }
+  .insc-grid .full { grid-column:1 / -1; }
+  .field { display:flex; flex-direction:column; gap:.35rem; }
+  .field label { font-size:.78rem; font-weight:700; color:var(--blue-dark); }
+  .field label .req { color:var(--red); }
+  .field input, .field select, .field textarea {
+    font-family:var(--font-body); font-size:.9rem; padding:.65rem .8rem; border:1.5px solid var(--gray-200); border-radius:8px; background:var(--gray-100); color:var(--text); transition:border-color .18s, background .18s; width:100%; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--accent,#457B9D); background:#fff; }
+  .field textarea { resize:vertical; min-height:80px; }
+  .field .hint { font-size:.72rem; color:var(--gray-500); }
+
+  .insc-check { display:flex; align-items:flex-start; gap:.6rem; margin-top:1.25rem; font-size:.84rem; color:#555; line-height:1.5; }
+  .insc-check input { margin-top:.2rem; width:16px; height:16px; flex-shrink:0; accent-color:var(--accent,#E63946); }
+
+  .insc-actions { margin-top:2rem; display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+  .insc-submit { background:var(--accent,#E63946); color:#fff; font-weight:800; font-size:.95rem; padding:.9rem 2rem; border:none; border-radius:50px; cursor:pointer; transition:filter .2s, transform .2s; }
+  .insc-submit:hover { filter:brightness(.93); transform:translateY(-2px); }
+  .insc-note { font-size:.78rem; color:var(--gray-500); }
+
+  .insc-switch { margin-top:2rem; text-align:center; font-size:.85rem; color:#777; }
+  .insc-switch a { color:var(--blue-mid); font-weight:700; }
+
+  @media (max-width:600px){ .insc-grid { grid-template-columns:1fr; } }
+
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img src="logo.png" alt="Logo del Colegio" class="logo" />
+        <div class="brand-text">
+          <span class="school-name">Colegio Parroquial Juan XXIII</span>
+          <span class="school-motto">Educando desde 1962</span>
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="menuToggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- NAV -->
+      <nav class="main-nav" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link" style="background:rgba(255,255,255,.15);color:#fff;"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Inicio</a></li>
+
+          <!-- ── NIVELES ── -->
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Niveles<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-dropdown">
+              <a href="nivel-inicial.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Nivel Inicial<span class="dd-sub">Sala de 3, 4 y 5</span></a>
+              <a href="nivel-primario.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Nivel Primario<span class="dd-sub">1° a 6° grado</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="nivel-secundario.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Sec. Orientada / Técnica<span class="dd-sub">Bachillerato · 6 o 7 años</span></a>
+            </div>
+          </li>
+
+          <!-- ── INSCRIPCIONES ── -->
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg>Inscripciones<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-dropdown">
+              <a href="inscripcion-jardin.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Inscripción Jardín<span class="dd-sub">Nivel Inicial · Sala 3, 4 y 5</span></a>
+              <a href="inscripcion-primaria.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Inscripción Primaria<span class="dd-sub">1° a 6° grado</span></a>
+              <a href="inscripcion-sec.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Inscripción Secundaria<span class="dd-sub">Orientada y Técnica</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="inscripcion-hermanos.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Inscripción Hermanos<span class="dd-sub">Familias con varios hijos</span></a>
+            </div>
+          </li>
+
+          <!-- ── COMUNIDAD ── -->
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Comunidad<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-dropdown">
+              <a href="index.html#pastoral"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Pastoral<span class="dd-sub">Vida espiritual y solidaria</span></a>
+              <a href="egresados.php"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Egresados<span class="dd-sub">Historias de ex-alumnos</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="deportes.html"><svg viewBox="0 0 24 24" class="nav-icon"><circle cx="12" cy="12" r="10"/><path d="M12 2a14 14 0 0 0 0 20M12 2a14 14 0 0 1 0 20M2 12h20"/></svg>Deportes<span class="dd-sub">Disciplinas y equipos</span></a>
+              <a href="recorrido-virtual.html"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 5c5.5 0 10 2.7 10 6s-4.5 6-10 6S2 14.3 2 11s4.5-6 10-6z"/><polyline points="8 8 5 11 8 14"/></svg>Recorrido Virtual<span class="dd-sub">Conocé las instalaciones</span></a>
+              <a href="plataforma.html"><svg viewBox="0 0 24 24" class="nav-icon"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Plataforma<span class="dd-sub">Acceso a Xhendra</span></a>
+            </div>
+          </li>
+
+          <!-- ── NOVEDADES ── -->
+          <li class="nav-item">
+            <a href="novedades.php" class="nav-link">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              Novedades
+            </a>
+          </li>
+
+          <!-- ── AGENDA ── -->
+          <li class="nav-item">
+            <a href="agenda.php" class="nav-link">
+              <svg viewBox="0 0 24 24" class="nav-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Agenda
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<section class="insc-hero">
+  <div class="insc-hero-inner">
+    <div class="insc-hero-icon">✏️</div>
+    <div>
+      <h1>Inscripción <em>Nivel Primario</em></h1>
+      <p>1° a 6° grado</p>
+    </div>
+  </div>
+</section>
+
+<div class="insc-page">
+  <div class="insc-banner">
+    <span style="font-size:1.1rem">ℹ️</span>
+    <div>Este formulario es <b>solo una vista previa</b>. El envío todavía no está habilitado: próximamente vas a poder completar la preinscripción en línea. Por ahora, ante cualquier consulta comunicate con la Secretaría.</div>
+  </div>
+  <div class="insc-steps">
+    <div class="insc-step"><div class="n">1</div><div class="t">Completá el formulario</div><div class="d">Datos del alumno/a y del responsable.</div></div>
+    <div class="insc-step"><div class="n">2</div><div class="t">Presentá la documentación</div><div class="d">DNI, partida de nacimiento y libreta sanitaria.</div></div>
+    <div class="insc-step"><div class="n">3</div><div class="t">Entrevista</div><div class="d">Coordinamos una entrevista con la familia.</div></div>
+  </div>
+
+  <!-- NOTA: el atributo action está vacío a propósito: aún no hay backend ni tabla en la BD. -->
+  <form class="insc-form" onsubmit="event.preventDefault(); alert('La preinscripción en línea estará disponible próximamente.');">
+
+    <fieldset class="insc-fieldset">
+      <legend class="insc-legend"><span class="ix">●</span> Datos del/la alumno/a</legend>
+      <div class="insc-grid">
+        <div class="field">
+          <label>Nombres del/la alumno/a <span class="req">*</span></label>
+          <input type="text" name="alumno_nombre" placeholder=""/>
+          
+        </div>
+        <div class="field">
+          <label>Apellidos <span class="req">*</span></label>
+          <input type="text" name="alumno_apellido" placeholder=""/>
+          
+        </div>
+        <div class="field">
+          <label>DNI <span class="req">*</span></label>
+          <input type="text" name="alumno_dni" placeholder="Sin puntos"/>
+          
+        </div>
+        <div class="field">
+          <label>Fecha de nacimiento <span class="req">*</span></label>
+          <input type="date" name="alumno_fnac" placeholder=""/>
+          
+        </div>
+        <div class="field">
+          <label>Nacionalidad</label>
+          <input type="text" name="alumno_nac" placeholder=""/>
+          
+        </div>
+        <div class="field full">
+          <label>Domicilio <span class="req">*</span></label>
+          <input type="text" name="alumno_dom" placeholder=""/>
+          
+        </div>
+        <div class="field">
+          <label>Grado al que se inscribe <span class="req">*</span></label>
+          <select name="alumno_grado"><option value="" disabled selected>Seleccionar…</option><option>1° grado</option><option>2° grado</option><option>3° grado</option><option>4° grado</option><option>5° grado</option><option>6° grado</option></select>
+          
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="insc-fieldset">
+      <legend class="insc-legend"><span class="ix">●</span> Escuela de procedencia</legend>
+      <div class="insc-grid">
+        <div class="field full">
+          <label>Institución anterior</label>
+          <input type="text" name="esc_anterior" placeholder="Nombre del jardín o escuela"/>
+          
+        </div>
+        <div class="field">
+          <label>Localidad</label>
+          <input type="text" name="esc_loc" placeholder=""/>
+          
+        </div>
+        <div class="field">
+          <label>¿Repitió algún grado?</label>
+          <select name="esc_rep"><option value="" disabled selected>Seleccionar…</option><option>No</option><option>Sí</option></select>
+          
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="insc-fieldset">
+      <legend class="insc-legend"><span class="ix">●</span> Datos del responsable / tutor</legend>
+      <div class="insc-grid">
+        <div class="field full">
+          <label>Nombre y apellido del responsable <span class="req">*</span></label>
+          <input type="text" name="tutor_nombre" placeholder=""/>
+          
+        </div>
+        <div class="field">
+          <label>Vínculo <span class="req">*</span></label>
+          <select name="tutor_vinculo"><option value="" disabled selected>Seleccionar…</option><option>Madre</option><option>Padre</option><option>Tutor/a legal</option><option>Otro</option></select>
+          
+        </div>
+        <div class="field">
+          <label>DNI del responsable <span class="req">*</span></label>
+          <input type="text" name="tutor_dni" placeholder=""/>
+          
+        </div>
+        <div class="field">
+          <label>Teléfono de contacto <span class="req">*</span></label>
+          <input type="tel" name="tutor_tel" placeholder=""/>
+          
+        </div>
+        <div class="field full">
+          <label>Correo electrónico <span class="req">*</span></label>
+          <input type="email" name="tutor_email" placeholder=""/>
+          
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="insc-fieldset">
+      <legend class="insc-legend"><span class="ix">●</span> Información adicional</legend>
+      <div class="insc-grid">
+        <div class="field">
+          <label>¿Cómo nos conociste?</label>
+          <select name="ref"><option value="" disabled selected>Seleccionar…</option><option>Recomendación de una familia</option><option>Redes sociales</option><option>Cercanía al domicilio</option><option>Ex alumno/a</option><option>Otro</option></select>
+          
+        </div>
+        <div class="field full">
+          <label>Observaciones / comentarios</label>
+          <textarea name="obs" placeholder="Información que quieras compartir con nosotros…"></textarea>
+          
+        </div>
+      </div>
+      <label class="insc-check"><input type="checkbox"/> Declaro que los datos consignados son correctos y acepto ser contactado/a por la institución.</label>
+    </fieldset>
+
+    <div class="insc-actions">
+      <button type="submit" class="insc-submit">Enviar preinscripción</button>
+      <span class="insc-note">* Campos obligatorios</span>
+    </div>
+  </form>
+
+  <p class="insc-switch">¿Buscás otro nivel? Volvé a <a href="index.html">Inicio</a> o revisá el menú <b>Inscripciones</b>.</p>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="logo.png" alt="Logo" class="footer-logo"/>
+      <p>Formando profesionales desde 1962.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Niveles</h4>
+      <ul>
+        <li><a href="nivel-inicial.html">Nivel Inicial</a></li>
+        <li><a href="nivel-primario.html">Nivel Primario</a></li>
+        <li><a href="nivel-secundario.html">Nivel Secundario</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Inscripciones</h4>
+      <ul>
+        <li><a href="inscripcion-jardin.html">Jardín</a></li>
+        <li><a href="inscripcion-primaria.html">Primaria</a></li>
+        <li><a href="inscripcion-sec.html">Secundaria</a></li>
+        <li><a href="inscripcion-hermanos.html">Hermanos</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="deportes.html">Deportes</a></li>
+        <li><a href="recorrido-virtual.html">Recorrido Virtual</a></li>
+        <li><a href="plataforma.html">Plataforma</a></li>
+        <li><a href="novedades.php">Novedades</a></li>
+        <li><a href="agenda.php">Agenda</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Colegio Parroquial Juan XXIII. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('menuToggle');
+  const nav    = document.getElementById('mainNav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => { nav.classList.toggle('open'); toggle.classList.toggle('active'); });
+  }
+  document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
+    item.querySelector('.nav-dropdown-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+  });
+</script>
+</body>
+</html>

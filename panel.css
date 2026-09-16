@@ -1,0 +1,355 @@
+/* ============================================================
+   panel.css — Estilos del Panel de Control
+   Colegio Parroquial Juan XXIII
+   Reutiliza las variables de :root definidas en styles.css
+   ============================================================ */
+
+/* ── Layout general del panel ── */
+.panel-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--blue-dark);
+  line-height: 1.1;
+}
+.panel-title span { color: var(--red); }
+.panel-subtitle { color: #667; font-size: .95rem; margin-top: .3rem; }
+
+/* ── Chip de usuario / rol ── */
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 999px;
+  padding: .45rem .5rem .45rem .9rem;
+  box-shadow: var(--shadow-sm);
+}
+.user-chip .avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: .85rem;
+  background: var(--blue-dark);
+}
+.user-chip .u-meta { line-height: 1.15; }
+.user-chip .u-name { font-weight: 700; color: var(--blue-dark); font-size: .9rem; }
+.user-chip .u-rol  { font-size: .72rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: .04em; }
+.user-chip .logout {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  color: var(--red); background: rgba(230,57,70,.10);
+  transition: var(--transition);
+}
+.user-chip .logout:hover { background: var(--red); color: #fff; }
+.user-chip .logout svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* ── Grid de tarjetas de acción ── */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.4rem;
+}
+.action-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 1.7rem;
+  box-shadow: var(--shadow-sm);
+  border-top: 4px solid var(--red);
+  transition: var(--transition);
+  text-decoration: none;
+  color: inherit;
+}
+.action-card.blue  { border-top-color: var(--blue-dark); }
+.action-card.muted { border-top-color: var(--gray-500); }
+.action-card:not(.is-locked):hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.action-card .ac-icon {
+  width: 52px; height: 52px; border-radius: 15px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(230,57,70,.12); margin-bottom: 1rem;
+}
+.action-card.blue .ac-icon  { background: rgba(29,53,87,.10); }
+.action-card.muted .ac-icon { background: rgba(154,160,166,.18); }
+.action-card .ac-icon svg {
+  width: 26px; height: 26px; stroke: var(--red);
+  fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.action-card.blue .ac-icon svg  { stroke: var(--blue-dark); }
+.action-card.muted .ac-icon svg { stroke: var(--gray-500); }
+.action-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem; color: var(--blue-dark); margin-bottom: .4rem;
+}
+.action-card p { font-size: .9rem; color: #556; flex: 1; }
+.action-card .ac-cta {
+  margin-top: 1rem; font-weight: 700; font-size: .85rem;
+  color: var(--red); display: inline-flex; align-items: center; gap: .35rem;
+}
+.action-card.blue .ac-cta { color: var(--blue-dark); }
+
+/* Tarjeta bloqueada */
+.action-card.is-locked { cursor: not-allowed; opacity: .72; }
+.lock-badge {
+  position: absolute; top: 1rem; right: 1rem;
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--gray-500); background: var(--gray-100);
+  border: 1px solid #e3e6ea; border-radius: 999px; padding: .25rem .55rem;
+}
+.lock-badge svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.4; }
+
+/* ── Card contenedora de formularios ── */
+.form-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.form-card.wide { max-width: 100%; }
+
+/* ── Formularios ── */
+.field { margin-bottom: 1.15rem; }
+.field label {
+  display: block; font-weight: 700; font-size: .85rem;
+  color: var(--blue-dark); margin-bottom: .4rem;
+}
+.field .hint { font-weight: 400; color: var(--gray-500); font-size: .78rem; }
+.field input[type=text],
+.field input[type=email],
+.field input[type=password],
+.field input[type=date],
+.field input[type=time],
+.field input[type=url],
+.field select,
+.field textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: .95rem;
+  color: var(--text);
+  background: #fff;
+  border: 1.5px solid #dfe3e8;
+  border-radius: var(--radius);
+  padding: .7rem .85rem;
+  transition: var(--transition);
+}
+.field textarea { min-height: 120px; resize: vertical; }
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 0 3px rgba(69,123,157,.15);
+}
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+.form-actions {
+  display: flex; gap: .8rem; flex-wrap: wrap;
+  margin-top: 1.5rem; padding-top: 1.3rem;
+  border-top: 1px solid #eef0f3;
+}
+
+/* ── Alertas / flash ── */
+.alert {
+  border-radius: var(--radius);
+  padding: .85rem 1.1rem;
+  font-size: .9rem; font-weight: 600;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid;
+}
+.alert-ok    { background: #eaf7ef; color: #1b7a44; border-color: #1b7a44; }
+.alert-error { background: #fdecee; color: #c1121f; border-color: #c1121f; }
+.alert-info  { background: #eef4fb; color: var(--blue-dark); border-color: var(--blue-mid); }
+
+/* ── Tabla de gestión ── */
+.mng-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.mng-table thead th {
+  background: var(--blue-dark);
+  color: #fff;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  text-align: left;
+  padding: .8rem 1rem;
+}
+.mng-table tbody td {
+  padding: .8rem 1rem;
+  border-bottom: 1px solid #eef0f3;
+  font-size: .88rem;
+  vertical-align: middle;
+}
+.mng-table tbody tr:hover { background: var(--gray-100); }
+.mng-badge {
+  display: inline-block; color: #fff;
+  font-size: .68rem; font-weight: 700;
+  padding: .2rem .55rem; border-radius: 999px;
+}
+.mng-actions { display: flex; gap: .4rem; }
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 9px;
+  border: 1.5px solid #e3e6ea; background: #fff; cursor: pointer;
+  transition: var(--transition); color: var(--blue-dark);
+}
+.icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+.icon-btn:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+.icon-btn.danger:hover { border-color: var(--red); color: var(--red); }
+.icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+.empty-state {
+  text-align: center; padding: 3rem 1rem; color: var(--gray-500);
+}
+.empty-state svg { width: 46px; height: 46px; stroke: currentColor; fill: none; stroke-width: 1.5; margin-bottom: .8rem; }
+
+/* ── Botón pequeño de barra superior ── */
+.panel-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem; margin-bottom: 1.6rem;
+}
+.back-link {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-weight: 700; font-size: .88rem; color: var(--blue-dark);
+  transition: var(--transition);
+}
+.back-link:hover { color: var(--red); }
+.back-link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+/* ── Página de login ── */
+.login-shell {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem 1.2rem;
+  background: linear-gradient(135deg, var(--blue-dark) 0%, #14243d 100%);
+}
+.login-box {
+  width: 100%; max-width: 410px;
+  background: #fff; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); padding: 2.4rem 2rem;
+}
+.login-box .login-brand {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; margin-bottom: 1.6rem;
+}
+.login-box .login-brand img { width: 62px; height: auto; margin-bottom: .7rem; }
+.login-box .login-brand h1 {
+  font-family: var(--font-display); font-size: 1.35rem; color: var(--blue-dark);
+}
+.login-box .login-brand p { font-size: .82rem; color: var(--gray-500); }
+
+/* ── Subida y galería de imágenes en novedades ── */
+.field input[type=file] {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: .9rem;
+  color: var(--text);
+  background: var(--gray-100);
+  border: 1.5px dashed #cdd3da;
+  border-radius: var(--radius);
+  padding: .8rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.field input[type=file]:hover { border-color: var(--blue-mid); background: #eef4fb; }
+.field input[type=file]::file-selector-button {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: .82rem;
+  color: #fff;
+  background: var(--blue-dark);
+  border: none;
+  border-radius: 8px;
+  padding: .5rem .9rem;
+  margin-right: .8rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.field input[type=file]::file-selector-button:hover { background: var(--blue-mid); }
+
+.img-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
+}
+.img-thumb {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #e6e9ed;
+}
+.img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.img-del {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(193,18,31,.92);
+  color: #fff;
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+.img-del:hover { background: var(--red-dark); transform: scale(1.1); }
+
+/* ============================================================
+   Botón secundario del panel
+   .btn-outline de styles.css es blanco sobre fondo oscuro, así
+   que dentro del panel (fondo claro) queda invisible.
+   ============================================================ */
+.btn-secundario {
+  background: #fff;
+  color: var(--blue-dark);
+  border: 1.5px solid rgba(29,53,87,.22);
+  backdrop-filter: none;
+}
+.btn-secundario:hover {
+  background: var(--gray-100, #f1f4f8);
+  border-color: var(--blue-mid);
+  color: var(--blue-dark);
+  transform: translateY(-1px);
+}

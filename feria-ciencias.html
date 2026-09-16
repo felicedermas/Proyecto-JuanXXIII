@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colegio Parroquial Juan XXIII — Feria de Ciencias</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-quick">
+          <a href="novedades.php">Novedades</a>
+          <a href="agenda.php">Agenda</a>
+          <a class="tq-plataforma" href="plataforma.html">Plataforma</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-inner two-row">
+      <div class="header-top-row">
+        <div class="brand">
+          <img src="img/logo.png" alt="Logo del Colegio" class="logo" />
+          <div class="brand-text">
+            <span class="school-name">Colegio Parroquial Juan XXIII</span>
+            <span class="school-motto">Educando desde 1962</span>
+          </div>
+        </div>
+
+        <button class="hamburger" id="menuToggle" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <nav class="main-nav nav-row" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Institucional<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="historia.html">Historia<span class="dd-sub">Nuestra trayectoria desde 1962</span></a>
+              <a href="autoridades.html">Autoridades<span class="dd-sub">Equipo directivo y de gestión</span></a>
+              <a href="propuesta-educativa.html">Propuesta Educativa<span class="dd-sub">Proyecto pedagógico institucional</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="becas.html">Becas<span class="dd-sub">Sistema de ayudas económicas</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Niveles<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="nivel-inicial.html">Nivel Inicial<span class="dd-sub">Sala de 3, 4 y 5</span></a>
+              <a href="nivel-primario.html">Nivel Primario<span class="dd-sub">1° a 6° grado</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="nivel-secundario.html">Sec. Orientada / Técnica<span class="dd-sub">Bachillerato · 6 o 7 años</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Inscripciones<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="inscripcion-jardin.html">Inscripción Jardín<span class="dd-sub">Nivel Inicial · Sala 3, 4 y 5</span></a>
+              <a href="inscripcion-primaria.html">Inscripción Primaria<span class="dd-sub">1° a 6° grado</span></a>
+              <a href="inscripcion-sec.html">Inscripción Secundaria<span class="dd-sub">Orientada y Técnica</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="inscripcion-hermanos.html">Inscripción Hermanos<span class="dd-sub">Familias con varios hijos</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn active-section">Comunidad<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="centro-estudiantes.html">Centro de Estudiantes<span class="dd-sub">Voz y participación estudiantil</span></a>
+              <a href="feria-ciencias.html" class="active-link">Feria Anual de Ciencias<span class="dd-sub">Proyectos e innovación</span></a>
+              <a href="pastoral.html">Pastoral<span class="dd-sub">Vida espiritual y solidaria</span></a>
+              <a href="egresados.php">Egresados<span class="dd-sub">Historias de ex-alumnos</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="deportes.html">Deportes<span class="dd-sub">Disciplinas y equipos</span></a>
+              <a href="trabaja-con-nosotros.html">Trabajá con Nosotros<span class="dd-sub">Sumate a nuestro equipo</span></a>
+              <a href="recorrido-virtual.html">Recorrido Virtual<span class="dd-sub">Conocé las instalaciones</span></a>
+              <a href="plataforma.html">Plataforma<span class="dd-sub">Acceso a Xhendra</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item mobile-only"><a href="novedades.php" class="nav-link">Novedades</a></li>
+          <li class="nav-item mobile-only"><a href="agenda.php" class="nav-link">Agenda</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Contacto<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="contacto.html">Contacto<span class="dd-sub">Escribinos o llamanos</span></a>
+              <a href="ubicacion.html">Ubicación en el Mapa<span class="dd-sub">Cómo llegar al colegio</span></a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <a href="index.html">Inicio</a><span>›</span>Comunidad<span>›</span>Feria de Ciencias
+  </div>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <p class="page-eyebrow">Comunidad</p>
+      <h1>Feria Anual de <em>Ciencias</em></h1>
+      <p>Cada año, nuestros estudiantes transforman la curiosidad en proyectos: experimentos, prototipos e ideas que cambian la mirada sobre el mundo.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="prose narrow" style="max-width:820px;margin:0 auto;">
+      <h2>Una tradición que despierta vocaciones</h2>
+      <p>La Feria de Ciencias es uno de los eventos más esperados del calendario escolar. Durante toda una jornada, las aulas se convierten en laboratorios donde los alumnos de los tres niveles presentan sus investigaciones ante familias, docentes y visitantes.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="content-section">
+      <div class="section-header">
+        <span class="section-tag">Edición 2025</span>
+        <h2 class="section-title">Proyectos destacados</h2>
+      </div>
+      <div class="card-grid">
+        <div class="info-card">
+          <span class="project-tag">Nivel Secundario</span>
+          <h3>Energía solar casera</h3>
+          <p>Un panel solar construido con materiales reciclados capaz de cargar dispositivos pequeños.</p>
+        </div>
+        <div class="info-card blue">
+          <span class="project-tag">Nivel Primario</span>
+          <h3>El huerto inteligente</h3>
+          <p>Sistema de riego automático con sensores de humedad para una huerta escolar sustentable.</p>
+        </div>
+        <div class="info-card">
+          <span class="project-tag">Nivel Secundario</span>
+          <h3>Bioplástico de papa</h3>
+          <p>Elaboración de un plástico biodegradable a partir del almidón de la papa.</p>
+        </div>
+        <div class="info-card blue">
+          <span class="project-tag">Nivel Inicial</span>
+          <h3>¿Por qué flota?</h3>
+          <p>Experimentos sencillos sobre flotación y densidad para los más pequeños.</p>
+        </div>
+        <div class="info-card">
+          <span class="project-tag">Nivel Secundario</span>
+          <h3>App de reciclaje</h3>
+          <p>Aplicación que ayuda a clasificar residuos y ubicar puntos verdes del barrio.</p>
+        </div>
+        <div class="info-card blue">
+          <span class="project-tag">Nivel Primario</span>
+          <h3>Volcán químico</h3>
+          <p>Demostración de reacciones ácido-base con una maqueta interactiva.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <h2>Próxima edición: octubre 2026</h2>
+    <p>Te esperamos para descubrir el ingenio y la creatividad de nuestros estudiantes.</p>
+    <a href="agenda.php" class="btn btn-white">Ver agenda</a>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Logo" class="footer-logo"/>
+        <p>Formando profesionales desde 1962.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Institucional</h4>
+        <ul>
+          <li><a href="historia.html">Historia</a></li>
+          <li><a href="autoridades.html">Autoridades</a></li>
+          <li><a href="propuesta-educativa.html">Propuesta Educativa</a></li>
+          <li><a href="becas.html">Becas</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Comunidad</h4>
+        <ul>
+          <li><a href="centro-estudiantes.html">Centro de Estudiantes</a></li>
+          <li><a href="feria-ciencias.html">Feria de Ciencias</a></li>
+          <li><a href="trabaja-con-nosotros.html">Trabajá con Nosotros</a></li>
+          <li><a href="pastoral.html">Pastoral</a></li>
+        </ul>
+      </div>
+      <div class="footer-links footer-contact">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="contacto.html">Formulario de contacto</a></li>
+          <li><a href="ubicacion.html">Ubicación en el mapa</a></li>
+          <li><a href="tel:+541112345678">(011) 1234-5678</a></li>
+          <li><a href="mailto:info@juanxxiii.edu.ar">info@juanxxiii.edu.ar</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Colegio Parroquial Juan XXIII. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+  const toggle = document.getElementById('menuToggle');
+  const nav    = document.getElementById('mainNav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+  }
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+  document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
+    const btn = item.querySelector('.nav-dropdown-btn');
+    btn.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    if (!isMobile()) return;
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+  });
+  </script>
+
+</body>
+</html>

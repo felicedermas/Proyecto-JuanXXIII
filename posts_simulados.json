@@ -1,0 +1,53 @@
+{
+  "_comment": "Imita el formato exacto de la Instagram Graph API (campo 'data'). Sirve para probar la sincronización sin cuentas ni tokens, con Modo de prueba = 1. El último post lleva #nolaweb a propósito: es el ejemplo de una publicación que NO tiene que llegar al sitio.",
+  "data": [
+    {
+      "id": "17900000000000001",
+      "caption": "🎉 ¡Comenzó la Feria de Ciencias 2026! Los alumnos de Secundaria presentaron proyectos increíbles sobre energías renovables. Gracias a las familias que nos acompañaron. #JuanXXIII #FeriaDeCiencias",
+      "media_type": "IMAGE",
+      "media_url": "https://picsum.photos/id/180/1080/1080",
+      "permalink": "https://www.instagram.com/p/EJEMPLO001/",
+      "timestamp": "2026-06-15T14:30:00+0000"
+    },
+    {
+      "id": "17900000000000002",
+      "caption": "Acto del Día de la Bandera en el patio principal. ¡Gracias a todos por la hermosa jornada! 🇦🇷",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_url": "https://picsum.photos/id/24/1080/1080",
+      "permalink": "https://www.instagram.com/p/EJEMPLO002/",
+      "timestamp": "2026-06-12T11:00:00+0000",
+      "children": {
+        "data": [
+          {
+            "media_type": "IMAGE",
+            "media_url": "https://picsum.photos/id/24/1080/1080"
+          },
+          {
+            "media_type": "IMAGE",
+            "media_url": "https://picsum.photos/id/48/1080/1080"
+          },
+          {
+            "media_type": "IMAGE",
+            "media_url": "https://picsum.photos/id/65/1080/1080"
+          }
+        ]
+      }
+    },
+    {
+      "id": "17900000000000003",
+      "caption": "Inscripciones abiertas para Sala de 3 🧒. Acercate a Secretaría con el DNI del niño y la libreta sanitaria. ¡Los esperamos!",
+      "media_type": "IMAGE",
+      "media_url": "https://picsum.photos/id/1062/1080/1080",
+      "permalink": "https://www.instagram.com/p/EJEMPLO003/",
+      "timestamp": "2026-06-08T09:15:00+0000"
+    },
+    {
+      "id": "17900000000000004",
+      "caption": "Feliz cumple profe! 🎂 #nolaweb",
+      "media_type": "IMAGE",
+      "media_url": "http://127.0.0.1:8899/img/test_d.jpg",
+      "permalink": "https://www.instagram.com/p/EJEMPLO004/",
+      "timestamp": "2026-06-20T10:00:00+0000"
+    }
+  ]
+}

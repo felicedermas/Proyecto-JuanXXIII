@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nivel Secundario — Colegio Parroquial Juan XXIII</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      overflow: hidden;
+      height: 100vh;
+      background: #0a0f1a;
+    }
+
+    /* ─── PÁGINA COMPLETA ─── */
+    .selector-page {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── HEADER compacto, transparente ─── */
+    .site-header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: transparent;
+      box-shadow: none;
+    }
+    .site-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,15,26,.38) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* ─── ÁREA CENTRAL: dos cuadros ─── */
+    .cards-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 2rem;
+      min-height: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(29,53,87,.45) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 60% at 80% 50%, rgba(69,123,157,.25) 0%, transparent 70%),
+        #0a0f1a;
+    }
+
+    /* ─── TARJETA ─── */
+    .modal-card {
+      position: relative;
+      /* más anchas: ocupan casi la mitad del viewport menos el gap */
+      width: min(560px, calc(50vw - 3rem));
+      aspect-ratio: 4/5;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+
+      transition: transform .5s cubic-bezier(.34,1.3,.64,1), box-shadow .5s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      will-change: transform;
+    }
+    .modal-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 32px 80px rgba(0,0,0,.7);
+    }
+
+    /* Fondo de foto */
+    .card-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform .7s cubic-bezier(.4,0,.2,1);
+    }
+    .modal-card:hover .card-bg {
+      transform: scale(1.05);
+    }
+
+    /* Gradiente interno — zona superior más visible, zona inferior oscurecida para texto */
+    .card-grad {
+      position: absolute;
+      inset: 0;
+      transition: opacity .4s;
+    }
+
+    /* Orientada */
+    .card-orientada .card-bg {
+      background-image: url('sec-orientada-bg.jpg');
+      background-color: #1a2f4a;
+    }
+    .card-orientada .card-grad {
+      background:
+        linear-gradient(to bottom,
+          rgba(10,15,26,.45) 0%,
+          rgba(10,15,26,.15) 35%,
+          rgba(10,15,26,.70) 65%,
+          rgba(10,15,26,.92) 100%
+        );
+    }
+
+    /* Técnica */
+    .card-tecnica .card-bg {
+      background-image: url('sec-tecnica-bg.jpg');
+      background-color: #0d1b2a;
+    }
+    .card-tecnica .card-grad {
+      background:
+        linear-gradient(to bottom,
+          rgba(10,15,26,.45) 0%,
+          rgba(10,15,26,.15) 35%,
+          rgba(10,15,26,.72) 65%,
+          rgba(10,15,26,.94) 100%
+        );
+    }
+
+    /* ─── CONTENIDO dentro de la card ─── */
+    .card-body {
+      position: relative;
+      z-index: 2;
+      padding: 2.25rem 2rem 2.5rem;
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(168,218,220,.7);
+      margin-bottom: 1rem;
+      padding: .28rem .75rem;
+      border: 1px solid rgba(168,218,220,.25);
+      border-radius: 50px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.2vw, 2.6rem);
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 20px rgba(0,0,0,.5);
+    }
+    .card-title em {
+      font-style: italic;
+      opacity: .85;
+    }
+
+    .card-detail {
+      color: rgba(255,255,255,.62);
+      font-size: .85rem;
+      line-height: 1.7;
+      margin-bottom: 1.6rem;
+    }
+
+    .card-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: 2rem;
+    }
+    .card-pill {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.8);
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .22rem .7rem;
+      border-radius: 50px;
+      letter-spacing: .05em;
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff;
+      font-weight: 700;
+      font-size: .83rem;
+      padding: .7rem 1.5rem;
+      border-radius: 50px;
+      backdrop-filter: blur(8px);
+      letter-spacing: .04em;
+      transition: background .25s, border-color .25s, transform .25s;
+    }
+    .modal-card:hover .card-cta {
+      background: rgba(255,255,255,.22);
+      border-color: rgba(255,255,255,.55);
+    }
+
+    .cta-arrow {
+      width: 14px; height: 14px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round; stroke-linejoin: round;
+      transition: transform .25s;
+    }
+    .modal-card:hover .cta-arrow { transform: translateX(4px); }
+
+    /* ─── NÚMERO DE AÑOS — badge superior ─── */
+    .card-years {
+      position: absolute;
+      top: 1.4rem;
+      right: 1.4rem;
+      z-index: 3;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.22);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      padding: .5rem .9rem;
+      text-align: center;
+      transition: background .3s;
+    }
+    .modal-card:hover .card-years {
+      background: rgba(255,255,255,.2);
+    }
+    .years-num {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+    .years-label {
+      display: block;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      margin-top: .15rem;
+    }
+
+    /* ─── ÍCONO central top ─── */
+    .card-icon {
+      position: absolute;
+      top: 1.4rem;
+      left: 1.4rem;
+      z-index: 3;
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      backdrop-filter: blur(6px);
+    }
+
+    /* ─── DIVISOR CENTRAL mínimo ─── */
+    .cards-divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.2), transparent);
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    /* ─── FOOTER mínimo ─── */
+    .mini-footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      text-align: center;
+      padding: .8rem 1rem;
+      font-size: .72rem;
+      color: rgba(255,255,255,.22);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    /* ─── Botón flotante volver al inicio ─── */
+    .back-home {
+      position: fixed;
+      top: 1.25rem; left: 1.25rem;
+      z-index: 60;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem .95rem .55rem .8rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.9);
+      font-family: var(--font-body);
+      font-size: .82rem;
+      font-weight: 700;
+      text-decoration: none;
+      backdrop-filter: blur(6px);
+      transition: .25s ease;
+    }
+    .back-home:hover { background: rgba(255,255,255,.2); transform: translateX(-2px); }
+    .back-home svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.4; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .modal-card { width: min(460px, calc(50vw - 2.5rem)); }
+    }
+
+    @media (max-width: 820px) {
+      body, .selector-page { height: auto; min-height: 100vh; overflow: auto; }
+      .cards-wrap {
+        flex-direction: column;
+        gap: 1.75rem;
+        padding: 2rem 1.5rem;
+        min-height: 100vh;
+        overflow: visible;
+      }
+      .modal-card {
+        width: min(480px, calc(100vw - 3rem));
+        aspect-ratio: 16/10;
+      }
+      .cards-divider { width: 60px; height: 1px; }
+      .card-title { font-size: 1.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .cards-wrap { padding: 1.5rem 1rem; gap: 1.25rem; }
+      .modal-card { aspect-ratio: 4/3; }
+      .card-body { padding: 1.5rem 1.25rem 1.75rem; }
+    }
+  </style>
+  <style>
+  /* ── DROPDOWN NIVELES ── */
+  .nav-item.has-dropdown { position: relative; }
+
+  .nav-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem 1rem;
+    border-radius: 8px;
+    color: rgba(255,255,255,.85);
+    font-weight: 600;
+    font-size: .88rem;
+    font-family: var(--font-body);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+  .nav-dropdown-btn:hover,
+  .nav-item.has-dropdown.open .nav-dropdown-btn {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+  }
+  .nav-dropdown-btn.active-section {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+  }
+  .dropdown-chevron {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    flex-shrink: 0;
+  }
+  .nav-item.has-dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+
+  .nav-dropdown {
+    position: absolute;
+    top: calc(100% + .5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: #1d3557;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    padding: .5rem;
+    min-width: 220px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s cubic-bezier(.4,0,.2,1);
+    z-index: 200;
+  }
+  .nav-item.has-dropdown.open .nav-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .nav-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .6rem .9rem;
+    border-radius: 8px;
+    color: rgba(255,255,255,.8);
+    font-size: .88rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: background .18s, color .18s;
+    white-space: nowrap;
+  }
+  .nav-dropdown a:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .nav-dropdown a.active-link {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+  }
+  .nav-dropdown .dropdown-divider {
+    height: 1px;
+    background: rgba(255,255,255,.1);
+    margin: .35rem .4rem;
+  }
+  /* sublabel dentro del dropdown */
+  .nav-dropdown a .dd-sub {
+    font-size: .72rem;
+    font-weight: 400;
+    color: rgba(255,255,255,.45);
+    display: block;
+    margin-top: .05rem;
+  }
+
+  /* Mobile: dropdown se expande inline */
+  @media (max-width: 768px) {
+    .nav-dropdown {
+      position: static;
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
+      background: rgba(0,0,0,.15);
+      padding: 0 0 0 1rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+    .nav-item.has-dropdown.open .nav-dropdown { max-height: 300px; }
+    .nav-item.has-dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+  }
+  </style>
+</head>
+<body class="selector-page">
+
+  <a href="index.html" class="back-home" title="Volver al inicio">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Inicio
+  </a>
+
+  <!-- DOS TARJETAS -->
+  <div class="cards-wrap">
+
+    <!-- ORIENTADA -->
+    <a href="sec-orientada.html" class="modal-card card-orientada">
+      <div class="card-bg"></div>
+      <div class="card-grad"></div>
+      <div class="card-icon">🎓</div>
+      <div class="card-years">
+        <span class="years-num">6</span>
+        <span class="years-label">años</span>
+      </div>
+      <div class="card-body">
+        <span class="card-tag">Bachillerato</span>
+        <h2 class="card-title">Secundaria<br/><em>Orientada</em></h2>
+        <p class="card-detail">Ciclo básico (1°–3°) y ciclo orientado (4°–6°) con salida en Economía o Ciencias Naturales.</p>
+        <div class="card-pills">
+          <span class="card-pill">Economía</span>
+          <span class="card-pill">Ciencias Naturales</span>
+          <span class="card-pill">Lab certificado</span>
+        </div>
+        <span class="card-cta">
+          Ingresar
+          <svg class="cta-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <div class="cards-divider"></div>
+
+    <!-- TÉCNICA -->
+    <a href="sec-tecnica.html" class="modal-card card-tecnica">
+      <div class="card-bg"></div>
+      <div class="card-grad"></div>
+      <div class="card-icon">⚙️</div>
+      <div class="card-years">
+        <span class="years-num">7</span>
+        <span class="years-label">años</span>
+      </div>
+      <div class="card-body">
+        <span class="card-tag">Educación Técnica</span>
+        <h2 class="card-title">Secundaria<br/><em>Técnica</em></h2>
+        <p class="card-detail">Ciclo básico (1°–3°) y ciclo técnico (4°–7°) con especialidades en Informática, Electrónica y Multimedios.</p>
+        <div class="card-pills">
+          <span class="card-pill">Informática</span>
+          <span class="card-pill">Electrónica</span>
+          <span class="card-pill">Multimedios</span>
+        </div>
+        <span class="card-cta">
+          Ingresar
+          <svg class="cta-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FOOTER mínimo -->
+  <div class="mini-footer">© 2026 Colegio Parroquial Juan XXIII</div>
+
+</body>
+</html>

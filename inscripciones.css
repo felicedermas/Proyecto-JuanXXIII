@@ -1,0 +1,170 @@
+/* ============================================================
+   inscripciones.css — Páginas públicas de inscripción
+   Colegio Parroquial Juan XXIII
+   Son páginas separadas del sitio (sin menú principal).
+   Usa las variables de :root de styles.css; cada formulario
+   define --accent y --accent-light.
+   ============================================================ */
+
+.insc-body { background: var(--gray-100); min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ── Barra superior mínima ── */
+.insc-top { background: var(--blue-dark); border-bottom: 1px solid rgba(255,255,255,.08); }
+.insc-top-inner {
+  max-width: 880px; margin: 0 auto; padding: .7rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.insc-brand { display: flex; align-items: center; gap: .7rem; color: #fff; min-width: 0; }
+.insc-brand img { width: 40px; height: auto; flex-shrink: 0; }
+.insc-brand span {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.insc-volver {
+  display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0;
+  color: rgba(255,255,255,.85); font-weight: 700; font-size: .85rem;
+  padding: .45rem .9rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.22);
+  transition: background .2s, color .2s;
+}
+.insc-volver:hover { background: rgba(255,255,255,.12); color: #fff; }
+.insc-volver svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── Encabezado del formulario ── */
+.insc-hero { background: var(--blue-dark); padding: 2.2rem 1.5rem 2.1rem; border-bottom: 3px solid var(--accent); }
+.insc-hero-inner { max-width: 880px; margin: 0 auto; display: flex; align-items: center; gap: 1.25rem; }
+.insc-hero-icon {
+  width: 56px; height: 56px; flex-shrink: 0; border-radius: 14px;
+  background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+}
+.insc-hero h1 { font-family: var(--font-display); font-size: 1.75rem; color: #fff; line-height: 1.15; }
+.insc-hero h1 em { font-style: italic; color: var(--accent-light); }
+.insc-hero p { color: rgba(255,255,255,.65); font-size: .88rem; margin-top: .25rem; }
+
+.insc-page { flex: 1; width: 100%; max-width: 880px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+/* ── Formulario cerrado ── */
+.insc-cerrado {
+  background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  padding: 3.5rem 1.5rem; text-align: center;
+}
+.insc-cerrado-icono {
+  width: 64px; height: 64px; margin: 0 auto 1.1rem; border-radius: 50%;
+  background: var(--gray-200); display: flex; align-items: center; justify-content: center;
+}
+.insc-cerrado-icono svg { width: 28px; height: 28px; stroke: var(--blue-dark); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.insc-cerrado p { font-family: var(--font-display); font-size: 1.35rem; color: var(--blue-dark); }
+
+/* ── Envío correcto ── */
+.insc-ok {
+  background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  padding: 3rem 1.5rem; text-align: center; border-top: 4px solid #1b7a44;
+}
+.insc-ok-icono {
+  width: 64px; height: 64px; margin: 0 auto 1rem; border-radius: 50%;
+  background: #eaf7ef; display: flex; align-items: center; justify-content: center;
+}
+.insc-ok-icono svg { width: 30px; height: 30px; stroke: #1b7a44; fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.insc-ok h2 { font-family: var(--font-display); font-size: 1.6rem; color: var(--blue-dark); margin-bottom: .5rem; }
+.insc-ok p { color: #556; max-width: 520px; margin: 0 auto .6rem; }
+.insc-ok-codigo { font-size: .9rem; }
+.insc-ok-codigo b { font-family: monospace; font-size: 1rem; letter-spacing: .08em; color: var(--blue-dark); }
+.insc-ok .insc-submit { display: inline-block; margin-top: 1.2rem; }
+
+/* ── Pasos y avisos ── */
+.insc-steps { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 2rem; list-style: none; }
+.insc-step { flex: 1; min-width: 170px; background: #fff; border-radius: 10px; padding: .9rem 1rem; border-top: 3px solid var(--accent); box-shadow: var(--shadow-sm); }
+.insc-step .n { font-family: var(--font-display); font-weight: 900; font-size: 1.1rem; color: var(--accent); }
+.insc-step .t { font-size: .84rem; font-weight: 700; color: var(--blue-dark); margin-top: .15rem; }
+.insc-step .d { font-size: .76rem; color: #6b7280; margin-top: .2rem; line-height: 1.5; }
+
+.insc-banner {
+  background: #eef4f8; border: 1px solid #bcd6e6; border-left: 4px solid var(--accent);
+  border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 2rem;
+  font-size: .88rem; color: #2c5670; line-height: 1.6;
+}
+.insc-alerta {
+  background: #fdecee; color: #a4161a; border-left: 4px solid #c1121f;
+  border-radius: 10px; padding: .9rem 1.1rem; margin-bottom: 1.5rem; font-weight: 700; font-size: .9rem;
+}
+.insc-alerta--chica { margin-bottom: 1rem; font-size: .84rem; }
+
+/* ── Formulario ── */
+.insc-form { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 2rem 2rem 2.25rem; }
+.insc-fieldset { border: none; margin-bottom: 2rem; min-width: 0; }
+.insc-legend {
+  font-family: var(--font-display); font-size: 1.15rem; color: var(--blue-dark);
+  padding-bottom: .6rem; margin-bottom: 1.25rem; border-bottom: 2px solid var(--gray-200);
+  display: flex; align-items: center; gap: .5rem; width: 100%;
+}
+.insc-legend .ix { color: var(--accent); font-size: .8rem; }
+
+.insc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; }
+.insc-grid .full { grid-column: 1 / -1; }
+.insc-form .field { display: flex; flex-direction: column; gap: .35rem; }
+.insc-form .field[hidden] { display: none; }
+.insc-form .field label { font-size: .8rem; font-weight: 700; color: var(--blue-dark); }
+.insc-form .field label .req { color: var(--red); }
+.insc-form .field input,
+.insc-form .field select,
+.insc-form .field textarea {
+  font-family: var(--font-body); font-size: .92rem; padding: .65rem .8rem;
+  border: 1.5px solid var(--gray-200); border-radius: 8px; background: var(--gray-100);
+  color: var(--text); width: 100%; transition: border-color .18s, background .18s, box-shadow .18s;
+}
+.insc-form .field input:focus,
+.insc-form .field select:focus,
+.insc-form .field textarea:focus {
+  outline: none; border-color: var(--blue-mid); background: #fff; box-shadow: 0 0 0 3px rgba(69,123,157,.15);
+}
+.insc-form .field textarea { resize: vertical; min-height: 90px; }
+.insc-form .field .hint { font-size: .74rem; color: #6b7280; }
+.insc-form .has-error input,
+.insc-form .has-error select,
+.insc-form .has-error textarea { border-color: #c1121f; background: #fff7f7; }
+.field-error { display: block; font-size: .76rem; font-weight: 700; color: #c1121f; }
+
+/* Honeypot anti-spam: fuera de la vista */
+.insc-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.insc-check { display: flex; align-items: flex-start; gap: .6rem; margin-top: .5rem; font-size: .86rem; color: #444; line-height: 1.5; cursor: pointer; }
+.insc-check input { margin-top: .2rem; width: 17px; height: 17px; flex-shrink: 0; accent-color: var(--accent); }
+
+.insc-actions { margin-top: 1.8rem; display: flex; gap: .9rem; flex-wrap: wrap; align-items: center; }
+.insc-submit {
+  background: var(--accent); color: #fff; font-family: var(--font-body); font-weight: 800; font-size: .95rem;
+  padding: .9rem 2rem; border: none; border-radius: 50px; cursor: pointer; transition: filter .2s, transform .2s;
+}
+.insc-submit:hover { filter: brightness(.92); transform: translateY(-2px); }
+.insc-submit:disabled { opacity: .6; cursor: wait; transform: none; }
+.insc-note { font-size: .8rem; color: #6b7280; }
+
+/* ── Hermanos ── */
+.herm-row { background: var(--gray-100); border-radius: 12px; padding: 1.1rem 1.25rem 1.25rem; margin-bottom: 1rem; border-left: 4px solid var(--accent); }
+.herm-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .9rem; }
+.herm-head h4 { font-family: var(--font-display); font-size: 1rem; color: var(--blue-dark); }
+.herm-quitar { background: none; border: none; color: #c1121f; font-weight: 700; font-size: .8rem; cursor: pointer; padding: .25rem .5rem; border-radius: 6px; }
+.herm-quitar:hover { background: #fdecee; }
+.herm-quitar[hidden] { display: none; }
+.herm-row .field input, .herm-row .field select { background: #fff; }
+.herm-add {
+  background: none; border: 1.5px dashed var(--blue-mid); color: var(--blue-mid); font-family: var(--font-body);
+  font-weight: 700; font-size: .86rem; padding: .7rem 1.2rem; border-radius: 50px; cursor: pointer; transition: background .2s, color .2s;
+}
+.herm-add:hover { background: var(--blue-mid); color: #fff; }
+.herm-add[hidden] { display: none; }
+
+/* ── Pie mínimo ── */
+.insc-pie { text-align: center; padding: 1.5rem 1.5rem 2rem; font-size: .85rem; color: #6b7280; border-top: 1px solid var(--gray-200); background: #fff; }
+.insc-pie a { color: var(--blue-mid); font-weight: 700; }
+.insc-pie-copy { font-size: .75rem; margin-top: .3rem; }
+
+@media (max-width: 600px) {
+  .insc-grid { grid-template-columns: 1fr; }
+  .insc-form { padding: 1.4rem 1.1rem 1.6rem; }
+  .insc-hero h1 { font-size: 1.4rem; }
+  .insc-brand span { font-size: .92rem; }
+  .insc-volver { padding: .4rem .7rem; }
+}
+@media (max-width: 420px) {
+  .insc-brand span { display: none; }
+}

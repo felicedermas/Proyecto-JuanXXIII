@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colegio Parroquial Juan XXIII — Ubicación</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-quick">
+          <a href="novedades.php">Novedades</a>
+          <a href="agenda.php">Agenda</a>
+          <a class="tq-plataforma" href="plataforma.html">Plataforma</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-inner two-row">
+      <div class="header-top-row">
+        <div class="brand">
+          <img src="img/logo.png" alt="Logo del Colegio" class="logo" />
+          <div class="brand-text">
+            <span class="school-name">Colegio Parroquial Juan XXIII</span>
+            <span class="school-motto">Educando desde 1962</span>
+          </div>
+        </div>
+
+        <button class="hamburger" id="menuToggle" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <nav class="main-nav nav-row" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Institucional<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="historia.html">Historia<span class="dd-sub">Nuestra trayectoria desde 1962</span></a>
+              <a href="autoridades.html">Autoridades<span class="dd-sub">Equipo directivo y de gestión</span></a>
+              <a href="propuesta-educativa.html">Propuesta Educativa<span class="dd-sub">Proyecto pedagógico institucional</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="becas.html">Becas<span class="dd-sub">Sistema de ayudas económicas</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Niveles<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="nivel-inicial.html">Nivel Inicial<span class="dd-sub">Sala de 3, 4 y 5</span></a>
+              <a href="nivel-primario.html">Nivel Primario<span class="dd-sub">1° a 6° grado</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="nivel-secundario.html">Sec. Orientada / Técnica<span class="dd-sub">Bachillerato · 6 o 7 años</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Inscripciones<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="inscripcion-jardin.html">Inscripción Jardín<span class="dd-sub">Nivel Inicial · Sala 3, 4 y 5</span></a>
+              <a href="inscripcion-primaria.html">Inscripción Primaria<span class="dd-sub">1° a 6° grado</span></a>
+              <a href="inscripcion-sec.html">Inscripción Secundaria<span class="dd-sub">Orientada y Técnica</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="inscripcion-hermanos.html">Inscripción Hermanos<span class="dd-sub">Familias con varios hijos</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Comunidad<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="centro-estudiantes.html">Centro de Estudiantes<span class="dd-sub">Voz y participación estudiantil</span></a>
+              <a href="feria-ciencias.html">Feria Anual de Ciencias<span class="dd-sub">Proyectos e innovación</span></a>
+              <a href="pastoral.html">Pastoral<span class="dd-sub">Vida espiritual y solidaria</span></a>
+              <a href="egresados.php">Egresados<span class="dd-sub">Historias de ex-alumnos</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="deportes.html">Deportes<span class="dd-sub">Disciplinas y equipos</span></a>
+              <a href="trabaja-con-nosotros.html">Trabajá con Nosotros<span class="dd-sub">Sumate a nuestro equipo</span></a>
+              <a href="recorrido-virtual.html">Recorrido Virtual<span class="dd-sub">Conocé las instalaciones</span></a>
+              <a href="plataforma.html">Plataforma<span class="dd-sub">Acceso a Xhendra</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item mobile-only"><a href="novedades.php" class="nav-link">Novedades</a></li>
+          <li class="nav-item mobile-only"><a href="agenda.php" class="nav-link">Agenda</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn active-section">Contacto<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="contacto.html">Contacto<span class="dd-sub">Escribinos o llamanos</span></a>
+              <a href="ubicacion.html" class="active-link">Ubicación en el Mapa<span class="dd-sub">Cómo llegar al colegio</span></a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <a href="index.html">Inicio</a><span>›</span><a href="contacto.html">Contacto</a><span>›</span>Ubicación
+  </div>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <p class="page-eyebrow">Cómo llegar</p>
+      <h1><em>Ubicación</em> en el mapa</h1>
+      <p>Nos encontramos en el corazón de Ramos Mejía, con fácil acceso en transporte público y privado.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <iframe
+      class="map-frame"
+      src="https://www.openstreetmap.org/export/embed.html?bbox=-58.575%2C-34.645%2C-58.555%2C-34.635&amp;layer=mapnik&amp;marker=-34.64%2C-58.565"
+      title="Mapa de ubicación del colegio"
+      loading="lazy"></iframe>
+  </section>
+
+  <section class="band">
+    <div class="content-section">
+      <div class="card-grid">
+        <div class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><h3>Dirección</h3><p>Av. Rivadavia 1234, Ramos Mejía, Partido de La Matanza, Buenos Aires.</p></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16M8 3v4M16 3v4M7 19l-2 2M17 19l2 2"/></svg></div><h3>En tren</h3><p>A 8 cuadras de la estación Ramos Mejía (Línea Sarmiento).</p></div>
+        <div class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M8 6v6M16 6v6M2 12h20M7 18h10M5 6h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg></div><h3>En colectivo</h3><p>Líneas 88, 96, 136 y 180 con parada cercana al colegio.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <h2>¿Querés visitarnos?</h2>
+    <p>Coordiná una visita guiada y conocé nuestras instalaciones en persona.</p>
+    <a href="contacto.html" class="btn btn-white">Coordinar visita</a>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Logo" class="footer-logo"/>
+        <p>Formando profesionales desde 1962.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Institucional</h4>
+        <ul>
+          <li><a href="historia.html">Historia</a></li>
+          <li><a href="autoridades.html">Autoridades</a></li>
+          <li><a href="propuesta-educativa.html">Propuesta Educativa</a></li>
+          <li><a href="becas.html">Becas</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Comunidad</h4>
+        <ul>
+          <li><a href="centro-estudiantes.html">Centro de Estudiantes</a></li>
+          <li><a href="feria-ciencias.html">Feria de Ciencias</a></li>
+          <li><a href="trabaja-con-nosotros.html">Trabajá con Nosotros</a></li>
+          <li><a href="pastoral.html">Pastoral</a></li>
+        </ul>
+      </div>
+      <div class="footer-links footer-contact">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="contacto.html">Formulario de contacto</a></li>
+          <li><a href="ubicacion.html">Ubicación en el mapa</a></li>
+          <li><a href="tel:+541112345678">(011) 1234-5678</a></li>
+          <li><a href="mailto:info@juanxxiii.edu.ar">info@juanxxiii.edu.ar</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Colegio Parroquial Juan XXIII. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+  const toggle = document.getElementById('menuToggle');
+  const nav    = document.getElementById('mainNav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+  }
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+  document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
+    const btn = item.querySelector('.nav-dropdown-btn');
+    btn.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    if (!isMobile()) return;
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+  });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Credenciales locales (nunca subir)
+config.local.php
+
+# Archivos de sistema
+Thumbs.db
+.DS_Store
+
+# Logs y cachés
+*.log

@@ -1,0 +1,68 @@
+# ============================================================
+#  Colegio Parroquial Juan XXIII
+# ============================================================
+
+Options -Indexes
+DirectoryIndex index.php index.html
+
+# ── Redirecciones 301: las páginas pasaron de .html a .php ──
+# Mantiene vivos los links viejos (buscadores, favoritos, WhatsApp).
+# Importante: se arma la URL de redirección a partir de REQUEST_URI
+# (la ruta dentro del sitio), no de REQUEST_FILENAME. En Windows,
+# REQUEST_FILENAME es la ruta absoluta en disco (C:/xampp/htdocs/...),
+# y usarla filtraba esa ruta dentro del Location de la redirección,
+# rompiendo el link con un 403/404 en vez de llevar a la página nueva.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # La antigua "recorrido-virtual.html" nunca existió: iba al 360°
+  RewriteCond %{REQUEST_URI} ^(.*)/recorrido-virtual\.html$
+  RewriteRule ^ %1/recorrido-360.php [R=301,L]
+
+  # Cualquier .html que tenga su equivalente .php redirige al .php.
+  # Se aplica AUNQUE el .html siga existiendo en la carpeta, para que
+  # nadie vea la versión vieja de la página.
+  RewriteCond %{REQUEST_URI} ^(.*)\.html$
+  RewriteCond %{DOCUMENT_ROOT}%1.php -f
+  RewriteRule ^ %1.php [R=301,L]
+</IfModule>
+
+# ── Archivos que NO deben servirse nunca ────────────────────
+<FilesMatch "\.(sql|md|log|ini|bak|json)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^(conexion|config|config\.local|panel_config|panel_header)\.php$">
+  # Son includes: no tiene sentido abrirlos directo, pero PHP los
+  # ejecuta y no filtran nada. Se bloquean por prolijidad.
+  Require all denied
+</FilesMatch>
+<Files "posts_simulados.json">
+  Require all denied
+</Files>
+
+# ── Páginas de error propias ────────────────────────────────
+ErrorDocument 404 /404.php
+ErrorDocument 403 /404.php
+
+# ── Compresión ──────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# ── Caché de estáticos ──────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                "access plus 7 days"
+  ExpiresByType application/javascript  "access plus 7 days"
+  ExpiresByType image/jpeg              "access plus 30 days"
+  ExpiresByType image/png               "access plus 30 days"
+  ExpiresByType image/webp              "access plus 30 days"
+  ExpiresByType image/svg+xml           "access plus 30 days"
+</IfModule>
+
+# ── Cabeceras de seguridad ──────────────────────────────────
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

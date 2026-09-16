@@ -1,0 +1,903 @@
+<?php
+// Página generada sobre partials/header.php + partials/footer.php.
+// El menú se edita en partials/menu.php; los datos de contacto,
+// desde el panel (Datos de contacto).
+$page_title      = 'Secundaria Orientada';
+$page_desc       = 'Secundaria Orientada del Colegio Parroquial Juan XXIII: ciclo básico y orientaciones en Economía y Ciencias Naturales.';
+$nav_active      = 'niveles';
+$nav_active_link = 'sec-orientada.php';
+$page_style = <<<'CSS'
+/* ============================================================
+       SECUNDARIA ORIENTADA — paleta verde-azul oscuro
+       ============================================================ */
+    :root {
+      --or-main:   #1D3557;
+      --or-accent: #2a9d8f;   /* verde teal para diferenciar de Inicial/Primario */
+      --or-light:  #a8dadc;
+      --or-eco:    #e9c46a;   /* dorado para Economía */
+      --or-nat:    #2a9d8f;   /* verde para Ciencias Naturales */
+    }
+
+    /* ---- HERO ---- */
+    .so-hero {
+      position: relative;
+      min-height: 58vh;
+      display: flex; align-items: center; justify-content: center;
+      background-image: url('sec-orientada-bg.jpg');
+      background-size: cover; background-position: center;
+      background-attachment: fixed;
+      overflow: hidden;
+    }
+    .so-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(120deg, rgba(14,26,45,.90) 0%, rgba(42,157,143,.50) 60%, rgba(14,26,45,.80) 100%);
+    }
+    .so-hero-content {
+      position: relative; z-index: 1;
+      text-align: center; padding: 4rem 2rem; max-width: 800px;
+    }
+    .so-breadcrumb {
+      display: inline-flex; align-items: center; gap: .5rem;
+      color: var(--or-light); font-size: .78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 1.2rem;
+    }
+    .so-breadcrumb a { color: var(--or-light); }
+    .so-breadcrumb a:hover { color: #fff; }
+    .so-breadcrumb svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+    .so-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      color: #fff; line-height: 1.1;
+      text-shadow: 0 2px 20px rgba(0,0,0,.4);
+      margin-bottom: 1rem;
+    }
+    .so-hero-title em { color: #a8dadc; font-style: italic; }
+    .so-hero-desc {
+      color: rgba(255,255,255,.8); font-size: 1rem;
+      line-height: 1.8; max-width: 600px; margin: 0 auto 2rem;
+    }
+
+    /* ---- ANCHOR NAV ---- */
+    .so-anchor-nav {
+      position: sticky; top: 78px; z-index: 900;
+      background: #fff; border-bottom: 2px solid var(--gray-200);
+      box-shadow: 0 2px 12px rgba(29,53,87,.08);
+    }
+    .so-anchor-list {
+      display: flex; align-items: center; justify-content: center;
+      gap: .4rem; padding: .7rem 2rem;
+      max-width: 1300px; margin: 0 auto;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .so-anchor-list::-webkit-scrollbar { display: none; }
+    .so-anchor-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .42rem 1rem; border-radius: 50px;
+      font-weight: 700; font-size: .8rem;
+      color: var(--blue-dark); white-space: nowrap;
+      transition: var(--transition); border: 2px solid transparent;
+    }
+    .so-anchor-link:hover, .so-anchor-link.active {
+      background: rgba(42,157,143,.12); color: var(--or-accent);
+      border-color: rgba(42,157,143,.3);
+    }
+    .so-anchor-link svg { width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+
+    /* ---- SHARED ---- */
+    .so-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .so-alt { background: var(--gray-100); }
+    .so-alt > .so-section { padding: 5rem 2rem; }
+    .so-dark { background: var(--or-main); }
+    .so-dark > .so-section { padding: 5rem 2rem; }
+
+    .tag-teal {
+      display: inline-block;
+      background: rgba(42,157,143,.12); color: var(--or-accent);
+      font-weight: 700; font-size: .78rem; letter-spacing: .12em;
+      text-transform: uppercase; padding: .32rem .95rem;
+      border-radius: 50px; margin-bottom: 1rem;
+    }
+    .tag-white {
+      display: inline-block;
+      background: rgba(255,255,255,.15); color: #fff;
+      font-weight: 700; font-size: .78rem; letter-spacing: .12em;
+      text-transform: uppercase; padding: .32rem .95rem;
+      border-radius: 50px; margin-bottom: 1rem;
+    }
+
+    /* ============================================================
+       1. ESTRUCTURA ORGANIZACIONAL
+       ============================================================ */
+    .org-header { text-align: center; margin-bottom: 3rem; }
+    .org-header h2 { font-family: var(--font-display); font-size: clamp(1.7rem,3.5vw,2.5rem); color: var(--blue-dark); margin-top: .5rem; }
+
+    .org-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 3rem; align-items: start;
+    }
+
+    /* Autoridades */
+    .autoridades-panel h3 {
+      font-family: var(--font-display); color: var(--blue-dark);
+      font-size: 1.1rem; margin-bottom: 1.25rem;
+    }
+    .autoridad-card {
+      background: #fff; border-radius: var(--radius);
+      padding: 1.1rem 1.25rem; margin-bottom: .75rem;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--or-accent);
+      display: flex; align-items: center; gap: .9rem;
+    }
+    .autoridad-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--or-accent), var(--or-main));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0; color: #fff;
+    }
+    .autoridad-card h4 { font-weight: 700; color: var(--blue-dark); font-size: .92rem; margin-bottom: .15rem; }
+    .autoridad-card p { font-size: .8rem; color: #666; margin: 0; }
+
+    /* Estructura ciclos */
+    .ciclos-panel h3 { font-family: var(--font-display); color: var(--blue-dark); font-size: 1.1rem; margin-bottom: 1.25rem; }
+    .ciclo-block {
+      background: #fff; border-radius: var(--radius-lg);
+      overflow: hidden; margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .ciclo-head {
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; gap: .8rem;
+    }
+    .ciclo-head.basico  { background: var(--blue-dark); }
+    .ciclo-head.eco     { background: #b5861d; }
+    .ciclo-head.nat     { background: #217a6e; }
+    .ciclo-head-num {
+      font-family: var(--font-display); font-size: 1.5rem;
+      font-weight: 900; color: rgba(255,255,255,.35); line-height: 1;
+    }
+    .ciclo-head h4 { font-family: var(--font-display); color: #fff; font-size: 1rem; }
+    .ciclo-head p  { color: rgba(255,255,255,.72); font-size: .78rem; margin: 0; }
+    .ciclo-body { padding: 1.1rem 1.5rem; }
+    .ciclo-anios {
+      display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: .75rem;
+    }
+    .anio-chip {
+      background: var(--gray-100); border-radius: var(--radius);
+      padding: .4rem .85rem; font-size: .82rem; font-weight: 700;
+      color: var(--blue-dark); border: 1px solid var(--gray-200);
+    }
+    .ciclo-body p { font-size: .87rem; color: #555; line-height: 1.65; }
+
+    /* ============================================================
+       2. AGENDA / CALENDARIO
+       ============================================================ */
+    .agenda-header { text-align: center; margin-bottom: 3rem; }
+    .agenda-header h2 { font-family: var(--font-display); font-size: clamp(1.7rem,3.5vw,2.5rem); color: var(--blue-dark); margin-top: .5rem; }
+
+    .agenda-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2.5rem; align-items: start;
+    }
+
+    /* Mini selector de mes */
+    .agenda-meses h3 { font-family: var(--font-display); color: var(--blue-dark); font-size: 1rem; margin-bottom: 1rem; }
+    .mes-btn {
+      display: block; width: 100%;
+      padding: .55rem 1rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .85rem;
+      text-align: left; cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      background: #fff; color: var(--blue-dark);
+      box-shadow: var(--shadow-sm); margin-bottom: .4rem;
+    }
+    .mes-btn:hover  { border-color: var(--or-accent); color: var(--or-accent); }
+    .mes-btn.active { background: var(--or-accent); color: #fff; border-color: var(--or-accent); }
+
+    /* Eventos del mes */
+    .agenda-eventos { display: none; }
+    .agenda-eventos.active { display: block; }
+    .agenda-mes-title {
+      font-family: var(--font-display); font-size: 1.4rem;
+      color: var(--blue-dark); margin-bottom: 1.25rem;
+    }
+    .evento-item {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 1rem; align-items: start;
+      padding: .85rem 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .evento-item:last-child { border-bottom: none; }
+    .evento-dia {
+      background: var(--or-main); color: #fff;
+      border-radius: var(--radius); text-align: center;
+      padding: .4rem .3rem; flex-shrink: 0;
+    }
+    .evento-dia strong { display: block; font-family: var(--font-display); font-size: 1.3rem; line-height: 1; }
+    .evento-dia span   { font-size: .62rem; text-transform: uppercase; letter-spacing: .05em; opacity: .75; }
+    .evento-dia.acento { background: var(--or-accent); }
+    .evento-dia.eco    { background: #b5861d; }
+    .evento-dia.nat    { background: #217a6e; }
+    .evento-info h4    { font-weight: 700; color: var(--blue-dark); font-size: .92rem; margin-bottom: .18rem; }
+    .evento-info p     { font-size: .82rem; color: #666; line-height: 1.5; margin: 0; }
+    .evento-tag {
+      display: inline-block; font-size: .7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: .15rem .6rem; border-radius: 50px; margin-top: .3rem;
+    }
+    .tag-acto    { background: rgba(29,53,87,.1); color: var(--blue-dark); }
+    .tag-examen  { background: rgba(230,57,70,.1); color: var(--red); }
+    .tag-inscr   { background: rgba(42,157,143,.1); color: var(--or-accent); }
+    .tag-beca    { background: rgba(181,134,29,.15); color: #8a6400; }
+    .tag-lab     { background: rgba(33,122,110,.12); color: #217a6e; }
+
+    .agenda-nota {
+      background: rgba(42,157,143,.08); border-left: 4px solid var(--or-accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.1rem; margin-top: 1.25rem;
+      font-size: .83rem; color: var(--blue-dark);
+    }
+
+    /* ============================================================
+       3. ACTOS ESCOLARES
+       ============================================================ */
+    .actos-header { text-align: center; margin-bottom: 3rem; }
+    .actos-header h2 { font-family: var(--font-display); font-size: clamp(1.7rem,3.5vw,2.5rem); color: #fff; margin-top: .5rem; }
+
+    .actos-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem;
+    }
+    .acto-card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      transition: var(--transition);
+    }
+    .acto-card:hover { background: rgba(255,255,255,.13); transform: translateY(-3px); }
+    .acto-fecha {
+      font-size: .75rem; font-weight: 700; color: var(--or-light);
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem;
+    }
+    .acto-card h4 { font-family: var(--font-display); color: #fff; font-size: 1rem; margin-bottom: .5rem; }
+    .acto-card p  { font-size: .83rem; color: rgba(255,255,255,.65); line-height: 1.6; }
+
+    /* ============================================================
+       4. INSCRIPCIÓN MATERIAS
+       ============================================================ */
+    .inscr-header { text-align: center; margin-bottom: 3rem; }
+    .inscr-header h2 { font-family: var(--font-display); font-size: clamp(1.7rem,3.5vw,2.5rem); color: var(--blue-dark); margin-top: .5rem; }
+    .inscr-header p { max-width: 600px; margin: .75rem auto 0; color: #555; font-size: .96rem; line-height: 1.8; }
+
+    .inscr-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;
+    }
+    .inscr-info h3 { font-family: var(--font-display); color: var(--blue-dark); font-size: 1.2rem; margin-bottom: 1rem; }
+    .inscr-info p  { font-size: .92rem; color: #555; line-height: 1.8; margin-bottom: .85rem; }
+
+    .inscr-steps { counter-reset: step; display: flex; flex-direction: column; gap: .85rem; margin: 1.25rem 0; }
+    .inscr-step  { display: flex; align-items: flex-start; gap: .9rem; }
+    .step-n {
+      counter-increment: step; flex-shrink: 0;
+      width: 34px; height: 34px; background: var(--or-accent); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem;
+    }
+    .step-n::before { content: counter(step); }
+    .inscr-step div h4 { font-weight: 700; color: var(--blue-dark); font-size: .92rem; margin-bottom: .15rem; }
+    .inscr-step div p  { font-size: .83rem; color: #666; margin: 0; line-height: 1.5; }
+
+    .inscr-form-col { display: flex; flex-direction: column; gap: 1rem; }
+    .form-card-so {
+      background: #fff; border-radius: var(--radius-lg); padding: 1.5rem;
+      box-shadow: var(--shadow-sm); border-top: 4px solid var(--or-accent);
+      transition: var(--transition);
+    }
+    .form-card-so:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .form-card-so h4 { font-family: var(--font-display); color: var(--blue-dark); font-size: 1rem; margin-bottom: .4rem; }
+    .form-card-so p  { font-size: .84rem; color: #666; line-height: 1.6; margin-bottom: 1rem; }
+    .btn-so {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .55rem 1.3rem; border-radius: 50px;
+      font-weight: 700; font-size: .83rem;
+      background: var(--or-accent); color: #fff;
+      transition: var(--transition); border: none; cursor: pointer;
+    }
+    .btn-so:hover { background: #21867a; transform: translateY(-2px); }
+    .btn-so svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+    /* ============================================================
+       5. LAB CIENCIAS NATURALES
+       ============================================================ */
+    .lab-header { text-align: center; margin-bottom: 3rem; }
+    .lab-header h2 { font-family: var(--font-display); font-size: clamp(1.7rem,3.5vw,2.5rem); color: var(--blue-dark); margin-top: .5rem; }
+    .lab-header p  { max-width: 600px; margin: .75rem auto 0; color: #555; font-size: .96rem; line-height: 1.8; }
+
+    .lab-grid {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem; align-items: start;
+    }
+    .lab-info p { font-size: .93rem; color: #555; line-height: 1.8; margin-bottom: .9rem; }
+    .lab-req-list { margin: 1.25rem 0; display: flex; flex-direction: column; gap: .5rem; }
+    .lab-req-item {
+      display: flex; align-items: center; gap: .65rem;
+      font-size: .88rem; color: #555;
+      padding: .45rem 0; border-bottom: 1px dashed var(--gray-200);
+    }
+    .lab-req-item:last-child { border: none; }
+    .lab-req-item::before {
+      content: '✓'; color: var(--or-nat); font-weight: 700; font-size: .82rem; flex-shrink: 0;
+    }
+    .lab-nota {
+      background: rgba(33,122,110,.08); border-left: 4px solid var(--or-nat);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.1rem; font-size: .84rem; color: #217a6e; margin-top: 1.25rem;
+    }
+    .lab-nota strong { display: block; margin-bottom: .2rem; }
+
+    .lab-proceso { display: flex; flex-direction: column; gap: .9rem; }
+    .lab-paso {
+      background: #fff; border-radius: var(--radius);
+      padding: 1.1rem 1.25rem; box-shadow: var(--shadow-sm);
+      display: flex; gap: .9rem; align-items: flex-start;
+    }
+    .lab-num {
+      flex-shrink: 0; width: 32px; height: 32px;
+      background: var(--or-nat); color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .82rem;
+    }
+    .lab-paso h4 { font-weight: 700; color: var(--blue-dark); font-size: .9rem; margin-bottom: .18rem; }
+    .lab-paso p  { font-size: .82rem; color: #666; line-height: 1.5; margin: 0; }
+
+    /* ============================================================
+       6. CENTRO DE ESTUDIANTES
+       ============================================================ */
+    .ce-header { text-align: center; margin-bottom: 3rem; }
+    .ce-header h2 { font-family: var(--font-display); font-size: clamp(1.7rem,3.5vw,2.5rem); color: #fff; margin-top: .5rem; }
+
+    .ce-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;
+    }
+    .ce-info { color: rgba(255,255,255,.8); }
+    .ce-info h3 { font-family: var(--font-display); color: #fff; font-size: 1.2rem; margin-bottom: 1rem; }
+    .ce-info p  { font-size: .93rem; line-height: 1.8; margin-bottom: .85rem; }
+    .ce-comision { display: flex; flex-direction: column; gap: .75rem; margin-top: 1.25rem; }
+    .ce-rol {
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius); padding: .85rem 1.1rem;
+      display: flex; align-items: center; gap: .8rem;
+    }
+    .ce-rol-icon {
+      width: 36px; height: 36px; background: var(--or-accent);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: .95rem; flex-shrink: 0;
+    }
+    .ce-rol h4 { font-weight: 700; color: #fff; font-size: .88rem; margin-bottom: .12rem; }
+    .ce-rol p  { font-size: .77rem; color: rgba(255,255,255,.6); margin: 0; }
+
+    .ce-actividades { display: flex; flex-direction: column; gap: 1rem; }
+    .ce-act-card {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-lg); padding: 1.25rem;
+    }
+    .ce-act-card h4 { font-family: var(--font-display); color: #fff; font-size: .95rem; margin-bottom: .4rem; }
+    .ce-act-card p  { font-size: .84rem; color: rgba(255,255,255,.65); line-height: 1.6; margin: 0; }
+
+    /* ============================================================
+       CONTACTO
+       ============================================================ */
+    .contacto-strip {
+      background: var(--or-accent); padding: 3.5rem 2rem; text-align: center;
+    }
+    .contacto-strip h2 { font-family: var(--font-display); color: #fff; font-size: clamp(1.5rem,3vw,2.1rem); margin-bottom: .75rem; }
+    .contacto-strip p  { color: rgba(255,255,255,.85); font-size: 1rem; margin-bottom: 1.75rem; }
+    .contacto-btns    { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 1024px) {
+      .org-grid     { grid-template-columns: 1fr; }
+      .agenda-layout{ grid-template-columns: 1fr; }
+      .inscr-grid   { grid-template-columns: 1fr; }
+      .lab-grid     { grid-template-columns: 1fr; }
+      .ce-grid      { grid-template-columns: 1fr; }
+      .actos-grid   { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .so-hero { background-attachment: scroll; min-height: 52vh; }
+      .actos-grid { grid-template-columns: 1fr; }
+      .so-section { padding: 3.5rem 1.25rem; }
+    }
+  
+  /* ── DROPDOWN NIVELES ── */
+  .nav-item.has-dropdown { position: relative; }
+
+  .nav-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem 1rem;
+    border-radius: 8px;
+    color: rgba(255,255,255,.85);
+    font-weight: 600;
+    font-size: .88rem;
+    font-family: var(--font-body);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+  .nav-dropdown-btn:hover,
+  .nav-item.has-dropdown.open .nav-dropdown-btn {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+  }
+  .nav-dropdown-btn.active-section {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+  }
+  .dropdown-chevron {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    flex-shrink: 0;
+  }
+  .nav-item.has-dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+
+  .nav-dropdown {
+    position: absolute;
+    top: calc(100% + .5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: #1d3557;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    padding: .5rem;
+    min-width: 220px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s cubic-bezier(.4,0,.2,1);
+    z-index: 200;
+  }
+  .nav-item.has-dropdown.open .nav-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .nav-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .6rem .9rem;
+    border-radius: 8px;
+    color: rgba(255,255,255,.8);
+    font-size: .88rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: background .18s, color .18s;
+    white-space: nowrap;
+  }
+  .nav-dropdown a:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .nav-dropdown a.active-link {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+  }
+  .nav-dropdown .dropdown-divider {
+    height: 1px;
+    background: rgba(255,255,255,.1);
+    margin: .35rem .4rem;
+  }
+  /* sublabel dentro del dropdown */
+  .nav-dropdown a .dd-sub {
+    font-size: .72rem;
+    font-weight: 400;
+    color: rgba(255,255,255,.45);
+    display: block;
+    margin-top: .05rem;
+  }
+
+  /* Mobile: dropdown se expande inline */
+  @media (max-width: 768px) {
+    .nav-dropdown {
+      position: static;
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
+      background: rgba(0,0,0,.15);
+      padding: 0 0 0 1rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+    .nav-item.has-dropdown.open .nav-dropdown { max-height: 300px; }
+    .nav-item.has-dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+  }
+CSS;
+require __DIR__ . '/partials/header.php';
+?>
+  <!-- HERO -->
+  <section class="so-hero">
+    <div class="so-hero-content">
+      <div class="so-breadcrumb">
+        <a href="index.php">Inicio</a>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        <a href="nivel-secundario.php">Secundario</a>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        <span>Orientada</span>
+      </div>
+      <h1 class="so-hero-title">Secundaria<br/><em>Orientada</em></h1>
+      <p class="so-hero-desc">Bachillerato de 6 años con ciclo básico común y orientaciones en Economía o Ciencias Naturales. Formación integral para el ingreso universitario y la vida ciudadana.</p>
+      <div class="hero-cta">
+        <a href="#estructura" class="btn btn-primary">Conocer la estructura</a>
+        <a href="nivel-secundario.php" class="btn btn-outline">← Ver modalidad Técnica</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANCHOR NAV -->
+  <div class="so-anchor-nav">
+    <ul class="so-anchor-list">
+      <li><a href="#estructura" class="so-anchor-link"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Estructura</a></li>
+      <li><a href="#agenda" class="so-anchor-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda</a></li>
+      <li><a href="#actos" class="so-anchor-link"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Actos</a></li>
+      <li><a href="#inscripcion" class="so-anchor-link"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Inscripción</a></li>
+      <li><a href="#laboratorio" class="so-anchor-link"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11l-4 7h14l-4-7V3"/></svg>Laboratorio</a></li>
+      <li><a href="#centro" class="so-anchor-link"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Centro de Estudiantes</a></li>
+    </ul>
+  </div>
+
+  <!-- 1. ESTRUCTURA -->
+  <section id="estructura" class="so-section">
+    <div class="org-header">
+      <span class="tag-teal">Organización institucional</span>
+      <h2>Estructura de la Secundaria Orientada</h2>
+    </div>
+    <div class="org-grid">
+      <div class="autoridades-panel">
+        <h3>Autoridades</h3>
+        <div class="autoridad-card">
+          <div class="autoridad-avatar">👤</div>
+          <div>
+            <h4>Nombre del Director/a</h4>
+            <p>Dirección — Secundaria Orientada</p>
+          </div>
+        </div>
+        <div class="autoridad-card">
+          <div class="autoridad-avatar">👤</div>
+          <div>
+            <h4>Nombre del Vicedirector/a</h4>
+            <p>Vicedirección</p>
+          </div>
+        </div>
+        <div class="autoridad-card">
+          <div class="autoridad-avatar">👤</div>
+          <div>
+            <h4>Nombre del/la Secretario/a</h4>
+            <p>Secretaría académica</p>
+          </div>
+        </div>
+        <div class="autoridad-card">
+          <div class="autoridad-avatar">👤</div>
+          <div>
+            <h4>Nombre del/la Preceptor/a</h4>
+            <p>Preceptoría — Ciclo Básico</p>
+          </div>
+        </div>
+        <div class="autoridad-card">
+          <div class="autoridad-avatar">👤</div>
+          <div>
+            <h4>Nombre del/la Preceptor/a</h4>
+            <p>Preceptoría — Ciclo Orientado</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ciclos-panel">
+        <h3>División por ciclos y años</h3>
+        <div class="ciclo-block">
+          <div class="ciclo-head basico">
+            <span class="ciclo-head-num">I</span>
+            <div>
+              <h4>Ciclo Básico — 1° a 3° año</h4>
+              <p>Currícula común para todos los alumnos</p>
+            </div>
+          </div>
+          <div class="ciclo-body">
+            <div class="ciclo-anios">
+              <span class="anio-chip">1° año</span>
+              <span class="anio-chip">2° año</span>
+              <span class="anio-chip">3° año</span>
+            </div>
+            <p>Formación general en las áreas de Lengua, Matemática, Ciencias Sociales, Ciencias Naturales, Inglés, Educación Física, Formación Ética y Ciudadana, Arte y Tecnología. Todos los alumnos comparten la misma currícula sin distinción de orientación.</p>
+          </div>
+        </div>
+        <div class="ciclo-block">
+          <div class="ciclo-head eco">
+            <span class="ciclo-head-num">II</span>
+            <div>
+              <h4>Orientación Economía — 4° a 6° año</h4>
+              <p>Bachiller con orientación en Economía y Administración</p>
+            </div>
+          </div>
+          <div class="ciclo-body">
+            <div class="ciclo-anios">
+              <span class="anio-chip">4° año</span>
+              <span class="anio-chip">5° año</span>
+              <span class="anio-chip">6° año</span>
+            </div>
+            <p>Profundización en Economía, Administración, Contabilidad, Derecho y Legislación. Los alumnos desarrollan capacidades analíticas y de gestión, orientadas a los estudios superiores en ciencias económicas, derecho y administración pública o privada.</p>
+          </div>
+        </div>
+        <div class="ciclo-block">
+          <div class="ciclo-head nat">
+            <span class="ciclo-head-num">II</span>
+            <div>
+              <h4>Orientación Ciencias Naturales — 4° a 6° año</h4>
+              <p>Bachiller con orientación en Ciencias Naturales</p>
+            </div>
+          </div>
+          <div class="ciclo-body">
+            <div class="ciclo-anios">
+              <span class="anio-chip">4° año</span>
+              <span class="anio-chip">5° año</span>
+              <span class="anio-chip">6° año</span>
+            </div>
+            <p>Profundización en Biología, Química, Física y trabajo experimental en laboratorio. Los alumnos acumulan horas certificadas de práctica de laboratorio, orientadas a carreras universitarias en ciencias exactas, medicina, biología, farmacia y afines.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. AGENDA -->
+  <div class="so-alt" id="agenda">
+    <div class="so-section">
+      <div class="agenda-header">
+        <span class="tag-teal">Organización del año</span>
+        <h2>Agenda escolar</h2>
+      </div>
+      <div class="agenda-layout">
+        <div class="agenda-meses">
+          <h3>Seleccioná el mes</h3>
+          <button class="mes-btn active" data-mes="marzo">Marzo</button>
+          <button class="mes-btn" data-mes="abril">Abril</button>
+          <button class="mes-btn" data-mes="mayo">Mayo</button>
+          <button class="mes-btn" data-mes="junio">Junio</button>
+          <button class="mes-btn" data-mes="julio">Julio</button>
+          <button class="mes-btn" data-mes="agosto">Agosto</button>
+          <button class="mes-btn" data-mes="septiembre">Septiembre</button>
+          <button class="mes-btn" data-mes="octubre">Octubre</button>
+          <button class="mes-btn" data-mes="noviembre">Noviembre</button>
+          <button class="mes-btn" data-mes="diciembre">Diciembre</button>
+          <div class="agenda-nota">Las fechas se actualizan al inicio de cada ciclo lectivo. Ante dudas, consultá en secretaría.</div>
+        </div>
+        <div>
+          <!-- MARZO -->
+          <div class="agenda-eventos active" id="ev-marzo">
+            <p class="agenda-mes-title">Marzo</p>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Mar</span></div><div class="evento-info"><h4>Inicio del ciclo lectivo</h4><p>Primer día de clases. Completar con fecha real.</p><span class="evento-tag tag-inscr">Inicio de clases</span></div></div>
+            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Mar</span></div><div class="evento-info"><h4>Reunión de padres de 1° año</h4><p>Presentación de docentes, reglamento y organización del año. Completar con fecha y hora.</p><span class="evento-tag tag-acto">Reunión</span></div></div>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Mar</span></div><div class="evento-info"><h4>Apertura de inscripción a materias libres</h4><p>Plazo para inscribirse a materias pendientes del ciclo anterior. Completar con fechas.</p><span class="evento-tag tag-inscr">Inscripción</span></div></div>
+          </div>
+          <!-- ABRIL -->
+          <div class="agenda-eventos" id="ev-abril">
+            <p class="agenda-mes-title">Abril</p>
+            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Abr</span></div><div class="evento-info"><h4>Acto por el Día del Veterano</h4><p>2 de abril. Acto institucional con participación de todos los cursos. Completar con detalles.</p><span class="evento-tag tag-acto">Acto escolar</span></div></div>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Abr</span></div><div class="evento-info"><h4>Reunión de padres — 1er. bimestre</h4><p>Entrega de notas y comunicación del desempeño. Completar con fecha y horarios.</p><span class="evento-tag tag-acto">Reunión</span></div></div>
+            <div class="evento-item"><div class="evento-dia nat"><strong>DD</strong><span>Abr</span></div><div class="evento-info"><h4>Inicio de prácticas de laboratorio — CN</h4><p>Comienzo del registro de horas de laboratorio certificadas. Completar con fecha.</p><span class="evento-tag tag-lab">Laboratorio</span></div></div>
+          </div>
+          <!-- MAYO -->
+          <div class="agenda-eventos" id="ev-mayo">
+            <p class="agenda-mes-title">Mayo</p>
+            <div class="evento-item"><div class="evento-dia acento"><strong>25</strong><span>May</span></div><div class="evento-info"><h4>Acto por el 25 de Mayo</h4><p>Acto escolar conmemorativo de la Revolución de Mayo. Todos los cursos participan.</p><span class="evento-tag tag-acto">Acto escolar</span></div></div>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>May</span></div><div class="evento-info"><h4>Evaluaciones de medio término</h4><p>Período de evaluaciones integradoras. Completar con fechas por área.</p><span class="evento-tag tag-examen">Evaluación</span></div></div>
+          </div>
+          <!-- JUNIO -->
+          <div class="agenda-eventos" id="ev-junio">
+            <p class="agenda-mes-title">Junio</p>
+            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Jun</span></div><div class="evento-info"><h4>Cierre del 1er. trimestre</h4><p>Últimas fechas de entrega de trabajos y acreditación del primer período. Completar.</p><span class="evento-tag tag-examen">Cierre trimestre</span></div></div>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Jun</span></div><div class="evento-info"><h4>Solicitud de becas — apertura</h4><p>Inicio del período de solicitud de becas para el ciclo siguiente. Completar con fecha.</p><span class="evento-tag tag-beca">Becas</span></div></div>
+          </div>
+          <!-- JULIO -->
+          <div class="agenda-eventos" id="ev-julio">
+            <p class="agenda-mes-title">Julio</p>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Jul</span></div><div class="evento-info"><h4>Receso invernal</h4><p>Período de vacaciones de invierno. Completar con fechas exactas según calendario oficial.</p><span class="evento-tag tag-acto">Receso</span></div></div>
+          </div>
+          <!-- AGOSTO -->
+          <div class="agenda-eventos" id="ev-agosto">
+            <p class="agenda-mes-title">Agosto</p>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Ago</span></div><div class="evento-info"><h4>Regreso de clases</h4><p>Inicio del 2do. semestre. Completar con fecha exacta.</p><span class="evento-tag tag-inscr">Inicio de clases</span></div></div>
+            <div class="evento-item"><div class="evento-dia nat"><strong>DD</strong><span>Ago</span></div><div class="evento-info"><h4>Entrega parcial de libreta de laboratorio — CN</h4><p>Revisión del registro de horas acumuladas en el primer semestre. Completar con fecha.</p><span class="evento-tag tag-lab">Laboratorio</span></div></div>
+          </div>
+          <!-- SEPTIEMBRE -->
+          <div class="agenda-eventos" id="ev-septiembre">
+            <p class="agenda-mes-title">Septiembre</p>
+            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Sep</span></div><div class="evento-info"><h4>Acto por el Día del Estudiante</h4><p>Celebración del día del estudiante con actividades institucionales. Completar.</p><span class="evento-tag tag-acto">Acto escolar</span></div></div>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Sep</span></div><div class="evento-info"><h4>Reunión de padres — 2do. trimestre</h4><p>Entrega de notas del segundo trimestre. Completar con fecha y horarios.</p><span class="evento-tag tag-acto">Reunión</span></div></div>
+          </div>
+          <!-- OCTUBRE -->
+          <div class="agenda-eventos" id="ev-octubre">
+            <p class="agenda-mes-title">Octubre</p>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Oct</span></div><div class="evento-info"><h4>Inscripción a materias — período ordinario</h4><p>Período para inscripción a materias del ciclo siguiente y materias libres. Completar.</p><span class="evento-tag tag-inscr">Inscripción</span></div></div>
+            <div class="evento-item"><div class="evento-dia eco"><strong>DD</strong><span>Oct</span></div><div class="evento-info"><h4>Jornada de orientación vocacional — Economía</h4><p>Actividad especial para alumnos de orientación Economía con referentes universitarios. Completar.</p><span class="evento-tag tag-acto">Orientación</span></div></div>
+          </div>
+          <!-- NOVIEMBRE -->
+          <div class="agenda-eventos" id="ev-noviembre">
+            <p class="agenda-mes-title">Noviembre</p>
+            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Nov</span></div><div class="evento-info"><h4>Acto de colación — 6° año</h4><p>Ceremonia de egreso de los alumnos de 6° año. Completar con fecha y lugar.</p><span class="evento-tag tag-acto">Colación</span></div></div>
+            <div class="evento-item"><div class="evento-dia nat"><strong>DD</strong><span>Nov</span></div><div class="evento-info"><h4>Cierre de registro de horas de laboratorio — CN</h4><p>Fecha límite para acreditar horas de laboratorio del ciclo lectivo. Completar.</p><span class="evento-tag tag-lab">Laboratorio</span></div></div>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Nov</span></div><div class="evento-info"><h4>Mesas de examen — período regular</h4><p>Fechas de mesas de examen para materias libres o previas. Completar con días.</p><span class="evento-tag tag-examen">Mesa de examen</span></div></div>
+          </div>
+          <!-- DICIEMBRE -->
+          <div class="agenda-eventos" id="ev-diciembre">
+            <p class="agenda-mes-title">Diciembre</p>
+            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Dic</span></div><div class="evento-info"><h4>Cierre del ciclo lectivo</h4><p>Último día de clases. Completar con fecha según calendario oficial.</p><span class="evento-tag tag-acto">Cierre</span></div></div>
+            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Dic</span></div><div class="evento-info"><h4>Mesas de examen — período diciembre</h4><p>Mesas de examen de fin de año para materias libres y previas. Completar.</p><span class="evento-tag tag-examen">Mesa de examen</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ACTOS ESCOLARES -->
+  <div class="so-dark" id="actos">
+    <div class="so-section">
+      <div class="actos-header">
+        <span class="tag-white">Vida institucional</span>
+        <h2>Actos y fechas patrias</h2>
+      </div>
+      <div class="actos-grid">
+        <div class="acto-card"><div class="acto-fecha">2 de Abril</div><h4>Día del Veterano y de los Caídos en Malvinas</h4><p>Acto escolar con participación de todos los cursos. Se realizan lecturas, reflexiones y minuto de silencio en homenaje a los caídos.</p></div>
+        <div class="acto-card"><div class="acto-fecha">25 de Mayo</div><h4>Revolución de Mayo</h4><p>Acto conmemorativo con actos artísticos y discursos. Participan alumnos de todos los años con producción especial por grado.</p></div>
+        <div class="acto-card"><div class="acto-fecha">20 de Junio</div><h4>Día de la Bandera</h4><p>Acto de promesa de lealtad a la bandera para los alumnos que corresponda. Ceremonia formal con desfile interno.</p></div>
+        <div class="acto-card"><div class="acto-fecha">9 de Julio</div><h4>Declaración de la Independencia</h4><p>Acto escolar con representaciones, reflexiones históricas y actividades integradoras por área.</p></div>
+        <div class="acto-card"><div class="acto-fecha">17 de Agosto</div><h4>Paso a la Inmortalidad del Gral. San Martín</h4><p>Homenaje al prócer con acto institucional. Se trabaja desde las áreas de Historia y Lengua con proyectos interdisciplinarios.</p></div>
+        <div class="acto-card"><div class="acto-fecha">Noviembre — fecha a confirmar</div><h4>Colación de Egresados — 6° año</h4><p>Ceremonia oficial de egreso de los alumnos de 6° año. Acto emotivo con participación de familiares y comunidad educativa. Fecha y lugar a confirmar en secretaría.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. INSCRIPCIÓN MATERIAS -->
+  <section id="inscripcion" class="so-section">
+    <div class="inscr-header">
+      <span class="tag-teal">Gestión académica</span>
+      <h2>Inscripción a materias</h2>
+      <p>Los alumnos que adeudan materias o desean rendir en condición de libre deben inscribirse en los períodos habilitados. El proceso se realiza en secretaría o a través del formulario online.</p>
+    </div>
+    <div class="inscr-grid">
+      <div class="inscr-info">
+        <h3>¿Cuándo y cómo inscribirse?</h3>
+        <p>Existen dos períodos de inscripción por año: uno ordinario (durante el ciclo lectivo) y uno extraordinario (diciembre y febrero-marzo). Los alumnos son responsables de gestionar su inscripción dentro de los plazos establecidos.</p>
+        <div class="inscr-steps">
+          <div class="inscr-step"><div class="step-n"></div><div><h4>Verificar materias pendientes</h4><p>Consultá en preceptoría o secretaría el estado académico actualizado con las materias que debés rendir o completar.</p></div></div>
+          <div class="inscr-step"><div class="step-n"></div><div><h4>Completar la inscripción</h4><p>Completá el formulario de inscripción online o acercate a secretaría durante el horario habilitado. El plazo de inscripción es de (completar) días.</p></div></div>
+          <div class="inscr-step"><div class="step-n"></div><div><h4>Confirmar fecha de mesa</h4><p>Las fechas de las mesas de examen se publican con al menos (completar) días de anticipación en el panel de la institución y en el sitio web.</p></div></div>
+          <div class="inscr-step"><div class="step-n"></div><div><h4>Presentarse con documentación</h4><p>El día de la mesa, presentarse con DNI y libreta o identificación institucional. El horario de presentación es (completar).</p></div></div>
+        </div>
+        <div style="background:rgba(29,53,87,.07);border-left:4px solid var(--blue-dark);border-radius:0 var(--radius) var(--radius) 0;padding:.9rem 1.1rem;font-size:.84rem;color:var(--blue-dark);margin-top:.5rem;">
+          <strong>📌 Materias previas:</strong> Un alumno puede adeudar hasta (completar) materias para continuar cursando el año siguiente. Superado ese límite, deberá repetir el año.
+        </div>
+      </div>
+      <div class="inscr-form-col">
+        <div class="form-card-so">
+          <div style="font-size:1.8rem;margin-bottom:.6rem;">📋</div>
+          <h4>Inscripción a mesas de examen — período ordinario</h4>
+          <p>Para materias libres o previas durante el ciclo lectivo. Período habilitado: (completar fechas).</p>
+          <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-so">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Abrir formulario
+          </a>
+        </div>
+        <div class="form-card-so" style="border-top-color:var(--red);">
+          <div style="font-size:1.8rem;margin-bottom:.6rem;">📝</div>
+          <h4>Inscripción a mesas de examen — diciembre / febrero</h4>
+          <p>Para materias previas del ciclo que finaliza o materias de años anteriores. Período habilitado: (completar).</p>
+          <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-so" style="background:var(--red);">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Abrir formulario
+          </a>
+        </div>
+        <div class="form-card-so" style="border-top-color:var(--or-eco);">
+          <div style="font-size:1.8rem;margin-bottom:.6rem;">❓</div>
+          <h4>Consultas sobre materias y estado académico</h4>
+          <p>Para consultar el estado de materias, previas o cualquier duda sobre la trayectoria escolar.</p>
+          <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-so" style="background:#b5861d;">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Enviar consulta
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. LABORATORIO -->
+  <div class="so-alt" id="laboratorio">
+    <div class="so-section">
+      <div class="lab-header">
+        <span class="tag-teal">Orientación Ciencias Naturales</span>
+        <h2>Certificación de horas de laboratorio</h2>
+        <p>Los alumnos de la orientación en Ciencias Naturales realizan prácticas experimentales que se registran y certifican. Esta certificación es un requisito de la orientación y un valor diferencial para el ingreso universitario.</p>
+      </div>
+      <div class="lab-grid">
+        <div class="lab-info">
+          <p>A lo largo de 4°, 5° y 6° año, los estudiantes de Ciencias Naturales acumulan horas de trabajo experimental en el laboratorio del colegio. Las prácticas son guiadas por los docentes de Biología, Química y Física, y quedan registradas en una libreta personal de laboratorio.</p>
+          <p>Al finalizar el nivel, el colegio emite un <strong>certificado oficial</strong> con el total de horas acreditadas, el detalle de las prácticas realizadas y la calificación obtenida en cada una. Este documento es reconocido por diversas universidades de la región como antecedente para ingreso a carreras de ciencias.</p>
+          <div class="lab-req-list">
+            <div class="lab-req-item">Asistencia regular a las clases de laboratorio</div>
+            <div class="lab-req-item">Presentación de informes de práctica por cada sesión</div>
+            <div class="lab-req-item">Cumplimiento de las normas de bioseguridad del laboratorio</div>
+            <div class="lab-req-item">Mínimo de (completar) horas anuales para acreditación</div>
+            <div class="lab-req-item">Aprobación de las evaluaciones prácticas integradoras</div>
+          </div>
+          <div class="lab-nota">
+            <strong>📄 Certificación al egreso:</strong>
+            El certificado es emitido por la dirección del nivel junto al título de bachiller. Completar con la normativa provincial o resolución que avala la certificación.
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:var(--font-display);color:var(--blue-dark);font-size:1.1rem;margin-bottom:1.25rem;">Proceso de acreditación</h3>
+          <div class="lab-proceso">
+            <div class="lab-paso"><div class="lab-num">1</div><div><h4>Inicio de la libreta de laboratorio</h4><p>Al comenzar 4° año se entrega la libreta oficial. El alumno es responsable de su resguardo durante los 3 años de orientación.</p></div></div>
+            <div class="lab-paso"><div class="lab-num">2</div><div><h4>Registro de cada práctica</h4><p>Cada sesión de laboratorio queda registrada por el docente a cargo con fecha, duración, tema y observaciones.</p></div></div>
+            <div class="lab-paso"><div class="lab-num">3</div><div><h4>Presentación de informes</h4><p>Por cada práctica, el alumno presenta un informe escrito con metodología, resultados y conclusiones, que forma parte de la nota de la materia.</p></div></div>
+            <div class="lab-paso"><div class="lab-num">4</div><div><h4>Control semestral</h4><p>Al finalizar cada semestre, el docente revisa la libreta y firma el acumulado de horas. Se comunica a los padres el estado de acreditación.</p></div></div>
+            <div class="lab-paso"><div class="lab-num">5</div><div><h4>Emisión del certificado</h4><p>Al egreso, la institución emite el certificado oficial con el total de horas, las prácticas realizadas y la calificación promedio obtenida.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. CENTRO DE ESTUDIANTES -->
+  <div class="so-dark" id="centro">
+    <div class="so-section">
+      <div class="ce-header">
+        <span class="tag-white">Participación y representación</span>
+        <h2>Centro de Estudiantes</h2>
+      </div>
+      <div class="ce-grid">
+        <div class="ce-info">
+          <h3>¿Qué es el Centro de Estudiantes?</h3>
+          <p>El Centro de Estudiantes es el organismo de representación de los alumnos de la Secundaria Orientada. Es elegido anualmente por voto secreto y directo de todos los estudiantes del nivel.</p>
+          <p>Su función es representar los intereses de los alumnos ante la institución, organizar actividades estudiantiles, y promover la participación democrática y la convivencia escolar.</p>
+          <p>Cualquier alumno a partir de (completar) año puede postularse para integrar la comisión directiva. Las elecciones se realizan en (completar mes) de cada año.</p>
+          <div class="ce-comision">
+            <div class="ce-rol"><div class="ce-rol-icon">🏛️</div><div><h4>Presidente/a</h4><p>Representa al centro ante la dirección y coordina las actividades generales.</p></div></div>
+            <div class="ce-rol"><div class="ce-rol-icon">🤝</div><div><h4>Vicepresidente/a</h4><p>Apoya al presidente y coordina comisiones internas.</p></div></div>
+            <div class="ce-rol"><div class="ce-rol-icon">📋</div><div><h4>Secretario/a</h4><p>Lleva las actas de reunión y gestiona la comunicación con la comunidad educativa.</p></div></div>
+            <div class="ce-rol"><div class="ce-rol-icon">💰</div><div><h4>Tesorero/a</h4><p>Administra los fondos del centro y rinde cuentas ante la asamblea de estudiantes.</p></div></div>
+          </div>
+        </div>
+        <div class="ce-actividades">
+          <div class="ce-act-card"><h4>🎉 Organización de eventos estudiantiles</h4><p>El Centro organiza el festejo del Día del Estudiante, actividades solidarias, bingos y eventos recreativos con participación de toda la comunidad educativa.</p></div>
+          <div class="ce-act-card"><h4>📣 Canal de comunicación con la dirección</h4><p>El Centro canaliza inquietudes, propuestas y reclamos de los alumnos ante la dirección del nivel a través de reuniones periódicas formales.</p></div>
+          <div class="ce-act-card"><h4>🤲 Proyectos solidarios</h4><p>El Centro impulsa campañas de recolección de alimentos, útiles y ropa en articulación con el área de Pastoral del colegio.</p></div>
+          <div class="ce-act-card"><h4>🗳️ Participación democrática</h4><p>Organiza la jornada electoral anual donde todos los alumnos del nivel ejercen su derecho a elegir a sus representantes mediante voto secreto y directo.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTO -->
+  <div class="contacto-strip">
+    <h2>¿Querés conocer la Secundaria Orientada?</h2>
+    <p>Coordiná una visita o envianos tu consulta. Te respondemos a la brevedad.</p>
+    <div class="contacto-btns">
+      <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-white">Solicitar información</a>
+      <a href="nivel-secundario.php" class="btn btn-outline">← Volver al selector</a>
+    </div>
+  </div>
+
+  
+<?php require __DIR__ . '/partials/footer.php';

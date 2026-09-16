@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colegio Parroquial Juan XXIII — Centro de Estudiantes</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-quick">
+          <a href="novedades.php">Novedades</a>
+          <a href="agenda.php">Agenda</a>
+          <a class="tq-plataforma" href="plataforma.html">Plataforma</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-inner two-row">
+      <div class="header-top-row">
+        <div class="brand">
+          <img src="img/logo.png" alt="Logo del Colegio" class="logo" />
+          <div class="brand-text">
+            <span class="school-name">Colegio Parroquial Juan XXIII</span>
+            <span class="school-motto">Educando desde 1962</span>
+          </div>
+        </div>
+
+        <button class="hamburger" id="menuToggle" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <nav class="main-nav nav-row" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Institucional<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="historia.html">Historia<span class="dd-sub">Nuestra trayectoria desde 1962</span></a>
+              <a href="autoridades.html">Autoridades<span class="dd-sub">Equipo directivo y de gestión</span></a>
+              <a href="propuesta-educativa.html">Propuesta Educativa<span class="dd-sub">Proyecto pedagógico institucional</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="becas.html">Becas<span class="dd-sub">Sistema de ayudas económicas</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Niveles<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="nivel-inicial.html">Nivel Inicial<span class="dd-sub">Sala de 3, 4 y 5</span></a>
+              <a href="nivel-primario.html">Nivel Primario<span class="dd-sub">1° a 6° grado</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="nivel-secundario.html">Sec. Orientada / Técnica<span class="dd-sub">Bachillerato · 6 o 7 años</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Inscripciones<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="inscripcion-jardin.html">Inscripción Jardín<span class="dd-sub">Nivel Inicial · Sala 3, 4 y 5</span></a>
+              <a href="inscripcion-primaria.html">Inscripción Primaria<span class="dd-sub">1° a 6° grado</span></a>
+              <a href="inscripcion-sec.html">Inscripción Secundaria<span class="dd-sub">Orientada y Técnica</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="inscripcion-hermanos.html">Inscripción Hermanos<span class="dd-sub">Familias con varios hijos</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn active-section">Comunidad<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="centro-estudiantes.html" class="active-link">Centro de Estudiantes<span class="dd-sub">Voz y participación estudiantil</span></a>
+              <a href="feria-ciencias.html">Feria Anual de Ciencias<span class="dd-sub">Proyectos e innovación</span></a>
+              <a href="pastoral.html">Pastoral<span class="dd-sub">Vida espiritual y solidaria</span></a>
+              <a href="egresados.php">Egresados<span class="dd-sub">Historias de ex-alumnos</span></a>
+              <div class="dropdown-divider"></div>
+              <a href="deportes.html">Deportes<span class="dd-sub">Disciplinas y equipos</span></a>
+              <a href="trabaja-con-nosotros.html">Trabajá con Nosotros<span class="dd-sub">Sumate a nuestro equipo</span></a>
+              <a href="recorrido-virtual.html">Recorrido Virtual<span class="dd-sub">Conocé las instalaciones</span></a>
+              <a href="plataforma.html">Plataforma<span class="dd-sub">Acceso a Xhendra</span></a>
+            </div>
+          </li>
+
+          <li class="nav-item mobile-only"><a href="novedades.php" class="nav-link">Novedades</a></li>
+          <li class="nav-item mobile-only"><a href="agenda.php" class="nav-link">Agenda</a></li>
+
+          <li class="nav-item has-dropdown">
+            <button class="nav-dropdown-btn">Contacto<svg class="dropdown-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="nav-dropdown">
+              <a href="contacto.html">Contacto<span class="dd-sub">Escribinos o llamanos</span></a>
+              <a href="ubicacion.html">Ubicación en el Mapa<span class="dd-sub">Cómo llegar al colegio</span></a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <a href="index.html">Inicio</a><span>›</span>Comunidad<span>›</span>Centro de Estudiantes
+  </div>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <p class="page-eyebrow">Comunidad</p>
+      <h1>Centro de <em>Estudiantes</em></h1>
+      <p>La voz organizada de los alumnos: un espacio de participación, representación y proyectos que mejoran la vida escolar.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="split">
+      <div class="prose">
+        <h2>¿Quiénes somos?</h2>
+        <p>El Centro de Estudiantes está formado por alumnos de la secundaria elegidos democráticamente por sus compañeros. Su misión es representar los intereses del estudiantado y canalizar propuestas ante las autoridades.</p>
+        <p>Cada año se renuevan las autoridades mediante elecciones, fomentando el compromiso cívico y el trabajo en equipo desde la escuela.</p>
+      </div>
+      <div class="split-media">
+        <div class="image-placeholder split-img"><span>Foto del Centro de Estudiantes</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="content-section narrow">
+      <div class="section-header">
+        <span class="section-tag">Nuestros valores</span>
+        <h2 class="section-title">Lo que nos mueve</h2>
+      </div>
+      <div class="value-list">
+        <div class="value-item"><span class="v-dot"></span><div><h4>Participación</h4><p>Damos voz a cada estudiante para construir entre todos.</p></div></div>
+        <div class="value-item"><span class="v-dot"></span><div><h4>Solidaridad</h4><p>Organizamos campañas y colectas para quienes más lo necesitan.</p></div></div>
+        <div class="value-item"><span class="v-dot"></span><div><h4>Compromiso</h4><p>Trabajamos por una escuela más justa e inclusiva.</p></div></div>
+        <div class="value-item"><span class="v-dot"></span><div><h4>Creatividad</h4><p>Impulsamos eventos culturales, deportivos y recreativos.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="section-header">
+      <span class="section-tag">Comisión actual</span>
+      <h2 class="section-title">Autoridades estudiantiles</h2>
+    </div>
+    <div class="people-grid">
+      <div class="person-card">
+        <div class="image-placeholder person-photo"><span>Foto</span></div>
+        <div class="person-body"><h3>Julián Ferreyra</h3><span class="person-role">Presidente</span><p>Estudiante de 6° año, orientación técnica.</p></div>
+      </div>
+      <div class="person-card">
+        <div class="image-placeholder person-photo"><span>Foto</span></div>
+        <div class="person-body"><h3>Camila Ríos</h3><span class="person-role">Vicepresidenta</span><p>Estudiante de 5° año, orientación economía.</p></div>
+      </div>
+      <div class="person-card">
+        <div class="image-placeholder person-photo"><span>Foto</span></div>
+        <div class="person-body"><h3>Tomás Aguirre</h3><span class="person-role">Secretario</span><p>Estudiante de 5° año, orientación sociales.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Logo" class="footer-logo"/>
+        <p>Formando profesionales desde 1962.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Institucional</h4>
+        <ul>
+          <li><a href="historia.html">Historia</a></li>
+          <li><a href="autoridades.html">Autoridades</a></li>
+          <li><a href="propuesta-educativa.html">Propuesta Educativa</a></li>
+          <li><a href="becas.html">Becas</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Comunidad</h4>
+        <ul>
+          <li><a href="centro-estudiantes.html">Centro de Estudiantes</a></li>
+          <li><a href="feria-ciencias.html">Feria de Ciencias</a></li>
+          <li><a href="trabaja-con-nosotros.html">Trabajá con Nosotros</a></li>
+          <li><a href="pastoral.html">Pastoral</a></li>
+        </ul>
+      </div>
+      <div class="footer-links footer-contact">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="contacto.html">Formulario de contacto</a></li>
+          <li><a href="ubicacion.html">Ubicación en el mapa</a></li>
+          <li><a href="tel:+541112345678">(011) 1234-5678</a></li>
+          <li><a href="mailto:info@juanxxiii.edu.ar">info@juanxxiii.edu.ar</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Colegio Parroquial Juan XXIII. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+  const toggle = document.getElementById('menuToggle');
+  const nav    = document.getElementById('mainNav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+  }
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+  document.querySelectorAll('.nav-item.has-dropdown').forEach(item => {
+    const btn = item.querySelector('.nav-dropdown-btn');
+    btn.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    if (!isMobile()) return;
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach(o => o.classList.remove('open'));
+  });
+  </script>
+
+</body>
+</html>
