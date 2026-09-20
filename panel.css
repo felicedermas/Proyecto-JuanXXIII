@@ -353,3 +353,20 @@
   color: var(--blue-dark);
   transform: translateY(-1px);
 }
+
+/* ============================================================
+   Pestañas de tipo de publicación (Novedades / Egresados)
+   ============================================================ */
+.tipo-tabs {
+  display: flex; gap: .3rem; flex-wrap: wrap;
+  margin-bottom: 1.6rem; border-bottom: 2px solid #e3e6ea;
+}
+.tipo-tabs a {
+  padding: .7rem 1.2rem; margin-bottom: -2px;
+  font-weight: 700; font-size: .92rem; color: #667;
+  border-bottom: 3px solid transparent; border-radius: 10px 10px 0 0;
+  transition: var(--transition);
+}
+.tipo-tabs a:hover { color: var(--blue-dark); background: #fff; }
+.tipo-tabs a.act { color: var(--blue-dark); border-bottom-color: var(--red); background: #fff; }
+.tipo-link-sitio { font-size: .84rem; font-weight: 700; color: var(--blue-mid); }

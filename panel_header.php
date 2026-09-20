@@ -18,8 +18,8 @@ $fl = flash_get();
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><?= e($titulo_head) ?> — Colegio Parroquial Juan XXIII</title>
 <?php require __DIR__ . '/partials/favicon.php'; ?>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="panel.css"/>
+  <link rel="stylesheet" href="<?= asset('styles.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('panel.css') ?>"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body style="background:var(--gray-100);">
@@ -35,7 +35,7 @@ $fl = flash_get();
           <div class="u-name"><?= e($u['nombre'] . ' ' . $u['apellido']) ?></div>
           <div class="u-rol"><?= e(nivel_nombre_actual()) ?></div>
         </div>
-        <a href="logout.php" class="logout" title="Cerrar sesión" aria-label="Cerrar sesión">
+        <a href="logout" class="logout" title="Cerrar sesión" aria-label="Cerrar sesión">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </a>
       </div>

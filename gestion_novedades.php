@@ -5,6 +5,12 @@ exigir_login();
 $u   = usuario_actual();
 $pdo = db();
 
+// ── Pestaña "Historias de egresados" (gestion_novedades?tipo=egresados) ──
+if (($_GET['tipo'] ?? '') === 'egresados') {
+    require __DIR__ . '/partials/gestion_egresados.php';
+    exit;
+}
+
 // ── Configuración de subida de imágenes ──
 const IMG_CARPETA   = 'img/novedades/subidas';          // relativa a la raíz del sitio
 const IMG_MAX_BYTES = 5 * 1024 * 1024;                   // 5 MB por imagen
@@ -109,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
     } else {
         flash('error', 'No tenés permiso para modificar esa novedad.');
     }
-    header('Location: gestion_novedades.php?editar=' . $id_nov);
+    header('Location: gestion_novedades?editar=' . $id_nov);
     exit;
 }
 
@@ -137,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
         $pdo->prepare('DELETE FROM novedades WHERE id_novedad = ?')->execute([$id]);
         flash('ok', 'Novedad eliminada correctamente.');
     }
-    header('Location: gestion_novedades.php');
+    header('Location: gestion_novedades');
     exit;
 }
 
@@ -161,7 +167,7 @@ if (isset($_GET['editar'])) {
         $imagenes_edit = $qimg->fetchAll();
     } else {
         flash('error', 'No podés editar esa novedad.');
-        header('Location: gestion_novedades.php');
+        header('Location: gestion_novedades');
         exit;
     }
 }
@@ -193,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
             } else {
                 flash('ok', 'Novedad creada correctamente.');
             }
-            header('Location: gestion_novedades.php');
+            header('Location: gestion_novedades');
             exit;
         } else {
             // Verificar permiso sobre el registro real
@@ -202,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
             $autor = $chk->fetchColumn();
             if ($autor === false || !puede_gestionar((int)$autor)) {
                 flash('error', 'No tenés permiso para editar esa novedad.');
-                header('Location: gestion_novedades.php');
+                header('Location: gestion_novedades');
                 exit;
             }
             $upd = $pdo->prepare(
@@ -215,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
             } else {
                 flash('ok', 'Novedad actualizada correctamente.');
             }
-            header('Location: gestion_novedades.php');
+            header('Location: gestion_novedades');
             exit;
         }
     } else {
@@ -248,10 +254,15 @@ require __DIR__ . '/panel_header.php';
 ?>
 
     <div class="panel-toolbar">
-      <a href="panel.php" class="back-link">
+      <a href="panel" class="back-link">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel
       </a>
     </div>
+
+    <nav class="tipo-tabs" aria-label="Tipo de publicación">
+      <a href="gestion_novedades" class="act" aria-current="page">Novedades</a>
+      <a href="gestion_novedades?tipo=egresados">Historias de egresados</a>
+    </nav>
 
     <!-- Formulario -->
     <div class="form-card" style="margin-bottom:2.5rem;">
@@ -265,7 +276,7 @@ require __DIR__ . '/panel_header.php';
         </div>
       <?php endif; ?>
 
-      <form method="post" action="gestion_novedades.php" enctype="multipart/form-data">
+      <form method="post" action="gestion_novedades" enctype="multipart/form-data">
         <?= csrf_input() ?>
         <input type="hidden" name="accion" value="<?= $modo === 'editar' ? 'editar' : 'crear' ?>">
         <input type="hidden" name="id" value="<?= (int)$edit['id_novedad'] ?>">
@@ -324,14 +335,14 @@ require __DIR__ . '/panel_header.php';
             <?= $modo === 'editar' ? 'Guardar cambios' : 'Crear novedad' ?>
           </button>
           <?php if ($modo === 'editar'): ?>
-            <a href="gestion_novedades.php" class="btn btn-outline">Cancelar</a>
+            <a href="gestion_novedades" class="btn btn-outline">Cancelar</a>
           <?php endif; ?>
         </div>
       </form>
 
       <?php if ($modo === 'editar' && $imagenes_edit): ?>
         <?php foreach ($imagenes_edit as $img): ?>
-          <form method="post" action="gestion_novedades.php" id="form-borrar-img-<?= (int)$img['id_imagen'] ?>" style="display:none;">
+          <form method="post" action="gestion_novedades" id="form-borrar-img-<?= (int)$img['id_imagen'] ?>" style="display:none;">
             <?= csrf_input() ?>
             <input type="hidden" name="accion" value="borrar_imagen">
             <input type="hidden" name="id" value="<?= (int)$edit['id_novedad'] ?>">
@@ -381,10 +392,10 @@ require __DIR__ . '/panel_header.php';
             <td>
               <div class="mng-actions" style="justify-content:flex-end;">
                 <?php if ($puede): ?>
-                  <a href="gestion_novedades.php?editar=<?= (int)$row['id_novedad'] ?>" class="icon-btn" title="Editar">
+                  <a href="gestion_novedades?editar=<?= (int)$row['id_novedad'] ?>" class="icon-btn" title="Editar">
                     <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
                   </a>
-                  <form method="post" action="gestion_novedades.php" style="display:inline;"
+                  <form method="post" action="gestion_novedades" style="display:inline;"
                         onsubmit="return confirm('¿Eliminar esta novedad? Esta acción no se puede deshacer.');">
                     <?= csrf_input() ?>
                     <input type="hidden" name="accion" value="borrar">

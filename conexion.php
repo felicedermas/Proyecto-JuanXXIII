@@ -88,6 +88,15 @@ function db_opcional(): ?PDO {
     return $pdo;
 }
 
+/**
+ * Ruta de un CSS/JS con ?v=fecha de modificación. El .htaccess los cachea
+ * 7 días: sin esto, después de un cambio el navegador sigue usando el viejo.
+ */
+function asset(string $ruta): string {
+    $archivo = __DIR__ . '/' . $ruta;
+    return $ruta . (is_file($archivo) ? '?v=' . filemtime($archivo) : '');
+}
+
 /** Escape para HTML. */
 if (!function_exists('e')) {
     function e(?string $s): string {

@@ -36,13 +36,15 @@ $titulo_tab = $page_title !== '' ? $page_title . ' — ' . $colegio : $colegio;
 $__esquema = (($_SERVER['HTTPS'] ?? '') === 'on') ? 'https' : 'http';
 $__host    = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $__base    = rtrim($__esquema . '://' . $__host . dirname($_SERVER['SCRIPT_NAME'] ?? '/'), '/') . '/';
-$url_pagina = $__base . basename($_SERVER['SCRIPT_NAME'] ?? 'index.php');
+// URLs sin extensión: "historia.php" se publica como "historia" e "index.php" como la carpeta
+$__pagina   = basename($_SERVER['SCRIPT_NAME'] ?? 'index.php', '.php');
+$url_pagina = $__base . ($__pagina === 'index' ? '' : $__pagina);
 
 /** ¿Este href es la página que se está viendo? */
 function menu_es_actual(string $href): bool {
-    global $nav_active_link;
+    global $nav_active_link, $__pagina;
     return $href === $nav_active_link
-        || $href === basename($_SERVER['SCRIPT_NAME'] ?? '');
+        || $href === ($__pagina === 'index' ? './' : $__pagina);
 }
 ?><!DOCTYPE html>
 <html lang="es">
@@ -68,7 +70,7 @@ function menu_es_actual(string $href): bool {
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="<?= asset('styles.css') ?>"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 <?= $page_head_extra ?>
 <?php if ($page_style !== ''): ?>
@@ -87,9 +89,9 @@ function menu_es_actual(string $href): bool {
     <div class="topbar">
       <div class="topbar-inner">
         <div class="topbar-quick">
-          <a href="novedades.php">Novedades</a>
-          <a href="agenda.php">Agenda</a>
-          <a class="tq-plataforma" href="plataforma.php">Plataforma</a>
+          <a href="novedades">Novedades</a>
+          <a href="agenda">Agenda</a>
+          <a class="tq-plataforma" href="plataforma">Plataforma</a>
         </div>
       </div>
     </div>
@@ -97,7 +99,7 @@ function menu_es_actual(string $href): bool {
     <!-- Fila 2: logo + navegación -->
     <div class="header-inner two-row">
       <div class="header-top-row">
-        <a href="index.php" class="brand">
+        <a href="./" class="brand">
           <img src="img/logo.png" alt="Logo del <?= cfg_e('nombre_colegio') ?>" class="logo" width="86" height="90"/>
           <span class="brand-text">
             <span class="school-name"><?= cfg_e('nombre_colegio') ?></span>
@@ -107,7 +109,7 @@ function menu_es_actual(string $href): bool {
 
         <div class="header-right">
           <!-- Personita: solo aparece con sesión iniciada (se completa por JS) -->
-          <a href="panel.php" id="userBadge" class="user-badge" style="display:none;" title="Ir al panel de control">
+          <a href="panel" id="userBadge" class="user-badge" style="display:none;" title="Ir al panel de control">
             <span class="ub-avatar" id="ubAvatar">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </span>
@@ -127,7 +129,7 @@ function menu_es_actual(string $href): bool {
         <ul class="nav-list">
 
           <li class="nav-item">
-            <a href="index.php" class="nav-link<?= $nav_active === 'inicio' ? ' active-section' : '' ?>">Inicio</a>
+            <a href="./" class="nav-link<?= $nav_active === 'inicio' ? ' active-section' : '' ?>">Inicio</a>
           </li>
 
           <?php foreach (MENU_PRINCIPAL as $clave => $seccion):
@@ -168,8 +170,8 @@ function menu_es_actual(string $href): bool {
             </li>
           <?php endforeach; ?>
 
-          <li class="nav-item mobile-only"><a href="novedades.php" class="nav-link">Novedades</a></li>
-          <li class="nav-item mobile-only"><a href="agenda.php" class="nav-link">Agenda</a></li>
+          <li class="nav-item mobile-only"><a href="novedades" class="nav-link">Novedades</a></li>
+          <li class="nav-item mobile-only"><a href="agenda" class="nav-link">Agenda</a></li>
 
         </ul>
       </nav>

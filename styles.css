@@ -26,7 +26,12 @@
   --transition: .3s cubic-bezier(.4,0,.2,1);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Sin zoom por doble toque en el celular (era incómodo al tocar rápido).
+     El zoom con dos dedos sigue funcionando, para quien necesite agrandar. */
+  touch-action: manipulation;
+}
 
 body {
   font-family: var(--font-body);
@@ -673,7 +678,7 @@ ul { list-style: none; }
   .hamburger { display: flex; }
   .main-nav {
     position: fixed;
-    top: 78px; left: 0; right: 0;
+    top: var(--header-alto, 78px); left: 0; right: 0;
     background: var(--blue-dark);
     max-height: 0;
     overflow: hidden;
@@ -979,10 +984,12 @@ ul { list-style: none; }
 }
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, …): sin esto el input de archivo y los <select> imponen su
+     ancho mínimo y el formulario se sale de la pantalla en el celular. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.2rem;
 }
-.form-field { display: flex; flex-direction: column; gap: .35rem; }
+.form-field { display: flex; flex-direction: column; gap: .35rem; min-width: 0; }
 .form-field.full { grid-column: 1 / -1; }
 .form-field label {
   font-size: .82rem;
@@ -1001,6 +1008,8 @@ ul { list-style: none; }
   background: var(--gray-100);
   transition: var(--transition);
   color: var(--text);
+  min-width: 0;
+  max-width: 100%;
 }
 .form-field input:focus,
 .form-field select:focus,
@@ -1177,11 +1186,22 @@ ul { list-style: none; }
   .split { grid-template-columns: 1fr; gap: 2rem; }
   .split.reverse .split-media { order: 0; }
   .card-grid, .card-grid.cols-2, .people-grid { grid-template-columns: 1fr; }
-  .form-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
   .steps { grid-template-columns: 1fr; }
   .value-list { grid-template-columns: 1fr; }
   .form-wrap { padding: 1.6rem; }
   .content-section { padding: 3rem 1.5rem; }
+  /* .band siempre envuelve un .content-section, que ya trae su margen
+     lateral: sumados dejaban apenas ~260 px útiles en un celular. */
+  .band { padding: 3rem 0; }
+}
+@media (max-width: 480px) {
+  .form-wrap { padding: 1.2rem; }
+  .simple-table th,
+  .simple-table td { padding: .65rem .7rem; font-size: .84rem; }
+  /* Si aun así no entra, la tabla se desplaza sola en vez de
+     ensanchar toda la página. */
+  .simple-table { display: block; overflow-x: auto; }
 }
 
 /* ============================================================
@@ -1435,7 +1455,7 @@ ul { list-style: none; }
   .two-row .header-top-row .hamburger { flex-shrink: 0; }
   .main-nav.nav-row {
     position: fixed;
-    top: 80px; left: 0; right: 0;
+    top: var(--header-alto, 80px); left: 0; right: 0;
     background: var(--blue-dark);
     max-height: 0; overflow: hidden;
     border-top: none;
@@ -1443,12 +1463,49 @@ ul { list-style: none; }
     box-shadow: var(--shadow-md);
     z-index: 999;
   }
-  .main-nav.nav-row.open { max-height: 80vh; overflow-y: auto; }
+  .main-nav.nav-row.open { max-height: calc(100svh - var(--header-alto, 80px)); overflow-x: hidden; overflow-y: auto; }
   .nav-row .nav-list {
     flex-direction: column; align-items: stretch;
-    padding: 1rem; gap: .25rem; flex-wrap: nowrap;
+    padding: .75rem 1rem 1rem; gap: .15rem; flex-wrap: nowrap;
   }
   .nav-item.mobile-only { display: block; }
+
+  /* Cada ítem ocupa toda la fila: links y botones de sección se ven
+     iguales (antes los botones quedaban como "pastillas" sueltas). */
+  .nav-row .nav-link,
+  .nav-row .nav-dropdown-btn {
+    width: 100%;
+    justify-content: space-between;
+    text-align: left;
+    padding: .8rem 1rem;
+    font-size: .95rem;
+    border-radius: 10px;
+  }
+  .nav-row .dropdown-chevron { width: 16px; height: 16px; }
+  .nav-item.has-dropdown::after { display: none; }
+
+  /* Las reglas de desktop centran el panel con translateX(-50%) y le dan
+     un ancho mínimo: en el celular eso lo corría fuera de la pantalla. */
+  .nav-row .nav-dropdown,
+  .nav-row .nav-item.has-dropdown.open .nav-dropdown,
+  .nav-row .nav-dropdown--cols,
+  .nav-row .nav-item.has-dropdown.open .nav-dropdown--cols {
+    transform: none; left: auto; right: auto;
+    min-width: 0; width: auto;
+  }
+  .nav-row .nav-dropdown {
+    margin: 0 0 0 .75rem;
+    padding: 0 0 0 .5rem;
+    border-left: 2px solid rgba(255,255,255,.14);
+  }
+  .nav-row .nav-item.has-dropdown.open .nav-dropdown { margin: .2rem 0 .45rem .75rem; }
+  .nav-row .nav-dropdown a {
+    white-space: normal;
+    padding: .55rem .85rem;
+    font-size: .9rem;
+  }
+  .nav-row .nav-dropdown a:hover { padding-left: .85rem; }
+  .nav-row .dd-heading { padding: .6rem .85rem .2rem; }
 }
 
 /* ── Línea roja debajo del header ── */
@@ -1697,6 +1754,26 @@ ul { list-style: none; }
   color: var(--gray-500);
 }
 .form-aviso a { color: var(--blue-mid); font-weight: 700; }
+
+/* Formulario de contacto: errores, envío correcto y honeypot */
+.form-opc { font-weight: 400; color: var(--gray-500); }
+.form-field.has-error input,
+.form-field.has-error select,
+.form-field.has-error textarea { border-color: #c1121f; background: #fff7f7; }
+.form-field .field-error { font-size: .76rem; font-weight: 700; color: #c1121f; }
+.form-alerta {
+  background: #fdecee; color: #a4161a; border-left: 4px solid #c1121f;
+  border-radius: 10px; padding: .9rem 1.1rem; margin-bottom: 1.4rem; font-weight: 700; font-size: .9rem;
+}
+.form-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.form-ok { text-align: center; padding: 1.5rem .5rem; }
+.form-ok-icono {
+  width: 60px; height: 60px; border-radius: 50%; background: #eaf7ef;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;
+}
+.form-ok-icono svg { width: 30px; height: 30px; stroke: #1b7a44; fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.form-ok h3 { font-family: var(--font-display); font-size: 1.5rem; color: var(--blue-dark); margin-bottom: .5rem; }
+.form-ok p { color: #556; margin-bottom: 1.2rem; }
 .contact-item .ci-extra { font-size: .84rem; color: var(--gray-500); margin-top: .2rem; }
 
 /* ============================================================
@@ -1726,4 +1803,39 @@ ul { list-style: none; }
   .hero-content { padding: 1.6rem 2rem; }
   .hero-title { font-size: clamp(1.9rem, 4.4vw, 2.8rem); }
   .hero-scroll { display: none; }
+}
+
+/* ============================================================
+   FILTROS POR CATEGORÍA (Agenda, Novedades) — lista de selección
+   El <select> lo arma partials/footer.php a partir de .filtro-list.
+   En computadora se ven los botones; en el celular, la lista.
+   ============================================================ */
+.filtro-select { display: none; }
+
+@media (max-width: 768px) {
+  .filtro-list.filtro-list--con-select { display: none; }
+  .filtro-select {
+    display: block;
+    flex: 1 1 100%;
+    width: 100%;
+    -webkit-appearance: none; appearance: none;
+    font-family: var(--font-body);
+    font-size: 1rem;            /* 16px: evita que iOS haga zoom al tocarlo */
+    font-weight: 700;
+    color: var(--blue-dark);
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231D3557' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .9rem center;
+    background-size: 18px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    padding: .7rem 2.6rem .7rem 1rem;
+    cursor: pointer;
+  }
+  .filtro-select:focus {
+    outline: none;
+    border-color: var(--blue-mid);
+    box-shadow: 0 0 0 3px rgba(69,123,157,.25);
+  }
 }

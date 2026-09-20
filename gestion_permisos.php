@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/panel_config.php';
+require_once __DIR__ . '/partials/mensajes.php';
 exigir_admin();   // ← solo administradores
 
 $u   = usuario_actual();
 $pdo = db();
+msj_asegurar_tabla($pdo);   // agrega la columna `mensajes` si falta
 
 // Categorías válidas para novedades y agenda (mismo enum del sitio)
 $CATS = ETIQUETAS_VALIDAS;   // ['Inicial','Primario','Secundario','Técnica','Orientada','Global']
@@ -45,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
         $pdo->prepare('DELETE FROM niveles_permiso WHERE id_nivel = ?')->execute([$id]);
         flash('ok', 'Nivel de permiso eliminado correctamente.');
     }
-    header('Location: gestion_permisos.php');
+    header('Location: gestion_permisos');
     exit;
 }
 
@@ -60,6 +62,7 @@ $val = [
     'edita_tour'    => 0,
     'alta_usuarios' => 0,
     'inscripciones' => 0,
+    'mensajes'      => 0,
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guardar') {
@@ -72,11 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
     $val['edita_tour']    = isset($_POST['edita_tour'])    ? 1 : 0;
     $val['alta_usuarios'] = isset($_POST['alta_usuarios']) ? 1 : 0;
     $val['inscripciones'] = isset($_POST['inscripciones']) ? 1 : 0;
+    $val['mensajes']      = isset($_POST['mensajes'])      ? 1 : 0;
 
     // Acceso total: habilita todo automáticamente
     if ($val['es_admin'] === 1) {
         $val['pub_novedades'] = $val['pub_agenda'] = $val['edita_tour'] = 1;
-        $val['alta_usuarios'] = $val['inscripciones'] = 1;
+        $val['alta_usuarios'] = $val['inscripciones'] = $val['mensajes'] = 1;
         $_POST['cat_novedades'] = $CATS;
         $_POST['cat_agenda']    = $CATS;
     }
@@ -116,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
             ':t'  => $val['edita_tour'],
             ':au' => $val['alta_usuarios'],
             ':i'  => $val['inscripciones'],
+            ':m'  => $val['mensajes'],
         ];
         $setAdmin = $tiene_es_admin ? ', es_admin=:adm'  : '';
         $colAdmin = $tiene_es_admin ? ', es_admin'       : '';
@@ -128,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
                 "UPDATE niveles_permiso
                     SET nombre=:n, pub_novedades=:pn, cat_novedades=:cn,
                         pub_agenda=:pa, cat_agenda=:ca, edita_tour=:t,
-                        alta_usuarios=:au, inscripciones=:i$setAdmin
+                        alta_usuarios=:au, inscripciones=:i, mensajes=:m$setAdmin
                   WHERE id_nivel=:id"
             )->execute($params);
             // Sincronizar el rol legado de los usuarios que tienen este nivel
@@ -141,12 +146,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
             $pdo->prepare(
                 "INSERT INTO niveles_permiso
                    (nombre, pub_novedades, cat_novedades, pub_agenda, cat_agenda,
-                    edita_tour, alta_usuarios, inscripciones$colAdmin)
-                 VALUES (:n, :pn, :cn, :pa, :ca, :t, :au, :i$valAdmin)"
+                    edita_tour, alta_usuarios, inscripciones, mensajes$colAdmin)
+                 VALUES (:n, :pn, :cn, :pa, :ca, :t, :au, :i, :m$valAdmin)"
             )->execute($params);
             flash('ok', 'Nivel de permiso creado correctamente.');
         }
-        header('Location: gestion_permisos.php');
+        header('Location: gestion_permisos');
         exit;
     }
 }
@@ -167,6 +172,7 @@ if (!$errores && isset($_GET['editar'])) {
             'edita_tour'    => (int)$row['edita_tour'],
             'alta_usuarios' => (int)$row['alta_usuarios'],
             'inscripciones' => (int)$row['inscripciones'],
+            'mensajes'      => (int)($row['mensajes'] ?? 0),
         ];
     }
 }
@@ -234,7 +240,7 @@ require __DIR__ . '/panel_header.php';
 </style>
 
     <div class="panel-toolbar">
-      <a href="panel.php" class="back-link">
+      <a href="panel" class="back-link">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel
       </a>
     </div>
@@ -252,7 +258,7 @@ require __DIR__ . '/panel_header.php';
         <div class="alert alert-error"><?= implode('<br>', array_map('e', $errores)) ?></div>
       <?php endif; ?>
 
-      <form method="post" action="gestion_permisos.php" autocomplete="off">
+      <form method="post" action="gestion_permisos" autocomplete="off">
         <?= csrf_input() ?>
         <input type="hidden" name="accion" value="guardar">
         <input type="hidden" name="id_nivel" value="<?= (int)$val['id_nivel'] ?>">
@@ -274,6 +280,7 @@ require __DIR__ . '/panel_header.php';
             ['edita_tour',    'Edición del recorrido virtual', false, 'recorrido-360'],
             ['alta_usuarios', 'Alta de usuarios',              false, 'alta-usuarios'],
             ['inscripciones', 'Inscripciones',                 false, 'inscripciones'],
+            ['mensajes',      'Mensajes de contacto',          false, 'mensajes'],
         ]);
         foreach ($filas as [$name, $label, $tieneCats, $code]):
             $on   = (int)$val[$name] === 1;
@@ -313,7 +320,7 @@ require __DIR__ . '/panel_header.php';
             <?= $editando ? 'Guardar cambios' : 'Crear nivel de permisos' ?>
           </button>
           <?php if ($editando): ?>
-            <a href="gestion_permisos.php" class="btn btn-outline">Cancelar edición</a>
+            <a href="gestion_permisos" class="btn btn-outline">Cancelar edición</a>
           <?php endif; ?>
         </div>
       </form>
@@ -334,7 +341,7 @@ require __DIR__ . '/panel_header.php';
       <thead>
         <tr>
           <th>Nombre</th><th>Novedades</th><th>Agenda</th>
-          <th>Recorrido 360°</th><th>Usuarios</th><th>Inscripciones</th>
+          <th>Recorrido 360°</th><th>Usuarios</th><th>Inscripciones</th><th>Mensajes</th>
           <th style="text-align:right;">Acciones</th>
         </tr>
       </thead>
@@ -362,12 +369,13 @@ require __DIR__ . '/panel_header.php';
           <td><span class="perm-flag <?= $row['edita_tour']    ? 'on">✓' : 'off">✗' ?></span></td>
           <td><span class="perm-flag <?= $row['alta_usuarios'] ? 'on">✓' : 'off">✗' ?></span></td>
           <td><span class="perm-flag <?= $row['inscripciones'] ? 'on">✓' : 'off">✗' ?></span></td>
+          <td><span class="perm-flag <?= !empty($row['mensajes']) ? 'on">✓' : 'off">✗' ?></span></td>
           <td>
             <div class="mng-actions" style="justify-content:flex-end;">
-              <a href="gestion_permisos.php?editar=<?= (int)$row['id_nivel'] ?>" class="icon-btn" title="Editar nivel">
+              <a href="gestion_permisos?editar=<?= (int)$row['id_nivel'] ?>" class="icon-btn" title="Editar nivel">
                 <svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
               </a>
-              <form method="post" action="gestion_permisos.php" style="display:inline;"
+              <form method="post" action="gestion_permisos" style="display:inline;"
                     onsubmit="return confirm('¿Eliminar el nivel <?= e(addslashes($row['nombre'])) ?>?');">
                 <?= csrf_input() ?>
                 <input type="hidden" name="accion" value="borrar">

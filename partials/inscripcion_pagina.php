@@ -28,16 +28,18 @@ if ($def === null) {
     exit('Formulario inexistente.');
 }
 
-// ── ¿Está habilitado? (sin base = deshabilitado, nunca un error) ──
-$pdo        = db_opcional();
-$habilitado = false;
+// ── ¿Está abierto? Interruptor del panel + fechas (sin base = cerrado, nunca un error) ──
+$pdo  = db_opcional();
+$fila = null;
 if ($pdo !== null && insc_asegurar_tablas($pdo)) {
     try {
-        $habilitado = insc_habilitado($pdo, $insc_clave);
+        $fila = insc_fila_formulario($pdo, $insc_clave);
     } catch (Throwable $ex) {
-        $habilitado = false;
+        $fila = null;
     }
 }
+$estado     = insc_estado($fila);
+$habilitado = $estado['abierto'];
 
 if (empty($_SESSION['insc_token'])) {
     $_SESSION['insc_token'] = bin2hex(random_bytes(24));
@@ -170,8 +172,8 @@ $colegio = cfg('nombre_colegio');
   <meta name="theme-color" content="#1D3557"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="inscripciones.css"/>
+  <link rel="stylesheet" href="<?= asset('styles.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('inscripciones.css') ?>"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>:root { --accent: <?= e($def['accent']) ?>; --accent-light: <?= e($def['accent_light']) ?>; }</style>
 </head>
@@ -179,11 +181,11 @@ $colegio = cfg('nombre_colegio');
 
   <header class="insc-top">
     <div class="insc-top-inner">
-      <a href="index.php" class="insc-brand">
+      <a href="./" class="insc-brand">
         <img src="img/logo.png" alt="" width="40" height="42"/>
         <span><?= e($colegio) ?></span>
       </a>
-      <a href="inscripciones.php" class="insc-volver">
+      <a href="inscripciones" class="insc-volver">
         <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
         Todas las inscripciones
       </a>
@@ -208,7 +210,16 @@ $colegio = cfg('nombre_colegio');
       <div class="insc-cerrado-icono" aria-hidden="true">
         <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
-      <p>Actualmente el formulario no está habilitado.</p>
+      <?php if ($estado['motivo'] === 'proximamente'): ?>
+        <p>El formulario se habilita el <?= e(insc_fecha_ar($estado['desde'])) ?>.</p>
+      <?php elseif ($estado['motivo'] === 'finalizado'): ?>
+        <p>El período de inscripción finalizó el <?= e(insc_fecha_ar($estado['hasta'])) ?>.</p>
+      <?php else: ?>
+        <p>Actualmente el formulario no está habilitado.</p>
+      <?php endif; ?>
+      <?php if ($estado['periodo'] !== '' && $estado['motivo'] !== 'finalizado'): ?>
+        <span class="insc-periodo">Período de inscripción: <?= e(lcfirst($estado['periodo'])) ?></span>
+      <?php endif; ?>
     </div>
 
   <?php elseif ($enviado): ?>
@@ -225,7 +236,7 @@ $colegio = cfg('nombre_colegio');
       <?php if ($enviado['grupo'] !== '—'): ?>
         <p class="insc-ok-codigo">Código de envío: <b><?= e($enviado['grupo']) ?></b></p>
       <?php endif; ?>
-      <a href="index.php" class="insc-submit">Volver al sitio</a>
+      <a href="./" class="insc-submit">Volver al sitio</a>
     </div>
 
   <?php else: ?>
@@ -236,6 +247,13 @@ $colegio = cfg('nombre_colegio');
         <li class="insc-step"><div class="n"><?= $n + 1 ?></div><div class="t"><?= e($t) ?></div><div class="d"><?= e($d) ?></div></li>
       <?php endforeach; ?>
     </ol>
+    <?php endif; ?>
+
+    <?php if ($estado['periodo'] !== ''): ?>
+      <div class="insc-periodo-banner">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Período de inscripción: <b><?= e(lcfirst($estado['periodo'])) ?></b></span>
+      </div>
     <?php endif; ?>
 
     <?php if (!empty($def['aviso'])): ?>

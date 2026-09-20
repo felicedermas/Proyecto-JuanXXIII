@@ -3,7 +3,7 @@ require_once __DIR__ . '/panel_config.php';
 
 // Si ya está logueado, al panel directo
 if (esta_logueado()) {
-    header('Location: panel.php');
+    header('Location: panel');
     exit;
 }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'rol'        => $u['rol'],
                 'email'      => $u['email'],
             ];
-            header('Location: panel.php');
+            header('Location: panel');
             exit;
         }
         $error = 'Email o contraseña incorrectos.';
@@ -48,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Acceso al Panel — Colegio Parroquial Juan XXIII</title>
 <?php require __DIR__ . '/partials/favicon.php'; ?>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="panel.css"/>
+  <link rel="stylesheet" href="<?= asset('styles.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('panel.css') ?>"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="alert alert-error"><?= e($error) ?></div>
       <?php endif; ?>
 
-      <form method="post" action="login.php" autocomplete="off">
+      <form method="post" action="login" autocomplete="off">
         <?= csrf_input() ?>
         <div class="field">
           <label for="email">Email</label>
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
 
       <p style="text-align:center;margin-top:1.4rem;font-size:.82rem;">
-        <a href="index.php" class="back-link" style="justify-content:center;">
+        <a href="./" class="back-link" style="justify-content:center;">
           <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
           Volver al sitio
         </a>

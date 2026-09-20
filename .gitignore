@@ -7,3 +7,6 @@ Thumbs.db
 
 # Logs y cachés
 *.log
+
+# Configuración local de Claude Code
+.claude/settings.local.json

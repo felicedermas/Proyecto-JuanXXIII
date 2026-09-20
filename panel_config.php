@@ -77,7 +77,7 @@ function puede_gestionar(int $id_autor): bool {
 /** Exige estar logueado; si no, redirige al login */
 function exigir_login(): void {
     if (!esta_logueado()) {
-        header('Location: login.php');
+        header('Location: login');
         exit;
     }
 }
@@ -159,7 +159,7 @@ function nivel_actual(): ?array {
  *   puede('pub_novedades')             → flag activado
  *   puede('pub_novedades', 'Primario') → flag + categoría habilitada
  * Permisos válidos: pub_novedades, pub_agenda, edita_tour,
- *                   alta_usuarios, inscripciones.
+ *                   alta_usuarios, inscripciones, mensajes.
  * El admin siempre puede todo.
  */
 function puede(string $permiso, ?string $categoria = null): bool {
