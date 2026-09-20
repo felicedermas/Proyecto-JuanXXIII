@@ -11,7 +11,7 @@
  * azul y el hero azul: quedaba una banda clara de 2 cm cortando el
  * bloque oscuro. Ahora va dentro del hero, sobre el fondo azul.
  *
- * @param array  $miga    ['Inicio' => 'index.php', 'Institucional' => null, 'Historia' => null]
+ * @param array  $miga    ['Inicio' => './', 'Institucional' => null, 'Historia' => null]
  *                        (valor null = texto sin enlace, se usa para la página actual)
  * @param string $eyebrow Texto chico sobre el título
  * @param string $titulo  HTML del título (admite <em> para el acento)

@@ -5,7 +5,7 @@
 $page_title      = 'Vínculos Institucionales';
 $page_desc       = 'Vínculos institucionales del Colegio Parroquial Juan XXIII: universidades, empresas y organizaciones aliadas.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'vinculos-institucionales.php';
+$nav_active_link = 'vinculos-institucionales';
 require __DIR__ . '/partials/header.php';
 ?>
   
@@ -13,7 +13,7 @@ require __DIR__ . '/partials/header.php';
 
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Institucional' => null, 'Becas' => null], 'Comunidad', 'Vínculos <em>Institucionales</em>', 'Trabajamos junto a instituciones, colegios y empresas que acompañan y enriquecen nuestra propuesta educativa. Estos son algunos de los aliados con los que construimos comunidad.'); ?>
+  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Becas' => null], 'Comunidad', 'Vínculos <em>Institucionales</em>', 'Trabajamos junto a instituciones, colegios y empresas que acompañan y enriquecen nuestra propuesta educativa. Estos son algunos de los aliados con los que construimos comunidad.'); ?>
 
   <section class="content-section narrow">
     <div class="prose">
@@ -70,7 +70,7 @@ require __DIR__ . '/partials/header.php';
   <section class="cta-band">
     <h2>¿Querés ser parte de nuestra red?</h2>
     <p>Si tu institución o empresa desea establecer un vínculo con el colegio, nos encantará conocerte.</p>
-    <a href="contacto.php" class="btn btn-white">Escribinos</a>
+    <a href="contacto" class="btn btn-white">Escribinos</a>
   </section>
 
   

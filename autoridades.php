@@ -5,12 +5,12 @@
 $page_title      = 'Autoridades';
 $page_desc       = 'Equipo directivo y de gestión del Colegio Parroquial Juan XXIII: rectorado, dirección de niveles y coordinaciones.';
 $nav_active      = 'institucional';
-$nav_active_link = 'autoridades.php';
+$nav_active_link = 'autoridades';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Institucional' => null, 'Autoridades' => null], 'Institucional', 'Nuestro <em>equipo de gestión</em>', 'Un grupo humano comprometido con la educación, que coordina el día a día de cada nivel y acompaña a las familias.'); ?>
+  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Autoridades' => null], 'Institucional', 'Nuestro <em>equipo de gestión</em>', 'Un grupo humano comprometido con la educación, que coordina el día a día de cada nivel y acompaña a las familias.'); ?>
 
   <section class="content-section">
     <div class="section-header">

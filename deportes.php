@@ -5,7 +5,7 @@
 $page_title      = 'Deportes';
 $page_desc       = 'Deportes en el Colegio Parroquial Juan XXIII: disciplinas, equipos, torneos e instalaciones.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'deportes.php';
+$nav_active_link = 'deportes';
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -122,7 +122,7 @@ require __DIR__ . '/partials/header.php';
   <div class="dep-cta">
     <h2>¿Querés sumarte a un equipo?</h2>
     <p>Las inscripciones a las actividades deportivas se realizan al comienzo de cada ciclo lectivo. Consultá fechas y horarios en la Agenda del colegio.</p>
-    <a href="agenda.php" class="btn">Ver Agenda deportiva</a>
+    <a href="agenda" class="btn">Ver Agenda deportiva</a>
   </div>
 </section>
 <?php require __DIR__ . '/partials/footer.php';

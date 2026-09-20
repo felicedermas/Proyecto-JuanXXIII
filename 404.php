@@ -7,7 +7,7 @@ require __DIR__ . '/partials/header.php';
 ?>
 
 <?php page_hero(
-  ['Inicio' => 'index.php', 'Página no encontrada' => null],
+  ['Inicio' => './', 'Página no encontrada' => null],
   'Error 404',
   'Esta página <em>no existe</em>',
   'Puede que el enlace esté viejo o que la dirección tenga un error de tipeo.'
@@ -18,13 +18,13 @@ require __DIR__ . '/partials/header.php';
     Probá desde alguno de estos accesos:
   </p>
   <div class="card-grid">
-    <a href="index.php" class="info-card blue">
+    <a href="./" class="info-card blue">
       <h3>Inicio</h3><p>Volver a la portada del sitio.</p>
     </a>
-    <a href="novedades.php" class="info-card">
+    <a href="novedades" class="info-card">
       <h3>Novedades</h3><p>Últimas comunicaciones del colegio.</p>
     </a>
-    <a href="contacto.php" class="info-card blue">
+    <a href="contacto" class="info-card blue">
       <h3>Contacto</h3><p>Escribinos o llamanos.</p>
     </a>
   </div>

@@ -5,7 +5,7 @@
 $page_title      = 'Equipo de Psicopedagogía';
 $page_desc       = 'Equipo de Psicopedagogía del Colegio Parroquial Juan XXIII: acompañamiento, orientación y apoyo a las familias.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'psicopedagogia.php';
+$nav_active_link = 'psicopedagogia';
 require __DIR__ . '/partials/header.php';
 ?>
   
@@ -13,7 +13,7 @@ require __DIR__ . '/partials/header.php';
 
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Institucional' => null, 'Becas' => null], 'Comunidad', 'Equipo de <em>Psicopedagogía</em>', 'Contamos con profesionales para acompañar a nuestros estudiantes y familias en su trayectoria escolar, disponibles los días lunes y miércoles en el establecimiento.'); ?>
+  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Becas' => null], 'Comunidad', 'Equipo de <em>Psicopedagogía</em>', 'Contamos con profesionales para acompañar a nuestros estudiantes y familias en su trayectoria escolar, disponibles los días lunes y miércoles en el establecimiento.'); ?>
 
   <section class="content-section narrow">
     <div class="prose">
@@ -67,7 +67,7 @@ require __DIR__ . '/partials/header.php';
   <section class="cta-band">
     <h2>¿Querés solicitar una entrevista?</h2>
     <p>Nuestro equipo está a disposición para acompañarte. Escribinos y coordinamos un encuentro.</p>
-    <a href="contacto.php" class="btn btn-white">Contactar al equipo</a>
+    <a href="contacto" class="btn btn-white">Contactar al equipo</a>
   </section>
 
   

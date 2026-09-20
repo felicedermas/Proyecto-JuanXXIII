@@ -5,12 +5,12 @@
 $page_title      = 'Becas';
 $page_desc       = 'Sistema de becas y ayudas económicas del Colegio Parroquial Juan XXIII: requisitos, plazos y cómo solicitarlas.';
 $nav_active      = 'institucional';
-$nav_active_link = 'becas.php';
+$nav_active_link = 'becas';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Institucional' => null, 'Becas' => null], 'Institucional', 'Sistema de <em>becas y ayudas</em>', 'Acompañamos a las familias que atraviesan dificultades económicas para que ningún estudiante interrumpa su trayectoria escolar.'); ?>
+  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Becas' => null], 'Institucional', 'Sistema de <em>becas y ayudas</em>', 'Acompañamos a las familias que atraviesan dificultades económicas para que ningún estudiante interrumpa su trayectoria escolar.'); ?>
 
   <section class="content-section narrow">
     <div class="prose">
@@ -55,7 +55,7 @@ require __DIR__ . '/partials/header.php';
   <section class="cta-band">
     <h2>¿Necesitás más información?</h2>
     <p>Nuestro equipo administrativo está disponible para asesorarte sobre el sistema de becas.</p>
-    <a href="contacto.php" class="btn btn-white">Consultar por becas</a>
+    <a href="contacto" class="btn btn-white">Consultar por becas</a>
   </section>
 
   

@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $tabla_ok) {
                         $token, $token !== '' ? date('Y-m-d', strtotime('+60 days')) : null]);
             flash('ok', 'Cuenta creada.');
         }
-        header('Location: gestion_instagram.php');
+        header('Location: gestion_instagram');
         exit;
     }
 
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $tabla_ok) {
         $pdo->prepare('UPDATE novedades SET id_cuenta_ig = NULL WHERE id_cuenta_ig = ?')->execute([$id]);
         $pdo->prepare('DELETE FROM ig_cuentas WHERE id_cuenta = ?')->execute([$id]);
         flash('ok', 'Cuenta eliminada. Las novedades que ya había importado se conservan.');
-        header('Location: gestion_instagram.php');
+        header('Location: gestion_instagram');
         exit;
     }
 
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $tabla_ok) {
         flash($log->errores > 0 ? 'error' : 'ok',
               "Sincronización terminada: {$log->importadas} nueva/s, {$log->omitidas} omitida/s, {$log->errores} error/es.");
         $_SESSION['ig_ultimo_log'] = $log->texto();
-        header('Location: gestion_instagram.php');
+        header('Location: gestion_instagram');
         exit;
     }
 }
@@ -150,7 +150,7 @@ $simulando   = cfg('ig_simular', '1') === '1';
 $url_tarea   = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
              . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
              . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\')
-             . '/sync_instagram.php?clave=' . $clave_tarea;
+             . '/sync_instagram?clave=' . $clave_tarea;
 
 $panel_page_title = 'Instagram';
 $panel_heading    = 'Cuentas de <span>Instagram</span>';
@@ -163,7 +163,7 @@ require __DIR__ . '/panel_header.php';
     Falta crear las tablas. Ejecutá <strong>migracion_instagram.sql</strong> en phpMyAdmin
     (base <code>colegio_juan_xxiii</code>) y volvé a entrar.
   </div>
-  <p style="margin-top:2rem;"><a href="panel.php" class="back-link">
+  <p style="margin-top:2rem;"><a href="panel" class="back-link">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel</a></p>
 
 <?php else: ?>
@@ -173,7 +173,7 @@ require __DIR__ . '/panel_header.php';
       <strong>Modo de prueba activo.</strong> Todavía no se consulta Instagram de verdad: se usan
       las publicaciones de ejemplo de <code>posts_simulados.json</code>, para que puedas ver cómo
       quedan las novedades. Cuando tengas los tokens cargados, poné <em>Modo de prueba</em> en
-      <code>0</code> en <a href="gestion_contacto.php">Datos de contacto</a>.
+      <code>0</code> en <a href="gestion_contacto">Datos de contacto</a>.
       Los pasos para conseguirlos están en <code>GUIA_INSTAGRAM.md</code>.
     </div>
   <?php endif; ?>
@@ -187,7 +187,7 @@ require __DIR__ . '/panel_header.php';
         <input type="hidden" name="accion" value="sincronizar"/>
         <button type="submit" class="btn btn-primary">Sincronizar ahora</button>
       </form>
-      <a href="gestion_instagram.php?editar=0" class="btn btn-secundario">Agregar cuenta</a>
+      <a href="gestion_instagram?editar=0" class="btn btn-secundario">Agregar cuenta</a>
     </div>
   </div>
 
@@ -236,8 +236,8 @@ require __DIR__ . '/panel_header.php';
           <?php endif; ?>
 
           <footer class="ig-card-pie">
-            <a href="gestion_instagram.php?editar=<?= (int) $c['id_cuenta'] ?>" class="ig-link">Editar</a>
-            <a href="novedades.php?etiqueta=<?= urlencode($c['etiqueta']) ?>" target="_blank" rel="noopener" class="ig-link">Ver sus novedades</a>
+            <a href="gestion_instagram?editar=<?= (int) $c['id_cuenta'] ?>" class="ig-link">Editar</a>
+            <a href="novedades?etiqueta=<?= urlencode($c['etiqueta']) ?>" target="_blank" rel="noopener" class="ig-link">Ver sus novedades</a>
             <form method="post" onsubmit="return confirm('¿Eliminar la cuenta «<?= e($c['nombre']) ?>»? Las novedades ya importadas se conservan.');">
               <?= csrf_input() ?>
               <input type="hidden" name="accion" value="borrar"/>
@@ -254,7 +254,7 @@ require __DIR__ . '/panel_header.php';
   <?php if ($edit !== null || isset($_GET['editar'])): ?>
     <section class="ig-form-wrap" id="form">
       <h2 class="ig-h2"><?= $edit ? 'Editar: ' . e($edit['nombre']) : 'Agregar una cuenta' ?></h2>
-      <form method="post" action="gestion_instagram.php#form">
+      <form method="post" action="gestion_instagram#form">
         <?= csrf_input() ?>
         <input type="hidden" name="accion" value="guardar"/>
         <input type="hidden" name="id_cuenta" value="<?= (int) ($edit['id_cuenta'] ?? 0) ?>"/>
@@ -329,7 +329,7 @@ require __DIR__ . '/panel_header.php';
         </div>
 
         <div class="form-actions">
-          <a href="gestion_instagram.php" class="btn btn-secundario">Cancelar</a>
+          <a href="gestion_instagram" class="btn btn-secundario">Cancelar</a>
           <button type="submit" class="btn btn-primary">Guardar cuenta</button>
         </div>
       </form>
@@ -385,7 +385,7 @@ require __DIR__ . '/panel_header.php';
 <?php endif; ?>
 
 <p style="margin-top:2.5rem;">
-  <a href="panel.php" class="back-link">
+  <a href="panel" class="back-link">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel
   </a>
 </p>

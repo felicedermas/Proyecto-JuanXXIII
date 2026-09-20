@@ -5,12 +5,12 @@
 $page_title      = 'Trabajá con Nosotros';
 $page_desc       = 'Trabajá con nosotros: búsquedas abiertas y postulación docente en el Colegio Parroquial Juan XXIII.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'trabaja-con-nosotros.php';
+$nav_active_link = 'trabaja-con-nosotros';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Comunidad' => null, 'Trabajá con Nosotros' => null], 'Comunidad', 'Trabajá <em>con nosotros</em>', '¿Compartís nuestra vocación educativa? Sumate a un equipo humano comprometido con la formación de las nuevas generaciones.'); ?>
+  <?php page_hero(['Inicio' => './', 'Comunidad' => null, 'Trabajá con Nosotros' => null], 'Comunidad', 'Trabajá <em>con nosotros</em>', '¿Compartís nuestra vocación educativa? Sumate a un equipo humano comprometido con la formación de las nuevas generaciones.'); ?>
 
   <section class="content-section">
     <div class="split">

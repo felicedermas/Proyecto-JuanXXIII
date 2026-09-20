@@ -110,7 +110,7 @@ Si algo falla, el error aparece en la tarjeta de la cuenta con el motivo concret
 ### En un hosting con cron
 
 ```
-0 19 * * *  curl -s "https://tudominio.com/sync_instagram.php?clave=LA_CLAVE"
+0 19 * * *  curl -s "https://tudominio.com/sync_instagram?clave=LA_CLAVE"
 ```
 
 La clave la ves en **Panel → Instagram**, en la sección "Sincronización automática".

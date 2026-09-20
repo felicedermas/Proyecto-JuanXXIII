@@ -7,14 +7,14 @@ require_once __DIR__ . '/conexion.php';
 $pdo = db();
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if (!$id) { header('Location: egresados.php'); exit; }
+if (!$id) { header('Location: egresados'); exit; }
 
 $stmt = $pdo->prepare(
     "SELECT * FROM egresados WHERE id_egresado = :id AND publicado = 1"
 );
 $stmt->execute([':id' => $id]);
 $egr = $stmt->fetch();
-if (!$egr) { header('Location: egresados.php'); exit; }
+if (!$egr) { header('Location: egresados'); exit; }
 
 // Galería de imágenes adicionales
 $imgs = $pdo->prepare("SELECT url_imagen, alt_text FROM imagenes_egresados WHERE id_egresado = :id ORDER BY orden ASC");
@@ -38,10 +38,10 @@ function orientacion_color(string $o): string {
 $iniciales = strtoupper(substr($egr['nombre'],0,1).substr($egr['apellido'],0,1));
 $foto_principal = $egr['foto_perfil'] ?? ($galeria[0]['url_imagen'] ?? null);
 
-$page_title      = (string) ($eg['nombre'] . ' ' . $eg['apellido']);
-$page_desc       = (string) (mb_substr(strip_tags((string)$eg['resumen']), 0, 180));
+$page_title      = (string) ($egr['nombre'] . ' ' . $egr['apellido']);
+$page_desc       = (string) (mb_substr(strip_tags((string)$egr['resumen']), 0, 180));
 $nav_active      = 'comunidad';
-$nav_active_link = 'egresado.php';
+$nav_active_link = 'egresado';
 $header_compacto = true;
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -316,7 +316,7 @@ require __DIR__ . '/partials/header.php';
 ?>
 <!-- ── BREADCRUMB ── -->
 <div class="breadcrumb">
-  <a href="egresados.php">Egresados</a>
+  <a href="egresados">Egresados</a>
   <span class="breadcrumb-sep">/</span>
   <span><?= htmlspecialchars($egr['nombre'].' '.$egr['apellido']) ?></span>
 </div>
@@ -369,7 +369,7 @@ require __DIR__ . '/partials/header.php';
 
 <!-- ── VOLVER ── -->
 <div class="det-volver">
-  <a href="egresados.php">← Volver a Egresados</a>
+  <a href="egresados">← Volver a Egresados</a>
 </div>
 
 <!-- ── RELACIONADOS ── -->
@@ -382,7 +382,7 @@ require __DIR__ . '/partials/header.php';
         $rfoto = $r['foto_perfil'] ?? null;
         $rini  = strtoupper(substr($r['nombre'],0,1).substr($r['apellido'],0,1));
       ?>
-      <a href="egresado.php?id=<?= $r['id_egresado'] ?>" class="det-rel-card">
+      <a href="egresado?id=<?= $r['id_egresado'] ?>" class="det-rel-card">
         <div class="det-rel-img">
           <?php if ($rfoto): ?>
             <img src="<?= htmlspecialchars($rfoto) ?>" alt="<?= htmlspecialchars($r['nombre'].' '.$r['apellido']) ?>"/>

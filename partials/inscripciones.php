@@ -125,7 +125,7 @@ function insc_formularios(): array {
 
     $defs = [
         'jardin' => [
-            'archivo'  => 'inscripcion-jardin.php',
+            'archivo'  => 'inscripcion-jardin',
             'nombre'   => 'Jardín de Infantes',
             'titulo'   => 'Inscripción <em>Jardín de Infantes</em>',
             'bajada'   => 'Nivel Inicial · Salas de 3, 4 y 5 años',
@@ -143,7 +143,7 @@ function insc_formularios(): array {
         ],
 
         'primaria' => [
-            'archivo'  => 'inscripcion-primaria.php',
+            'archivo'  => 'inscripcion-primaria',
             'nombre'   => 'Nivel Primario',
             'titulo'   => 'Inscripción <em>Nivel Primario</em>',
             'bajada'   => '1° a 6° grado',
@@ -166,7 +166,7 @@ function insc_formularios(): array {
         ],
 
         'sec' => [
-            'archivo'  => 'inscripcion-sec.php',
+            'archivo'  => 'inscripcion-sec',
             'nombre'   => 'Nivel Secundario',
             'titulo'   => 'Inscripción <em>Nivel Secundario</em>',
             'bajada'   => 'Bachillerato Orientado y Educación Técnica',
@@ -191,7 +191,7 @@ function insc_formularios(): array {
         ],
 
         'hermanos' => [
-            'archivo'  => 'inscripcion-hermanos.php',
+            'archivo'  => 'inscripcion-hermanos',
             'nombre'   => 'Hermanos',
             'titulo'   => 'Inscripción de <em>Hermanos</em>',
             'bajada'   => 'Para familias que inscriben a dos o más hijos/as',
@@ -249,9 +249,18 @@ function insc_asegurar_tablas(PDO $pdo): bool {
         $pdo->exec("CREATE TABLE IF NOT EXISTS inscripcion_formularios (
             clave        VARCHAR(20)  NOT NULL PRIMARY KEY,
             habilitado   TINYINT(1)   NOT NULL DEFAULT 0,
+            fecha_desde  DATE         NULL COMMENT 'Primer día en que se puede completar',
+            fecha_hasta  DATE         NULL COMMENT 'Último día en que se puede completar',
             id_usuario   INT UNSIGNED NULL COMMENT 'Último usuario que lo cambió',
             actualizado  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+        // Bases creadas antes de que existieran las fechas
+        if (!$pdo->query("SHOW COLUMNS FROM inscripcion_formularios LIKE 'fecha_desde'")->fetch()) {
+            $pdo->exec("ALTER TABLE inscripcion_formularios
+                ADD COLUMN fecha_desde DATE NULL COMMENT 'Primer día en que se puede completar' AFTER habilitado,
+                ADD COLUMN fecha_hasta DATE NULL COMMENT 'Último día en que se puede completar' AFTER fecha_desde");
+        }
 
         $pdo->exec("CREATE TABLE IF NOT EXISTS inscripciones (
             id_inscripcion  INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -292,7 +301,7 @@ function insc_asegurar_tablas(PDO $pdo): bool {
     return $ok;
 }
 
-/** Estado de los formularios: clave => fila (habilitado, actualizado, id_usuario). */
+/** Estado de los formularios: clave => fila (habilitado, fechas, actualizado, id_usuario). */
 function insc_estados_formularios(PDO $pdo): array {
     $out = [];
     foreach ($pdo->query('SELECT * FROM inscripcion_formularios') as $f) {
@@ -301,10 +310,61 @@ function insc_estados_formularios(PDO $pdo): array {
     return $out;
 }
 
-function insc_habilitado(PDO $pdo, string $clave): bool {
-    $st = $pdo->prepare('SELECT habilitado FROM inscripcion_formularios WHERE clave = ?');
+function insc_fila_formulario(PDO $pdo, string $clave): ?array {
+    $st = $pdo->prepare('SELECT * FROM inscripcion_formularios WHERE clave = ?');
     $st->execute([$clave]);
-    return (int) $st->fetchColumn() === 1;
+    return $st->fetch() ?: null;
+}
+
+// ============================================================
+//  PERÍODO DE INSCRIPCIÓN
+// ============================================================
+
+/** Hoy en Argentina (el php.ini del servidor puede tener otra zona horaria). */
+function insc_hoy(): string {
+    return (new DateTimeImmutable('now', new DateTimeZone('America/Argentina/Buenos_Aires')))->format('Y-m-d');
+}
+
+function insc_fecha_valida(string $v): bool {
+    $d = DateTime::createFromFormat('!Y-m-d', $v);
+    return $d !== false && $d->format('Y-m-d') === $v;
+}
+
+/** 2026-11-01 → 01/11/2026 */
+function insc_fecha_ar(string $ymd): string {
+    return implode('/', array_reverse(explode('-', $ymd)));
+}
+
+/** "Del 01/11/2026 al 15/12/2026", "Desde el …", "Hasta el …" o '' si no hay fechas. */
+function insc_texto_periodo(?string $desde, ?string $hasta): string {
+    if ($desde && $hasta) return 'Del ' . insc_fecha_ar($desde) . ' al ' . insc_fecha_ar($hasta);
+    if ($desde)           return 'Desde el ' . insc_fecha_ar($desde);
+    if ($hasta)           return 'Hasta el ' . insc_fecha_ar($hasta);
+    return '';
+}
+
+/**
+ * Estado real de un formulario combinando el interruptor y las fechas.
+ * motivo: 'abierto' | 'deshabilitado' | 'proximamente' | 'finalizado'
+ * Sin fila (sin base) = deshabilitado.
+ */
+function insc_estado(?array $fila): array {
+    $desde = ($fila['fecha_desde'] ?? null) ?: null;
+    $hasta = ($fila['fecha_hasta'] ?? null) ?: null;
+    $hoy   = insc_hoy();
+
+    if ((int) ($fila['habilitado'] ?? 0) !== 1) $motivo = 'deshabilitado';
+    elseif ($desde && $hoy < $desde)            $motivo = 'proximamente';
+    elseif ($hasta && $hoy > $hasta)            $motivo = 'finalizado';
+    else                                        $motivo = 'abierto';
+
+    return [
+        'abierto' => $motivo === 'abierto',
+        'motivo'  => $motivo,
+        'desde'   => $desde,
+        'hasta'   => $hasta,
+        'periodo' => insc_texto_periodo($desde, $hasta),
+    ];
 }
 
 // ============================================================

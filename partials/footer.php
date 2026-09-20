@@ -44,21 +44,21 @@ $anio        = date('Y');
       <div class="footer-links">
         <h4>Institucional</h4>
         <ul>
-          <li><a href="historia.php">Historia</a></li>
-          <li><a href="autoridades.php">Autoridades</a></li>
-          <li><a href="propuesta-educativa.php">Propuesta Educativa</a></li>
-          <li><a href="becas.php">Becas</a></li>
+          <li><a href="historia">Historia</a></li>
+          <li><a href="autoridades">Autoridades</a></li>
+          <li><a href="propuesta-educativa">Propuesta Educativa</a></li>
+          <li><a href="becas">Becas</a></li>
         </ul>
       </div>
 
       <div class="footer-links">
         <h4>Comunidad</h4>
         <ul>
-          <li><a href="centro-estudiantes.php">Centro de Estudiantes</a></li>
-          <li><a href="feria-ciencias.php">Feria de Ciencias</a></li>
-          <li><a href="trabaja-con-nosotros.php">Trabajá con Nosotros</a></li>
-          <li><a href="pastoral.php">Pastoral</a></li>
-          <li><a href="recorrido-360.php">Recorrido Virtual 360°</a></li>
+          <li><a href="centro-estudiantes">Centro de Estudiantes</a></li>
+          <li><a href="feria-ciencias">Feria de Ciencias</a></li>
+          <li><a href="trabaja-con-nosotros">Trabajá con Nosotros</a></li>
+          <li><a href="pastoral">Pastoral</a></li>
+          <li><a href="recorrido-360">Recorrido Virtual 360°</a></li>
         </ul>
       </div>
 
@@ -86,8 +86,8 @@ $anio        = date('Y');
           <?php if (cfg('horario_atencion')): ?>
             <li class="fc-horario"><?= cfg_e('horario_atencion') ?></li>
           <?php endif; ?>
-          <li><a href="contacto.php">Formulario de contacto</a></li>
-          <li><a href="ubicacion.php">Ubicación en el mapa</a></li>
+          <li><a href="contacto">Formulario de contacto</a></li>
+          <li><a href="ubicacion">Ubicación en el mapa</a></li>
         </ul>
       </div>
 
@@ -96,7 +96,7 @@ $anio        = date('Y');
     <div class="footer-bottom">
       <p>© <?= $anio ?> <?= cfg_e('nombre_colegio') ?>. Todos los derechos reservados.</p>
       <!-- Acceso al panel: discreto, y cambia a "Cerrar sesión" si ya ingresaste -->
-      <a href="login.php" id="footerLogin" class="footer-login" rel="nofollow">
+      <a href="login" id="footerLogin" class="footer-login" rel="nofollow">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         <span id="footerLoginTxt">Acceso institucional</span>
       </a>
@@ -220,8 +220,43 @@ $anio        = date('Y');
 
     document.addEventListener('click', function () { cerrarTodos(null); });
 
+    // ── Filtros por categoría como lista de selección ──────
+    //  Agenda y Novedades muestran los filtros como botones
+    //  (.filtro-list). En el celular ocupan varias filas, así que
+    //  armamos un <select> con los mismos links; el CSS decide cuál
+    //  se ve según el ancho. Si el JS no corre, quedan los botones.
+    Array.prototype.forEach.call(document.querySelectorAll('.filtro-list'), function (lista) {
+      var links = lista.querySelectorAll('a.filtro-link');
+      if (!links.length) return;
+
+      var select = document.createElement('select');
+      select.className = 'filtro-select';
+      select.setAttribute('aria-label', 'Filtrar por categoría');
+
+      Array.prototype.forEach.call(links, function (a) {
+        var cuenta = a.querySelector('.f-count');
+        var nombre = a.cloneNode(true);
+        if (nombre.querySelector('.f-count')) nombre.removeChild(nombre.querySelector('.f-count'));
+        var texto = nombre.textContent.trim();
+        if (cuenta) texto += ' (' + cuenta.textContent.trim() + ')';
+
+        var op = document.createElement('option');
+        op.value = a.getAttribute('href');
+        op.textContent = texto;
+        if (a.classList.contains('active')) op.selected = true;
+        select.appendChild(op);
+      });
+
+      select.addEventListener('change', function () {
+        window.location.href = select.value;
+      });
+
+      lista.parentNode.insertBefore(select, lista);
+      lista.classList.add('filtro-list--con-select');
+    });
+
     // ── Estado de sesión: personita en el header y pie ─────
-    fetch('session_status.php', { credentials: 'same-origin' })
+    fetch('session_status', { credentials: 'same-origin' })
       .then(function (r) { return r.ok ? r.json() : { logueado: false }; })
       .then(function (data) {
         if (!data || !data.logueado) return;
@@ -235,7 +270,7 @@ $anio        = date('Y');
         if (rol)    rol.textContent  = data.rol || '';
         if (avatar && data.iniciales) avatar.textContent = data.iniciales;
         if (badge)  badge.style.display = 'inline-flex';
-        if (footer) footer.setAttribute('href', 'panel.php');
+        if (footer) footer.setAttribute('href', 'panel');
         if (ftxt)   ftxt.textContent = 'Ir al panel';
       })
       .catch(function () { /* sin sesión: queda "Acceso institucional" */ });

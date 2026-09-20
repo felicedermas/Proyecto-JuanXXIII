@@ -5,7 +5,7 @@
 $page_title      = 'Secundaria Orientada';
 $page_desc       = 'Secundaria Orientada del Colegio Parroquial Juan XXIII: ciclo básico y orientaciones en Economía y Ciencias Naturales.';
 $nav_active      = 'niveles';
-$nav_active_link = 'sec-orientada.php';
+$nav_active_link = 'sec-orientada';
 $page_style = <<<'CSS'
 /* ============================================================
        SECUNDARIA ORIENTADA — paleta verde-azul oscuro
@@ -419,9 +419,9 @@ require __DIR__ . '/partials/header.php';
   <section class="so-hero">
     <div class="so-hero-content">
       <div class="so-breadcrumb">
-        <a href="index.php">Inicio</a>
+        <a href="./">Inicio</a>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        <a href="nivel-secundario.php">Secundario</a>
+        <a href="nivel-secundario">Secundario</a>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         <span>Orientada</span>
       </div>
@@ -429,7 +429,7 @@ require __DIR__ . '/partials/header.php';
       <p class="so-hero-desc">Bachillerato de 6 años con ciclo básico común y orientaciones en Economía o Ciencias Naturales. Formación integral para el ingreso universitario y la vida ciudadana.</p>
       <div class="hero-cta">
         <a href="#estructura" class="btn btn-primary">Conocer la estructura</a>
-        <a href="nivel-secundario.php" class="btn btn-outline">← Ver modalidad Técnica</a>
+        <a href="nivel-secundario" class="btn btn-outline">← Ver modalidad Técnica</a>
       </div>
     </div>
   </section>
@@ -784,7 +784,7 @@ require __DIR__ . '/partials/header.php';
     <p>Coordiná una visita o envianos tu consulta. Te respondemos a la brevedad.</p>
     <div class="contacto-btns">
       <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-white">Solicitar información</a>
-      <a href="nivel-secundario.php" class="btn btn-outline">← Volver al selector</a>
+      <a href="nivel-secundario" class="btn btn-outline">← Volver al selector</a>
     </div>
   </div>
 

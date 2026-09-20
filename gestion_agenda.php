@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
         $pdo->prepare('DELETE FROM agenda WHERE id_evento = ?')->execute([$id]);
         flash('ok', 'Evento eliminado correctamente.');
     }
-    header('Location: gestion_agenda.php');
+    header('Location: gestion_agenda');
     exit;
 }
 
@@ -43,7 +43,7 @@ if (isset($_GET['editar'])) {
         $edit = $row;
     } else {
         flash('error', 'No podés editar ese evento.');
-        header('Location: gestion_agenda.php');
+        header('Location: gestion_agenda');
         exit;
     }
 }
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
                 ':l' => $lugar_v, ':en' => $enlace_v, ':uid' => $u['id_usuario'],
             ]);
             flash('ok', 'Evento creado correctamente.');
-            header('Location: gestion_agenda.php');
+            header('Location: gestion_agenda');
             exit;
         } else {
             $chk = $pdo->prepare('SELECT id_usuario FROM agenda WHERE id_evento = ?');
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
             $autor = $chk->fetchColumn();
             if ($autor === false || !puede_gestionar((int)$autor)) {
                 flash('error', 'No tenés permiso para editar ese evento.');
-                header('Location: gestion_agenda.php');
+                header('Location: gestion_agenda');
                 exit;
             }
             $upd = $pdo->prepare(
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
                 ':l' => $lugar_v, ':en' => $enlace_v, ':id' => $id,
             ]);
             flash('ok', 'Evento actualizado correctamente.');
-            header('Location: gestion_agenda.php');
+            header('Location: gestion_agenda');
             exit;
         }
     } else {
@@ -152,7 +152,7 @@ require __DIR__ . '/panel_header.php';
 ?>
 
     <div class="panel-toolbar">
-      <a href="panel.php" class="back-link">
+      <a href="panel" class="back-link">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel
       </a>
     </div>
@@ -166,7 +166,7 @@ require __DIR__ . '/panel_header.php';
         <div class="alert alert-error"><?= implode('<br>', array_map('e', $errores)) ?></div>
       <?php endif; ?>
 
-      <form method="post" action="gestion_agenda.php">
+      <form method="post" action="gestion_agenda">
         <?= csrf_input() ?>
         <input type="hidden" name="accion" value="<?= $modo === 'editar' ? 'editar' : 'crear' ?>">
         <input type="hidden" name="id" value="<?= (int)$edit['id_evento'] ?>">
@@ -237,7 +237,7 @@ require __DIR__ . '/panel_header.php';
             <?= $modo === 'editar' ? 'Guardar cambios' : 'Crear evento' ?>
           </button>
           <?php if ($modo === 'editar'): ?>
-            <a href="gestion_agenda.php" class="btn btn-outline">Cancelar</a>
+            <a href="gestion_agenda" class="btn btn-outline">Cancelar</a>
           <?php endif; ?>
         </div>
       </form>
@@ -275,10 +275,10 @@ require __DIR__ . '/panel_header.php';
             <td>
               <div class="mng-actions" style="justify-content:flex-end;">
                 <?php if ($puede): ?>
-                  <a href="gestion_agenda.php?editar=<?= (int)$row['id_evento'] ?>" class="icon-btn" title="Editar">
+                  <a href="gestion_agenda?editar=<?= (int)$row['id_evento'] ?>" class="icon-btn" title="Editar">
                     <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
                   </a>
-                  <form method="post" action="gestion_agenda.php" style="display:inline;"
+                  <form method="post" action="gestion_agenda" style="display:inline;"
                         onsubmit="return confirm('¿Eliminar este evento? Esta acción no se puede deshacer.');">
                     <?= csrf_input() ?>
                     <input type="hidden" name="accion" value="borrar">

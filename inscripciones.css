@@ -53,6 +53,14 @@
 }
 .insc-cerrado-icono svg { width: 28px; height: 28px; stroke: var(--blue-dark); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .insc-cerrado p { font-family: var(--font-display); font-size: 1.35rem; color: var(--blue-dark); }
+.insc-periodo { display: inline-block; margin-top: .8rem; font-size: .92rem; color: #5b6270; }
+
+.insc-periodo-banner {
+  display: flex; align-items: center; gap: .6rem; margin-bottom: 1.2rem;
+  background: #fff; border-left: 4px solid var(--accent); border-radius: 12px;
+  padding: .85rem 1.1rem; box-shadow: var(--shadow-sm); font-size: .95rem; color: var(--blue-dark);
+}
+.insc-periodo-banner svg { width: 20px; height: 20px; flex-shrink: 0; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ── Envío correcto ── */
 .insc-ok {

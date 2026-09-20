@@ -74,7 +74,7 @@ function avatar_color(string $rol): string {
 
 $page_title      = 'Novedades';
 $page_desc       = 'Novedades del Colegio Parroquial Juan XXIII: comunicados, actividades y noticias de los tres niveles.';
-$nav_active_link = 'novedades.php';
+$nav_active_link = 'novedades';
 $header_compacto = true;
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -351,7 +351,7 @@ require __DIR__ . '/partials/header.php';
     <p class="sidebar-label">Categorías</p>
     <ul class="filtro-list">
       <li>
-        <a href="novedades.php" class="filtro-link <?= $filtro==='todas'?'active':'' ?>">
+        <a href="novedades" class="filtro-link <?= $filtro==='todas'?'active':'' ?>">
           <span class="f-dot" style="background:var(--blue-dark)"></span>
           Todas
           <span class="f-count"><?= $total_todas ?></span>
@@ -369,7 +369,7 @@ require __DIR__ . '/partials/header.php';
       ];
       foreach ($etiq_config as $etiq => $color): ?>
       <li>
-        <a href="novedades.php?etiqueta=<?= urlencode($etiq) ?>"
+        <a href="novedades?etiqueta=<?= urlencode($etiq) ?>"
            class="filtro-link <?= $filtro===$etiq?'active':'' ?>"
            <?= $filtro===$etiq ? "style=\"background:{$color};\"" : '' ?>>
           <span class="f-dot" style="background:<?= $color ?>"></span>
@@ -404,7 +404,7 @@ require __DIR__ . '/partials/header.php';
 
     <!-- ── CARD DESTACADA ── -->
     <div style="margin-bottom:1.25rem;">
-      <a href="novedad.php?id=<?= $destacada['id_novedad'] ?>" class="nov-card nov-card-featured" style="text-decoration:none;">
+      <a href="novedad?id=<?= $destacada['id_novedad'] ?>" class="nov-card nov-card-featured" style="text-decoration:none;">
         <div class="nov-img-wrap">
           <span class="nov-badge" style="background:<?= $d_color ?>"><?= htmlspecialchars($destacada['etiqueta']) ?></span>
           <?php if ($d_primera): ?>
@@ -437,7 +437,7 @@ require __DIR__ . '/partials/header.php';
         $imgs    = $imagenes_por_novedad[$nov['id_novedad']] ?? [];
         $primera = $imgs[0] ?? null;
       ?>
-      <a href="novedad.php?id=<?= $nov['id_novedad'] ?>" class="nov-card" style="text-decoration:none;">
+      <a href="novedad?id=<?= $nov['id_novedad'] ?>" class="nov-card" style="text-decoration:none;">
         <div class="nov-img-wrap">
           <span class="nov-badge" style="background:<?= $color ?>"><?= htmlspecialchars($nov['etiqueta']) ?></span>
           <?php if ($primera): ?>

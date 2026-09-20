@@ -5,12 +5,12 @@
 $page_title      = 'Feria de Ciencias';
 $page_desc       = 'Feria Anual de Ciencias del Colegio Parroquial Juan XXIII: proyectos, innovación y trabajo de los alumnos.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'feria-ciencias.php';
+$nav_active_link = 'feria-ciencias';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Comunidad' => null, 'Feria de Ciencias' => null], 'Comunidad', 'Feria Anual de <em>Ciencias</em>', 'Cada año, nuestros estudiantes transforman la curiosidad en proyectos: experimentos, prototipos e ideas que cambian la mirada sobre el mundo.'); ?>
+  <?php page_hero(['Inicio' => './', 'Comunidad' => null, 'Feria de Ciencias' => null], 'Comunidad', 'Feria Anual de <em>Ciencias</em>', 'Cada año, nuestros estudiantes transforman la curiosidad en proyectos: experimentos, prototipos e ideas que cambian la mirada sobre el mundo.'); ?>
 
   <section class="content-section">
     <div class="prose narrow" style="max-width:820px;margin:0 auto;">
@@ -63,7 +63,7 @@ require __DIR__ . '/partials/header.php';
   <section class="cta-band">
     <h2>Próxima edición: octubre 2026</h2>
     <p>Te esperamos para descubrir el ingenio y la creatividad de nuestros estudiantes.</p>
-    <a href="agenda.php" class="btn btn-white">Ver agenda</a>
+    <a href="agenda" class="btn btn-white">Ver agenda</a>
   </section>
 
   

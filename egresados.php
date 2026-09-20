@@ -43,7 +43,7 @@ function tiempo_relativo(string $fecha): string {
 $page_title      = 'Egresados';
 $page_desc       = 'Egresados del Colegio Parroquial Juan XXIII: historias y trayectorias de nuestros ex-alumnos.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'egresados.php';
+$nav_active_link = 'egresados';
 $header_compacto = true;
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -403,7 +403,7 @@ require __DIR__ . '/partials/header.php';
   </p>
 
   <!-- ── CARD DESTACADA ── -->
-  <a href="egresado.php?id=<?= $destacado['id_egresado'] ?>" class="egr-featured">
+  <a href="egresado?id=<?= $destacado['id_egresado'] ?>" class="egr-featured">
     <div class="egr-featured-img">
       <?php if ($foto_dest): ?>
         <img src="<?= htmlspecialchars($foto_dest) ?>" alt="<?= htmlspecialchars($destacado['nombre'].' '.$destacado['apellido']) ?>"/>
@@ -436,7 +436,7 @@ require __DIR__ . '/partials/header.php';
       $foto = $egr['foto_perfil'] ?? $fotos_extra[$egr['id_egresado']] ?? null;
       $ini  = strtoupper(substr($egr['nombre'],0,1).substr($egr['apellido'],0,1));
     ?>
-    <a href="egresado.php?id=<?= $egr['id_egresado'] ?>" class="egr-card">
+    <a href="egresado?id=<?= $egr['id_egresado'] ?>" class="egr-card">
       <div class="egr-card-img">
         <?php if ($foto): ?>
           <img src="<?= htmlspecialchars($foto) ?>" alt="<?= htmlspecialchars($egr['nombre'].' '.$egr['apellido']) ?>"/>

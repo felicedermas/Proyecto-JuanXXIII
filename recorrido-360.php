@@ -72,6 +72,7 @@ foreach ($escenas as $s) {
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;overflow:hidden;font-family:var(--font-body);background:var(--ink)}
+  html{touch-action:manipulation}  /* sin zoom por doble toque; el visor 360° maneja sus propios gestos */
 
   .tour-header{position:fixed;top:0;left:0;right:0;height:58px;z-index:60;
     display:flex;align-items:center;gap:.9rem;padding:0 1rem;
@@ -154,7 +155,7 @@ foreach ($escenas as $s) {
 <body>
 
 <header class="tour-header">
-  <a class="th-back" href="index.php" title="Volver al sitio">
+  <a class="th-back" href="./" title="Volver al sitio">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     Sitio
   </a>

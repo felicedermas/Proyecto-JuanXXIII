@@ -88,7 +88,7 @@ $hoy = date('Y-m-d');
 
 $page_title      = 'Agenda';
 $page_desc       = 'Agenda institucional del Colegio Parroquial Juan XXIII: actos, reuniones, exámenes y fechas importantes.';
-$nav_active_link = 'agenda.php';
+$nav_active_link = 'agenda';
 $header_compacto = true;
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -316,7 +316,7 @@ require __DIR__ . '/partials/header.php';
   <div class="ag-topbar">
     <ul class="filtro-list">
       <li>
-        <a href="agenda.php<?= $ver_pasados ? '?ver=todos' : '' ?>" class="filtro-link <?= $filtro==='todas'?'active':'' ?>">
+        <a href="agenda<?= $ver_pasados ? '?ver=todos' : '' ?>" class="filtro-link <?= $filtro==='todas'?'active':'' ?>">
           <span class="f-dot" style="background:#fff"></span>
           Todas
           <span class="f-count"><?= $total_todas ?></span>
@@ -335,7 +335,7 @@ require __DIR__ . '/partials/header.php';
         $qs = 'etiqueta=' . urlencode($etiq) . ($ver_pasados ? '&ver=todos' : '');
       ?>
       <li>
-        <a href="agenda.php?<?= $qs ?>" class="filtro-link <?= $filtro===$etiq?'active':'' ?>">
+        <a href="agenda?<?= $qs ?>" class="filtro-link <?= $filtro===$etiq?'active':'' ?>">
           <span class="f-dot" style="background:<?= $color ?>"></span>
           <?= htmlspecialchars($etiq) ?>
           <span class="f-count"><?= $conteos[$etiq] ?? 0 ?></span>
@@ -350,8 +350,8 @@ require __DIR__ . '/partials/header.php';
 
     <div class="ver-toggle">
       <?php $base_q = $filtro !== 'todas' ? 'etiqueta=' . urlencode($filtro) : ''; ?>
-      <a href="agenda.php<?= $base_q ? '?'.$base_q : '' ?>" class="<?= !$ver_pasados ? 'on' : '' ?>">▸ Próximos</a>
-      <a href="agenda.php?<?= $base_q ? $base_q.'&' : '' ?>ver=todos" class="<?= $ver_pasados ? 'on' : '' ?>">▸ Ver todo</a>
+      <a href="agenda<?= $base_q ? '?'.$base_q : '' ?>" class="<?= !$ver_pasados ? 'on' : '' ?>">▸ Próximos</a>
+      <a href="agenda?<?= $base_q ? $base_q.'&' : '' ?>ver=todos" class="<?= $ver_pasados ? 'on' : '' ?>">▸ Ver todo</a>
     </div>
   </div>
 
@@ -394,7 +394,7 @@ require __DIR__ . '/partials/header.php';
             <?php foreach ($items as $ev):
               $color = etiqueta_color($ev['etiqueta']);
             ?>
-            <a href="evento.php?id=<?= $ev['id_evento'] ?>" class="ag-event"
+            <a href="evento?id=<?= $ev['id_evento'] ?>" class="ag-event"
                style="border-left-color:<?= $color ?>;">
               <div class="ag-event-top">
                 <span class="ag-event-icon"><?= tipo_icono($ev['tipo']) ?></span>

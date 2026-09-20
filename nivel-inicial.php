@@ -20,7 +20,7 @@ function ni_tiempo_relativo(string $fecha): string {
 $page_title      = 'Nivel Inicial';
 $page_desc       = 'Nivel Inicial del Colegio Parroquial Juan XXIII: salas de 3, 4 y 5 años. Propuesta lúdica y acompañamiento.';
 $nav_active      = 'niveles';
-$nav_active_link = 'nivel-inicial.php';
+$nav_active_link = 'nivel-inicial';
 $page_style = <<<'CSS'
 /* ============================================================
        NIVEL INICIAL — Estética infantil con manchas de pintura
@@ -408,7 +408,7 @@ CSS;
 require __DIR__ . '/partials/header.php';
 ?>
   <!-- ===== BOTÓN DE INSCRIPCIÓN FIJO (debajo del header, derecha) ===== -->
-  <a href="inscripcion-jardin.php" class="ni-inscribite-fija">
+  <a href="inscripcion-jardin" class="ni-inscribite-fija">
     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
     ¡Inscribite al Jardín!
   </a>
@@ -426,7 +426,7 @@ require __DIR__ . '/partials/header.php';
       <h1>Donde aprender es <span class="crayon c-rosa">jugar</span>,<br/>crear y <span class="crayon c-celeste">soñar</span> <span class="crayon c-amarillo">juntos</span></h1>
       <p>Un espacio cálido, seguro y lleno de color donde los más pequeños dan sus primeros pasos en el mundo del aprendizaje, acompañados con amor y dedicación.</p>
       <div class="ni-hero-cta">
-        <a href="inscripcion-jardin.php" class="ni-btn-grande ni-btn-rosa">
+        <a href="inscripcion-jardin" class="ni-btn-grande ni-btn-rosa">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Inscribite ahora
         </a>
@@ -523,7 +523,7 @@ require __DIR__ . '/partials/header.php';
           <p>Enterate de los últimos eventos, actos y comunicados del Nivel Inicial.</p>
           <span class="ac-go">Ver novedades <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span>
         </a>
-        <a href="inscripcion-jardin.php" class="ni-acceso" style="--ac:var(--ni-verde);">
+        <a href="inscripcion-jardin" class="ni-acceso" style="--ac:var(--ni-verde);">
           <div class="ac-emoji">✏️</div>
           <h3>Inscripciones</h3>
           <p>¿Listos para empezar? Inscribí a tu hijo o hija en pocos pasos.</p>
@@ -630,7 +630,7 @@ require __DIR__ . '/partials/header.php';
           <div class="ni-espacio"><span>🎵</span> Sala de música</div>
           <div class="ni-espacio"><span>🌱</span> Huerta escolar</div>
         </div>
-        <a href="recorrido-360.php" class="ni-btn-grande ni-btn-blanco" style="border-color:#fff;">
+        <a href="recorrido-360" class="ni-btn-grande ni-btn-blanco" style="border-color:#fff;">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
           Iniciar recorrido 360°
         </a>
@@ -734,7 +734,7 @@ require __DIR__ . '/partials/header.php';
       ?>
         <div class="ni-nov-grid">
           <!-- Destacada -->
-          <a href="novedad.php?id=<?= $destacada['id_novedad'] ?>" class="ni-nov-card destacada">
+          <a href="novedad?id=<?= $destacada['id_novedad'] ?>" class="ni-nov-card destacada">
             <div class="ni-nov-img">
               <span class="ni-nov-badge">Inicial</span>
               <?php if ($d_primera): ?>
@@ -757,7 +757,7 @@ require __DIR__ . '/partials/header.php';
             $imgs    = $imagenes_por_novedad[$nov['id_novedad']] ?? [];
             $primera = $imgs[0] ?? null;
           ?>
-          <a href="novedad.php?id=<?= $nov['id_novedad'] ?>" class="ni-nov-card">
+          <a href="novedad?id=<?= $nov['id_novedad'] ?>" class="ni-nov-card">
             <div class="ni-nov-img">
               <span class="ni-nov-badge">Inicial</span>
               <?php if ($primera): ?>
@@ -778,7 +778,7 @@ require __DIR__ . '/partials/header.php';
       <?php endif; ?>
 
       <div class="ni-nov-cta">
-        <a href="novedades.php?etiqueta=Inicial" class="ni-btn-grande ni-btn-rosa">
+        <a href="novedades?etiqueta=Inicial" class="ni-btn-grande ni-btn-rosa">
           Ver todas las novedades del jardín
           <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
         </a>
@@ -807,11 +807,11 @@ require __DIR__ . '/partials/header.php';
     <h2>¿Listos para esta aventura? 🚀</h2>
     <p>Te invitamos a formar parte de nuestra familia. Inscribí a tu hijo o hija y empecemos juntos este hermoso camino.</p>
     <div class="ni-cierre-btns">
-      <a href="inscripcion-jardin.php" class="ni-btn-grande ni-btn-rosa">
+      <a href="inscripcion-jardin" class="ni-btn-grande ni-btn-rosa">
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         Inscribirse al Jardín
       </a>
-      <a href="contacto.php" class="ni-btn-grande ni-btn-blanco">
+      <a href="contacto" class="ni-btn-grande ni-btn-blanco">
         <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         Hacé tu consulta
       </a>

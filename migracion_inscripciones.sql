@@ -9,13 +9,22 @@
 --  de CREATE. Se puede correr más de una vez sin problema.
 -- ============================================================
 
--- Qué formularios están habilitados en el sitio
+-- Qué formularios están habilitados en el sitio y en qué período
+-- (fecha_desde / fecha_hasta son opcionales; el formulario se puede
+-- completar solo si está habilitado Y hoy está dentro del período)
 CREATE TABLE IF NOT EXISTS inscripcion_formularios (
   clave        VARCHAR(20)  NOT NULL PRIMARY KEY,
   habilitado   TINYINT(1)   NOT NULL DEFAULT 0,
+  fecha_desde  DATE         NULL COMMENT 'Primer día en que se puede completar',
+  fecha_hasta  DATE         NULL COMMENT 'Último día en que se puede completar',
   id_usuario   INT UNSIGNED NULL COMMENT 'Último usuario que lo cambió',
   actualizado  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Si la tabla ya existía sin las fechas (sintaxis de MariaDB)
+ALTER TABLE inscripcion_formularios
+  ADD COLUMN IF NOT EXISTS fecha_desde DATE NULL COMMENT 'Primer día en que se puede completar' AFTER habilitado,
+  ADD COLUMN IF NOT EXISTS fecha_hasta DATE NULL COMMENT 'Último día en que se puede completar' AFTER fecha_desde;
 
 INSERT IGNORE INTO inscripcion_formularios (clave, habilitado) VALUES
   ('jardin', 0), ('primaria', 0), ('sec', 0), ('hermanos', 0);

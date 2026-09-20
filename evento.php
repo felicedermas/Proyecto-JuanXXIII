@@ -7,7 +7,7 @@ require_once __DIR__ . '/conexion.php';
 $pdo = db();
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if (!$id || $id < 1) { header('Location: agenda.php'); exit; }
+if (!$id || $id < 1) { header('Location: agenda'); exit; }
 
 $stmt = $pdo->prepare("
     SELECT a.id_evento, a.titulo, a.descripcion, a.etiqueta, a.tipo,
@@ -19,7 +19,7 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$id]);
 $ev = $stmt->fetch();
-if (!$ev) { header('Location: agenda.php'); exit; }
+if (!$ev) { header('Location: agenda'); exit; }
 
 // Próximos eventos de la misma etiqueta (excluyendo el actual)
 $rel_stmt = $pdo->prepare("
@@ -73,7 +73,7 @@ $es_pasado = $ev['fecha_evento'] < date('Y-m-d');
 
 $page_title      = (string) ($ev['titulo']);
 $page_desc       = (string) (mb_substr(strip_tags((string)($ev['descripcion'] ?? '')), 0, 180));
-$nav_active_link = 'evento.php';
+$nav_active_link = 'evento';
 $header_compacto = true;
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -126,9 +126,9 @@ require __DIR__ . '/partials/header.php';
 ?>
 <!-- ══ BREADCRUMB ══════════════════════════════════════════ -->
 <div class="breadcrumb">
-  <a href="index.php">Inicio</a>
+  <a href="./">Inicio</a>
   <span class="breadcrumb-sep">›</span>
-  <a href="agenda.php">Agenda</a>
+  <a href="agenda">Agenda</a>
   <span class="breadcrumb-sep">›</span>
   <span class="breadcrumb-current"><?= htmlspecialchars($ev['titulo']) ?></span>
 </div>
@@ -136,7 +136,7 @@ require __DIR__ . '/partials/header.php';
 <!-- ══ CONTENIDO ═══════════════════════════════════════════ -->
 <div class="ev-wrap">
 
-  <a href="agenda.php" class="btn-volver">
+  <a href="agenda" class="btn-volver">
     <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
     Volver a la agenda
   </a>
@@ -189,7 +189,7 @@ require __DIR__ . '/partials/header.php';
         $rt = strtotime($rel['fecha_evento']);
         $rmes = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][(int)date('n',$rt)];
       ?>
-      <a href="evento.php?id=<?= $rel['id_evento'] ?>" class="rel-card" style="border-left-color:<?= $rc ?>">
+      <a href="evento?id=<?= $rel['id_evento'] ?>" class="rel-card" style="border-left-color:<?= $rc ?>">
         <div class="rel-fecha">
           <div class="rd"><?= date('j',$rt) ?></div>
           <div class="rm"><?= $rmes ?></div>

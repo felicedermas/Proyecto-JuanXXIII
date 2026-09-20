@@ -33,7 +33,7 @@ $yo          = (int) usuario_actual()['id_usuario'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $accion = $_POST['accion'] ?? '';
-    $volver = 'gestion_inscripciones.php';
+    $volver = 'gestion_inscripciones';
 
     if ($accion === 'formulario') {
         if (!es_admin()) {
@@ -49,6 +49,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if ($accion === 'fechas') {
+        $clave = (string) ($_POST['clave'] ?? '');
+        $desde = trim((string) ($_POST['fecha_desde'] ?? ''));
+        $hasta = trim((string) ($_POST['fecha_hasta'] ?? ''));
+        if (!es_admin()) {
+            flash('error', 'Solo un administrador puede cambiar las fechas de los formularios.');
+        } elseif (isset($formularios[$clave])) {
+            if (($desde !== '' && !insc_fecha_valida($desde)) || ($hasta !== '' && !insc_fecha_valida($hasta))) {
+                flash('error', 'Alguna de las fechas no es válida.');
+            } elseif ($desde !== '' && $hasta !== '' && $hasta < $desde) {
+                flash('error', 'La fecha de cierre no puede ser anterior a la de apertura.');
+            } else {
+                $pdo->prepare('UPDATE inscripcion_formularios SET fecha_desde = ?, fecha_hasta = ?, id_usuario = ? WHERE clave = ?')
+                    ->execute([$desde ?: null, $hasta ?: null, $yo, $clave]);
+                $periodo = insc_texto_periodo($desde ?: null, $hasta ?: null);
+                flash('ok', 'Formulario «' . $formularios[$clave]['nombre'] . '»: '
+                    . ($periodo === '' ? 'fechas quitadas, depende solo del interruptor.' : 'período guardado (' . lcfirst($periodo) . ').'));
+            }
+        }
+    }
+
     if ($accion === 'estado') {
         $id     = (int) ($_POST['id'] ?? 0);
         $estado = (string) ($_POST['estado'] ?? '');
@@ -58,13 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute([$estado, mb_substr($notas, 0, 5000), $id]);
             flash('ok', 'Inscripción actualizada.');
         }
-        $volver = 'gestion_inscripciones.php?ver=' . $id;
+        $volver = 'gestion_inscripciones?ver=' . $id;
     }
 
     if ($accion === 'eliminar') {
         if (!es_admin()) {
             flash('error', 'Solo un administrador puede eliminar inscripciones.');
-            $volver = 'gestion_inscripciones.php?ver=' . (int) ($_POST['id'] ?? 0);
+            $volver = 'gestion_inscripciones?ver=' . (int) ($_POST['id'] ?? 0);
         } else {
             $pdo->prepare('DELETE FROM inscripciones WHERE id_inscripcion = ?')->execute([(int) ($_POST['id'] ?? 0)]);
             flash('ok', 'Inscripción eliminada.');
@@ -72,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Conserva los filtros con los que se estaba trabajando
-    if ($volver === 'gestion_inscripciones.php' && !empty($_POST['qs'])) {
+    if ($volver === 'gestion_inscripciones' && !empty($_POST['qs'])) {
         $volver .= '?' . preg_replace('/[^\w=&%.\-+]/u', '', (string) $_POST['qs']);
     }
     header('Location: ' . $volver);
@@ -209,7 +230,7 @@ require __DIR__ . '/panel_header.php';
 ?>
 
 <div class="panel-toolbar">
-  <a href="<?= $detalle ? 'gestion_inscripciones.php' . e(qs()) : 'panel.php' ?>" class="back-link">
+  <a href="<?= $detalle ? 'gestion_inscripciones' . e(qs()) : 'panel' ?>" class="back-link">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     <?= $detalle ? 'Volver al listado' : 'Volver al panel' ?>
   </a>
@@ -241,7 +262,7 @@ require __DIR__ . '/panel_header.php';
         <div class="ins-hermanos">
           <b>Enviada junto con sus hermanos/as:</b>
           <?php foreach ($hermanos as $h): ?>
-            <a href="gestion_inscripciones.php?ver=<?= (int) $h['id_inscripcion'] ?>">
+            <a href="gestion_inscripciones?ver=<?= (int) $h['id_inscripcion'] ?>">
               <?= e($h['alumno_nombre'] . ' ' . $h['alumno_apellido']) ?>
               <small><?= e(insc_sector($h['nivel'], $h['modalidad'], $h['anio'])) ?></small>
             </a>
@@ -316,7 +337,8 @@ require __DIR__ . '/panel_header.php';
   <?php endif; ?>
   <div class="ins-forms">
     <?php foreach ($formularios as $clave => $fd):
-      $on = (int) ($estados_form[$clave]['habilitado'] ?? 0) === 1;
+      $on  = (int) ($estados_form[$clave]['habilitado'] ?? 0) === 1;
+      $est = insc_estado($estados_form[$clave] ?? null);
       $cnt = $por_form[$clave] ?? ['total' => 0, 'nuevas' => 0]; ?>
       <div class="ins-form-card<?= $on ? ' is-on' : '' ?>" style="--acc:<?= e($fd['accent']) ?>">
         <div class="ins-form-top">
@@ -346,6 +368,37 @@ require __DIR__ . '/panel_header.php';
         <?php else: ?>
           <span class="ins-switch-txt ins-switch-ro"><?= $on ? '● Habilitado' : '○ Deshabilitado' ?></span>
         <?php endif; ?>
+
+        <?php if (es_admin()): ?>
+          <form method="post" class="ins-fechas">
+            <?= csrf_input() ?>
+            <input type="hidden" name="accion" value="fechas"/>
+            <input type="hidden" name="clave" value="<?= e($clave) ?>"/>
+            <input type="hidden" name="qs" value="<?= e($qs_actual) ?>"/>
+            <div class="ins-fechas-campos">
+              <label>Abre
+                <input type="date" name="fecha_desde" value="<?= e((string) $est['desde']) ?>"/>
+              </label>
+              <label>Cierra
+                <input type="date" name="fecha_hasta" value="<?= e((string) $est['hasta']) ?>"/>
+              </label>
+            </div>
+            <button type="submit" class="ins-fechas-btn">Guardar fechas</button>
+            <span class="ins-fechas-ayuda">Opcional. Borrá las dos y guardá para quitarlas.</span>
+          </form>
+        <?php elseif ($est['periodo'] !== ''): ?>
+          <p class="ins-fechas-ro"><?= e($est['periodo']) ?></p>
+        <?php endif; ?>
+
+        <p class="ins-publico ins-publico--<?= e($est['motivo']) ?>">
+          En el sitio:
+          <?= match ($est['motivo']) {
+              'abierto'      => '<b>abierto</b>' . ($est['hasta'] ? ' hasta el ' . e(insc_fecha_ar($est['hasta'])) : ''),
+              'proximamente' => '<b>se abre el ' . e(insc_fecha_ar($est['desde'])) . '</b>',
+              'finalizado'   => '<b>cerrado</b>: el período terminó el ' . e(insc_fecha_ar($est['hasta'])),
+              default        => '<b>cerrado</b>',
+          } ?>
+        </p>
       </div>
     <?php endforeach; ?>
   </div>
@@ -357,7 +410,7 @@ require __DIR__ . '/panel_header.php';
 
     <!-- Árbol: nivel → modalidad → año -->
     <nav class="ins-arbol" aria-label="Clasificación por nivel, modalidad y año">
-      <a href="gestion_inscripciones.php<?= e(qs(['nivel' => '', 'modalidad' => '', 'anio' => ''])) ?>"
+      <a href="gestion_inscripciones<?= e(qs(['nivel' => '', 'modalidad' => '', 'anio' => ''])) ?>"
          class="ins-nodo n0<?= !$f_nivel ? ' act' : '' ?>">
         Todas <span class="ins-cnt"><?= $total_general ?></span>
       </a>
@@ -365,7 +418,7 @@ require __DIR__ . '/panel_header.php';
         $nd = $arbol[$nivel] ?? ['total' => 0, 'nuevas' => 0, 'mods' => []];
         $sin_modalidad = $info['modalidades'] === ['General']; ?>
         <div class="ins-grupo" style="--nivel:<?= INSC_COLOR_NIVEL[$nivel] ?>">
-          <a href="gestion_inscripciones.php<?= e(qs(['nivel' => $nivel, 'modalidad' => '', 'anio' => ''])) ?>"
+          <a href="gestion_inscripciones<?= e(qs(['nivel' => $nivel, 'modalidad' => '', 'anio' => ''])) ?>"
              class="ins-nodo n1<?= $f_nivel === $nivel && !$f_mod && !$f_anio ? ' act' : '' ?>">
             <?= e($nivel) ?>
             <span class="ins-cnt<?= $nd['nuevas'] ? ' hay-nuevas' : '' ?>" title="<?= (int) $nd['nuevas'] ?> nuevas"><?= (int) $nd['total'] ?></span>
@@ -374,7 +427,7 @@ require __DIR__ . '/panel_header.php';
             <?php foreach ($info['modalidades'] as $mod):
               $md = $nd['mods'][$mod] ?? ['total' => 0, 'nuevas' => 0, 'anios' => []];
               if (!$sin_modalidad): ?>
-                <a href="gestion_inscripciones.php<?= e(qs(['modalidad' => $mod, 'anio' => ''])) ?>"
+                <a href="gestion_inscripciones<?= e(qs(['modalidad' => $mod, 'anio' => ''])) ?>"
                    class="ins-nodo n2<?= $f_mod === $mod && !$f_anio ? ' act' : '' ?>">
                   <?= e($mod) ?> <span class="ins-cnt<?= $md['nuevas'] ? ' hay-nuevas' : '' ?>"><?= (int) $md['total'] ?></span>
                 </a>
@@ -383,7 +436,7 @@ require __DIR__ . '/panel_header.php';
                 foreach ($info['anios'] as $ord => $txt):
                   if ($mod === 'Orientada' && $ord > 6) continue;
                   $ad = $md['anios'][$ord] ?? ['total' => 0, 'nuevas' => 0]; ?>
-                  <a href="gestion_inscripciones.php<?= e(qs(['modalidad' => $mod, 'anio' => $ord])) ?>"
+                  <a href="gestion_inscripciones<?= e(qs(['modalidad' => $mod, 'anio' => $ord])) ?>"
                      class="ins-nodo n3<?= $f_anio === $ord ? ' act' : '' ?><?= $ad['total'] ? '' : ' vacio' ?>">
                     <?= e($txt) ?> <span class="ins-cnt<?= $ad['nuevas'] ? ' hay-nuevas' : '' ?>"><?= $ad['total'] ?></span>
                   </a>
@@ -411,13 +464,13 @@ require __DIR__ . '/panel_header.php';
           <?php foreach ($formularios as $k => $fd): ?><option value="<?= e($k) ?>"<?= $f_form === $k ? ' selected' : '' ?>><?= e($fd['nombre']) ?></option><?php endforeach; ?>
         </select>
         <button type="submit" class="btn btn-primary">Filtrar</button>
-        <a href="gestion_inscripciones.php<?= e(qs(['exportar' => 1])) ?>" class="btn btn-secundario" title="Descarga lo que estás viendo">Exportar CSV</a>
+        <a href="gestion_inscripciones<?= e(qs(['exportar' => 1])) ?>" class="btn btn-secundario" title="Descarga lo que estás viendo">Exportar CSV</a>
       </form>
 
       <p class="ins-resumen">
         <?= count($lista) ?> inscripcion<?= count($lista) === 1 ? '' : 'es' ?>
         <?php if ($f_nivel): ?>en <b><?= e(implode(' › ', array_filter([$f_nivel, $f_mod !== 'General' ? $f_mod : '', $f_anio ? INSC_NIVELES[$f_nivel]['anios'][$f_anio] : '']))) ?></b><?php endif; ?>
-        <?php if ($f_nivel || $f_estado || $f_form || $f_q !== ''): ?>· <a href="gestion_inscripciones.php">Quitar filtros</a><?php endif; ?>
+        <?php if ($f_nivel || $f_estado || $f_form || $f_q !== ''): ?>· <a href="gestion_inscripciones">Quitar filtros</a><?php endif; ?>
       </p>
 
       <?php if (!$lista): ?>
@@ -442,7 +495,7 @@ require __DIR__ . '/panel_header.php';
             <?php endif; ?>
             <tr class="<?= $r['estado'] === 'Nueva' ? 'is-nueva' : '' ?>">
               <td>
-                <a href="gestion_inscripciones.php?ver=<?= (int) $r['id_inscripcion'] ?>" class="ins-nombre">
+                <a href="gestion_inscripciones?ver=<?= (int) $r['id_inscripcion'] ?>" class="ins-nombre">
                   <?= e($r['alumno_apellido'] . ', ' . $r['alumno_nombre']) ?>
                 </a>
                 <?php if ($r['formulario'] === 'hermanos'): ?><span class="ins-tag">Hermanos</span><?php endif; ?>
@@ -455,7 +508,7 @@ require __DIR__ . '/panel_header.php';
               <td style="white-space:nowrap;color:#667;"><?= e(date('d/m/Y', strtotime($r['creado_en']))) ?></td>
               <td><span class="ins-estado" style="--c:<?= COLOR_ESTADO[$r['estado']] ?>"><?= e($r['estado']) ?></span></td>
               <td style="text-align:right;">
-                <a href="gestion_inscripciones.php?ver=<?= (int) $r['id_inscripcion'] ?>" class="icon-btn" title="Ver inscripción" aria-label="Ver inscripción">
+                <a href="gestion_inscripciones?ver=<?= (int) $r['id_inscripcion'] ?>" class="icon-btn" title="Ver inscripción" aria-label="Ver inscripción">
                   <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </a>
               </td>
@@ -496,6 +549,26 @@ require __DIR__ . '/panel_header.php';
   .ins-switch:focus-visible { outline: 3px solid var(--blue-mid); outline-offset: 3px; border-radius: 6px; }
   .ins-switch-txt { font-size: .84rem; font-weight: 700; color: #667; }
   .ins-switch[aria-checked="true"] .ins-switch-txt, .is-on .ins-switch-ro { color: #1b7a44; }
+
+  .ins-fechas { display: flex; flex-direction: column; gap: .45rem; padding-top: .7rem; border-top: 1px solid #eef0f3; }
+  .ins-fechas-campos { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  .ins-fechas label { display: flex; flex-direction: column; gap: .2rem; font-size: .74rem; font-weight: 700; color: #667; }
+  .ins-fechas input[type=date] {
+    font-family: var(--font-body); font-size: .82rem; padding: .4rem .45rem; min-width: 0;
+    border: 1.5px solid #dfe3e8; border-radius: 8px; background: #fff; color: var(--blue-dark);
+  }
+  .ins-fechas-btn {
+    align-self: flex-start; font-family: var(--font-body); font-size: .8rem; font-weight: 700; cursor: pointer;
+    padding: .4rem .8rem; border-radius: 8px; border: 1.5px solid rgba(29,53,87,.2); background: #fff; color: var(--blue-dark);
+  }
+  .ins-fechas-btn:hover { background: var(--gray-100); }
+  .ins-fechas-ayuda { font-size: .72rem; color: #8a9099; }
+  .ins-fechas-ro { font-size: .84rem; font-weight: 700; color: var(--blue-dark); }
+
+  .ins-publico { font-size: .8rem; color: #667; background: var(--gray-100); border-radius: 8px; padding: .45rem .6rem; }
+  .ins-publico--abierto { color: #1b7a44; background: #eaf7ef; }
+  .ins-publico--proximamente { color: #9a6700; background: #fff4d6; }
+  .ins-publico--finalizado { color: #c1121f; background: #fdecee; }
 
   /* Layout listado */
   .ins-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 1.4rem; align-items: start; }

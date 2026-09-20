@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $tabla_ok) {
             ? "Datos actualizados ($cambios campo" . ($cambios === 1 ? '' : 's') . ")."
             : 'No hubo cambios para guardar.');
     }
-    header('Location: gestion_contacto.php');
+    header('Location: gestion_contacto');
     exit;
 }
 
@@ -89,13 +89,13 @@ require __DIR__ . '/panel_header.php';
     <code>colegio_juan_xxiii</code>) y volvé a entrar a esta página.
   </div>
   <p style="margin-top:2rem;">
-    <a href="panel.php" class="back-link">
+    <a href="panel" class="back-link">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel
     </a>
   </p>
 <?php else: ?>
 
-  <form method="post" action="gestion_contacto.php" class="cfg-form">
+  <form method="post" action="gestion_contacto" class="cfg-form">
     <?= csrf_input() ?>
 
     <?php foreach ($grupos as $nombre_grupo => $campos): ?>
@@ -124,13 +124,13 @@ require __DIR__ . '/panel_header.php';
     <?php endforeach; ?>
 
     <div class="form-actions">
-      <a href="panel.php" class="btn btn-secundario">Cancelar</a>
+      <a href="panel" class="btn btn-secundario">Cancelar</a>
       <button type="submit" class="btn btn-primary">Guardar cambios</button>
     </div>
   </form>
 
   <p style="margin-top:2rem;">
-    <a href="index.php" class="back-link" target="_blank" rel="noopener">
+    <a href="./" class="back-link" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Ver el sitio con los cambios aplicados
     </a>

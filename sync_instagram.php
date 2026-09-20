@@ -104,9 +104,9 @@ header('Content-Type: text/html; charset=utf-8');
   <div class="consola"><?= htmlspecialchars($log->texto(), ENT_QUOTES, 'UTF-8') ?></div>
 
   <div class="links">
-    <a href="novedades.php">Ver el tablón de novedades</a>
-    <a href="gestion_instagram.php">Configurar las cuentas</a>
-    <a href="panel.php">Volver al panel</a>
+    <a href="novedades">Ver el tablón de novedades</a>
+    <a href="gestion_instagram">Configurar las cuentas</a>
+    <a href="panel">Volver al panel</a>
   </div>
 </body>
 </html>

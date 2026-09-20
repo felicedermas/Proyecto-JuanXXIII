@@ -4,6 +4,10 @@
 
 Options -Indexes
 DirectoryIndex index.php index.html
+# Sin esto, "/contacto" se redirige a "/contacto/" porque hay carpetas con el
+# mismo nombre (en Windows no importan las mayúsculas: Contacto/, Inscripciones/…)
+# y nunca llega a contacto.php.
+DirectorySlash Off
 
 # ── Redirecciones 301: las páginas pasaron de .html a .php ──
 # Mantiene vivos los links viejos (buscadores, favoritos, WhatsApp).
@@ -14,17 +18,48 @@ DirectoryIndex index.php index.html
 # rompiendo el link con un 403/404 en vez de llevar a la página nueva.
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  # Aplica las reglas también a carpetas pedidas sin barra final ("/JUAN23CLAUDE", "/contacto")
+  RewriteOptions AllowNoSlash
 
   # La antigua "recorrido-virtual.html" nunca existió: iba al 360°
   RewriteCond %{REQUEST_URI} ^(.*)/recorrido-virtual\.html$
-  RewriteRule ^ %1/recorrido-360.php [R=301,L]
+  RewriteRule ^ %1/recorrido-360 [R=301,L]
 
-  # Cualquier .html que tenga su equivalente .php redirige al .php.
+  # index.html / index.php → la carpeta ("/" en vez de "/index")
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteCond %{THE_REQUEST} \s([^?\s]*/)index\.(php|html)[?\s]
+  RewriteRule ^ %1 [R=301,L,NE]
+
+  # Cualquier .html que tenga su equivalente .php redirige a la URL limpia.
   # Se aplica AUNQUE el .html siga existiendo en la carpeta, para que
   # nadie vea la versión vieja de la página.
   RewriteCond %{REQUEST_URI} ^(.*)\.html$
   RewriteCond %{DOCUMENT_ROOT}%1.php -f
-  RewriteRule ^ %1.php [R=301,L]
+  RewriteRule ^ %1 [R=301,L,NE]
+
+  # ── URLs sin extensión ──
+  # 1) Links viejos con ".php" (favoritos, buscadores) → misma URL sin
+  #    ".php". Solo GET: un POST redirigido perdería los datos enviados.
+  #    Se mira THE_REQUEST (lo que pidió el navegador) para no entrar en
+  #    bucle con la reescritura interna del paso 2.
+  #    sync_instagram.php queda afuera: lo llaman tareas programadas con
+  #    curl, que no sigue redirecciones.
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteCond %{REQUEST_URI} !/sync_instagram\.php$
+  RewriteCond %{THE_REQUEST} \s([^?\s]+)\.php[?\s]
+  RewriteRule ^ %1 [R=301,L,NE]
+
+  # Carpeta real sin página del mismo nombre → con barra final
+  # (reemplaza a DirectorySlash, que está apagado más arriba)
+  RewriteCond %{REQUEST_URI} ^(.*[^/])$
+  RewriteCond %{DOCUMENT_ROOT}%1 -d
+  RewriteCond %{DOCUMENT_ROOT}%1.php !-f
+  RewriteRule ^ %1/ [R=301,L,NE]
+
+  # 2) "/historia" se sirve con historia.php (la barra sigue diciendo "/historia")
+  RewriteCond %{REQUEST_URI} ^(.*[^/])$
+  RewriteCond %{DOCUMENT_ROOT}%1.php -f
+  RewriteRule ^ %1.php [L]
 </IfModule>
 
 # ── Archivos que NO deben servirse nunca ────────────────────
@@ -37,6 +72,10 @@ DirectoryIndex index.php index.html
   Require all denied
 </FilesMatch>
 <Files "posts_simulados.json">
+  Require all denied
+</Files>
+<Files "generar_hash.php">
+  # Utilidad para uso local: nunca accesible desde el sitio
   Require all denied
 </Files>
 

@@ -5,12 +5,12 @@
 $page_title      = 'Ubicación';
 $page_desc       = 'Cómo llegar al Colegio Parroquial Juan XXIII: dirección, mapa y medios de transporte.';
 $nav_active      = 'contacto';
-$nav_active_link = 'ubicacion.php';
+$nav_active_link = 'ubicacion';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Contacto' => 'contacto.php', 'Ubicación' => null], 'Cómo llegar', '<em>Ubicación</em> en el mapa', 'Nos encontramos en el corazón de Ramos Mejía, con fácil acceso en transporte público y privado.'); ?>
+  <?php page_hero(['Inicio' => './', 'Contacto' => 'contacto', 'Ubicación' => null], 'Cómo llegar', '<em>Ubicación</em> en el mapa', 'Nos encontramos en el corazón de Ramos Mejía, con fácil acceso en transporte público y privado.'); ?>
 
   <section class="content-section">
     <?php /* El mapa se configura en el panel → Datos de contacto → "Mapa incrustado".
@@ -40,7 +40,7 @@ require __DIR__ . '/partials/header.php';
   <section class="cta-band">
     <h2>¿Querés visitarnos?</h2>
     <p>Coordiná una visita guiada y conocé nuestras instalaciones en persona.</p>
-    <a href="contacto.php" class="btn btn-white">Coordinar visita</a>
+    <a href="contacto" class="btn btn-white">Coordinar visita</a>
   </section>
 
   

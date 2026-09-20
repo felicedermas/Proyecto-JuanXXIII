@@ -12,7 +12,7 @@ require_once __DIR__ . '/partials/inscripciones.php';
 $page_title      = 'Inscripciones';
 $page_desc       = 'Preinscripción en línea al Colegio Parroquial Juan XXIII: Jardín de Infantes, Nivel Primario, Nivel Secundario (Orientada y Técnica) y hermanos.';
 $nav_active      = 'inscripciones';
-$nav_active_link = 'inscripciones.php';
+$nav_active_link = 'inscripciones';
 
 // Estado de cada formulario (sin base = todos cerrados, la página se ve igual)
 $estados = [];
@@ -24,7 +24,7 @@ if ($pdo !== null && insc_asegurar_tablas($pdo)) {
         $estados = [];
     }
 }
-$abierto = fn(string $clave): bool => (int) ($estados[$clave]['habilitado'] ?? 0) === 1;
+$estado_de = fn(string $clave): array => insc_estado($estados[$clave] ?? null);
 
 $formularios = insc_formularios();
 $por_nivel   = array_filter($formularios, fn($f) => $f['nivel'] !== null);
@@ -61,6 +61,14 @@ $page_style = <<<'CSS'
   .ih-estado::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
   .ih-estado.abierta { color: #1b7a44; background: #eaf7ef; }
   .ih-estado.cerrada { color: #6b7280; background: var(--gray-200); }
+  .ih-estado.proxima { color: #9a6700; background: #fff4d6; }
+
+  .ih-periodo {
+    display: flex; align-items: center; gap: .45rem; margin: -.6rem 0 1.2rem;
+    font-size: .86rem; font-weight: 700; color: var(--blue-dark);
+  }
+  .ih-periodo svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: var(--acc); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .ih-card--ancha .ih-periodo { margin: .5rem 0 0; }
 
   .ih-card h2 { font-family: var(--font-display); font-size: 1.45rem; color: var(--blue-dark); line-height: 1.15; }
   .ih-card h2 em { color: var(--acc); }
@@ -109,10 +117,18 @@ CSS;
 require __DIR__ . '/partials/header.php';
 
 /** Una tarjeta de formulario. */
-function ih_tarjeta(string $clave, array $f, bool $abierta, bool $ancha = false): void {
-    $flecha = '<svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
-    $estado = '<span class="ih-estado ' . ($abierta ? 'abierta">Inscripción abierta' : 'cerrada">Cerrada') . '</span>';
-    $boton  = '<span class="ih-btn">' . ($abierta ? 'Completar formulario' : 'Ver formulario') . $flecha . '</span>';
+function ih_tarjeta(string $clave, array $f, array $est, bool $ancha = false): void {
+    $abierta = $est['abierto'];
+    $flecha  = '<svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    $estado  = match ($est['motivo']) {
+        'abierto'      => '<span class="ih-estado abierta">Inscripción abierta</span>',
+        'proximamente' => '<span class="ih-estado proxima">Próximamente</span>',
+        default        => '<span class="ih-estado cerrada">Cerrada</span>',
+    };
+    $boton   = '<span class="ih-btn">' . ($abierta ? 'Completar formulario' : 'Ver formulario') . $flecha . '</span>';
+    $periodo = $est['periodo'] === '' ? '' :
+        '<p class="ih-periodo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
+        . e($est['periodo']) . '</p>';
     ?>
     <a href="<?= e($f['archivo']) ?>" class="ih-card<?= $ancha ? ' ih-card--ancha' : '' ?><?= $abierta ? '' : ' is-cerrada' ?>"
        style="--acc:<?= e($f['accent']) ?>">
@@ -122,6 +138,7 @@ function ih_tarjeta(string $clave, array $f, bool $abierta, bool $ancha = false)
           <div class="ih-texto">
             <h2><?= $f['titulo'] ?></h2>
             <p class="ih-bajada"><?= e($f['bajada']) ?>: completás una sola vez los datos de la familia y cargás a cada hijo/a en su nivel.</p>
+            <?= $periodo ?>
           </div>
           <div class="ih-lado"><?= $estado . $boton ?></div>
         <?php else: ?>
@@ -131,7 +148,7 @@ function ih_tarjeta(string $clave, array $f, bool $abierta, bool $ancha = false)
           </div>
           <h2><?= $f['titulo'] ?></h2>
           <p class="ih-bajada"><?= e($f['bajada']) ?></p>
-          <?= $boton ?>
+          <?= $periodo . $boton ?>
         <?php endif; ?>
       </div>
     </a>
@@ -140,7 +157,7 @@ function ih_tarjeta(string $clave, array $f, bool $abierta, bool $ancha = false)
 ?>
 
 <?php page_hero(
-  ['Inicio' => 'index.php', 'Inscripciones' => null],
+  ['Inicio' => './', 'Inscripciones' => null],
   'Admisiones',
   'Inscripciones <em>en línea</em>',
   'Elegí el nivel al que querés inscribir y completá la preinscripción. Si vas a inscribir a más de un hijo/a, usá el formulario de hermanos.'
@@ -148,10 +165,10 @@ function ih_tarjeta(string $clave, array $f, bool $abierta, bool $ancha = false)
 
 <section class="ih-wrap">
   <div class="ih-grid">
-    <?php foreach ($por_nivel as $clave => $f) ih_tarjeta($clave, $f, $abierto($clave)); ?>
+    <?php foreach ($por_nivel as $clave => $f) ih_tarjeta($clave, $f, $estado_de($clave)); ?>
   </div>
 
-  <?php ih_tarjeta('hermanos', $hermanos, $abierto('hermanos'), true); ?>
+  <?php ih_tarjeta('hermanos', $hermanos, $estado_de('hermanos'), true); ?>
 
   <div class="ih-proceso">
     <h2>¿Cómo sigue?</h2>

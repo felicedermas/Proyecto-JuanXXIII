@@ -5,12 +5,12 @@
 $page_title      = 'Propuesta Educativa';
 $page_desc       = 'Proyecto pedagógico del Colegio Parroquial Juan XXIII: formación integral, valores y acompañamiento en los tres niveles.';
 $nav_active      = 'institucional';
-$nav_active_link = 'propuesta-educativa.php';
+$nav_active_link = 'propuesta-educativa';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Institucional' => null, 'Propuesta Educativa' => null], 'Institucional', 'Una <em>educación integral</em> centrada en la persona', 'Formamos personas libres, críticas y solidarias, integrando la excelencia académica con los valores del Evangelio.'); ?>
+  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Propuesta Educativa' => null], 'Institucional', 'Una <em>educación integral</em> centrada en la persona', 'Formamos personas libres, críticas y solidarias, integrando la excelencia académica con los valores del Evangelio.'); ?>
 
   <section class="content-section">
     <div class="split reverse">
@@ -64,9 +64,9 @@ require __DIR__ . '/partials/header.php';
 
   <section class="content-section">
     <div class="card-grid">
-      <a href="nivel-inicial.php" class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><h3>Nivel Inicial</h3><p>Juego, descubrimiento y primeros aprendizajes.</p></a>
-      <a href="nivel-primario.php" class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><h3>Nivel Primario</h3><p>Hábitos de estudio, valores y conocimiento.</p></a>
-      <a href="nivel-secundario.php" class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><h3>Nivel Secundario</h3><p>Orientada y técnica, con proyección a futuro.</p></a>
+      <a href="nivel-inicial" class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><h3>Nivel Inicial</h3><p>Juego, descubrimiento y primeros aprendizajes.</p></a>
+      <a href="nivel-primario" class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><h3>Nivel Primario</h3><p>Hábitos de estudio, valores y conocimiento.</p></a>
+      <a href="nivel-secundario" class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><h3>Nivel Secundario</h3><p>Orientada y técnica, con proyección a futuro.</p></a>
     </div>
   </section>
 

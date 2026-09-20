@@ -18,11 +18,11 @@ const MENU_PRINCIPAL = [
         'titulo' => 'Institucional',
         'cols'   => false,
         'items'  => [
-            ['historia.php',            'Historia',             'Nuestra trayectoria desde 1962'],
-            ['autoridades.php',         'Autoridades',          'Equipo directivo y de gestión'],
-            ['propuesta-educativa.php', 'Propuesta Educativa',  'Proyecto pedagógico institucional'],
+            ['historia',            'Historia',             'Nuestra trayectoria desde 1962'],
+            ['autoridades',         'Autoridades',          'Equipo directivo y de gestión'],
+            ['propuesta-educativa', 'Propuesta Educativa',  'Proyecto pedagógico institucional'],
             ['divider'],
-            ['becas.php',               'Becas',                'Sistema de ayudas económicas'],
+            ['becas',               'Becas',                'Sistema de ayudas económicas'],
         ],
     ],
 
@@ -30,10 +30,10 @@ const MENU_PRINCIPAL = [
         'titulo' => 'Niveles',
         'cols'   => false,
         'items'  => [
-            ['nivel-inicial.php',   'Nivel Inicial',            'Sala de 3, 4 y 5'],
-            ['nivel-primario.php',  'Nivel Primario',           '1° a 6° grado'],
+            ['nivel-inicial',   'Nivel Inicial',            'Sala de 3, 4 y 5'],
+            ['nivel-primario',  'Nivel Primario',           '1° a 6° grado'],
             ['divider'],
-            ['nivel-secundario.php','Sec. Orientada / Técnica', 'Bachillerato · 6 o 7 años'],
+            ['nivel-secundario','Sec. Orientada / Técnica', 'Bachillerato · 6 o 7 años'],
         ],
     ],
 
@@ -41,7 +41,7 @@ const MENU_PRINCIPAL = [
     // a cada formulario. Los formularios se definen en partials/inscripciones.php
     'inscripciones' => [
         'titulo' => 'Inscripciones',
-        'href'   => 'inscripciones.php',
+        'href'   => 'inscripciones',
     ],
 
     'comunidad' => [
@@ -49,17 +49,17 @@ const MENU_PRINCIPAL = [
         'cols'   => true,
         'items'  => [
             ['heading', 'Participación'],
-            ['centro-estudiantes.php',      'Centro de Estudiantes',      'Voz y participación estudiantil'],
-            ['feria-ciencias.php',          'Feria Anual de Ciencias',    'Proyectos e innovación'],
-            ['pastoral.php',                'Pastoral',                   'Vida espiritual y solidaria'],
-            ['egresados.php',               'Egresados',                  'Historias de ex-alumnos'],
-            ['psicopedagogia.php',          'Equipo de Psicopedagogía',   'Acompañamiento y orientación'],
+            ['centro-estudiantes',      'Centro de Estudiantes',      'Voz y participación estudiantil'],
+            ['feria-ciencias',          'Feria Anual de Ciencias',    'Proyectos e innovación'],
+            ['pastoral',                'Pastoral',                   'Vida espiritual y solidaria'],
+            ['egresados',               'Egresados',                  'Historias de ex-alumnos'],
+            ['psicopedagogia',          'Equipo de Psicopedagogía',   'Acompañamiento y orientación'],
             ['heading', 'Vida escolar'],
-            ['deportes.php',                'Deportes',                   'Disciplinas y equipos'],
-            ['trabaja-con-nosotros.php',    'Trabajá con Nosotros',       'Sumate a nuestro equipo'],
-            ['recorrido-360.php',           'Recorrido Virtual 360°',     'Conocé las instalaciones'],
-            ['vinculos-institucionales.php','Vínculos Institucionales',   'Instituciones y empresas aliadas'],
-            ['plataforma.php',              'Plataforma',                 'Acceso a Xhendra'],
+            ['deportes',                'Deportes',                   'Disciplinas y equipos'],
+            ['trabaja-con-nosotros',    'Trabajá con Nosotros',       'Sumate a nuestro equipo'],
+            ['recorrido-360',           'Recorrido Virtual 360°',     'Conocé las instalaciones'],
+            ['vinculos-institucionales','Vínculos Institucionales',   'Instituciones y empresas aliadas'],
+            ['plataforma',              'Plataforma',                 'Acceso a Xhendra'],
         ],
     ],
 
@@ -67,8 +67,8 @@ const MENU_PRINCIPAL = [
         'titulo' => 'Contacto',
         'cols'   => false,
         'items'  => [
-            ['contacto.php',  'Contacto',             'Escribinos o llamanos'],
-            ['ubicacion.php', 'Ubicación en el Mapa', 'Cómo llegar al colegio'],
+            ['contacto',  'Contacto',             'Escribinos o llamanos'],
+            ['ubicacion', 'Ubicación en el Mapa', 'Cómo llegar al colegio'],
         ],
     ],
 ];

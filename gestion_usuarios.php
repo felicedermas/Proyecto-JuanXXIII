@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'cambi
             ->execute([$nivel > 0 ? $nivel : null, rol_legado($filaNivel), $id]);
         flash('ok', 'Nivel de permisos actualizado.');
     }
-    header('Location: gestion_usuarios.php');
+    header('Location: gestion_usuarios');
     exit;
 }
 
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
             flash('ok', 'Usuario eliminado correctamente.');
         }
     }
-    header('Location: gestion_usuarios.php');
+    header('Location: gestion_usuarios');
     exit;
 }
 
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'crear
         ]);
         $nuevoId = (int)$pdo->lastInsertId();
         flash('ok', "Usuario creado correctamente. ID asignado: #$nuevoId");
-        header('Location: gestion_usuarios.php');
+        header('Location: gestion_usuarios');
         exit;
     }
 }
@@ -157,7 +157,7 @@ require __DIR__ . '/panel_header.php';
 ?>
 
     <div class="panel-toolbar">
-      <a href="panel.php" class="back-link">
+      <a href="panel" class="back-link">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel
       </a>
     </div>
@@ -178,14 +178,14 @@ require __DIR__ . '/panel_header.php';
         El <strong>ID de usuario</strong> lo asigna el sistema automáticamente. El
         <strong>nivel de permisos</strong> es el rol del usuario: define a qué secciones
         del panel accede (se administran desde
-        <a href="gestion_permisos.php" style="color:var(--blue-mid);font-weight:700;">Permisos</a>).
+        <a href="gestion_permisos" style="color:var(--blue-mid);font-weight:700;">Permisos</a>).
       </p>
 
       <?php if ($errores): ?>
         <div class="alert alert-error"><?= implode('<br>', array_map('e', $errores)) ?></div>
       <?php endif; ?>
 
-      <form method="post" action="gestion_usuarios.php" autocomplete="off">
+      <form method="post" action="gestion_usuarios" autocomplete="off">
         <?= csrf_input() ?>
         <input type="hidden" name="accion" value="crear">
 
@@ -267,7 +267,7 @@ require __DIR__ . '/panel_header.php';
                 <?= e($row['nivel_nombre'] ?? 'Sin nivel') ?>
               </span>
             <?php else: ?>
-              <form method="post" action="gestion_usuarios.php" style="display:inline-flex;align-items:center;gap:.4rem;">
+              <form method="post" action="gestion_usuarios" style="display:inline-flex;align-items:center;gap:.4rem;">
                 <?= csrf_input() ?>
                 <input type="hidden" name="accion" value="cambiar_nivel">
                 <input type="hidden" name="id" value="<?= (int)$row['id_usuario'] ?>">
@@ -293,7 +293,7 @@ require __DIR__ . '/panel_header.php';
               <?php if ($esYo): ?>
                 <span style="font-size:.75rem;color:var(--gray-500);align-self:center;">Vos</span>
               <?php else: ?>
-                <form method="post" action="gestion_usuarios.php" style="display:inline;"
+                <form method="post" action="gestion_usuarios" style="display:inline;"
                       onsubmit="return confirm('¿Eliminar al usuario <?= e(addslashes($row['nombre'].' '.$row['apellido'])) ?>?');">
                   <?= csrf_input() ?>
                   <input type="hidden" name="accion" value="borrar">

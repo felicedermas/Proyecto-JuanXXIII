@@ -5,12 +5,12 @@
 $page_title      = 'Centro de Estudiantes';
 $page_desc       = 'Centro de Estudiantes del Colegio Parroquial Juan XXIII: participación, proyectos y voz estudiantil.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'centro-estudiantes.php';
+$nav_active_link = 'centro-estudiantes';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Comunidad' => null, 'Centro de Estudiantes' => null], 'Comunidad', 'Centro de <em>Estudiantes</em>', 'La voz organizada de los alumnos: un espacio de participación, representación y proyectos que mejoran la vida escolar.'); ?>
+  <?php page_hero(['Inicio' => './', 'Comunidad' => null, 'Centro de Estudiantes' => null], 'Comunidad', 'Centro de <em>Estudiantes</em>', 'La voz organizada de los alumnos: un espacio de participación, representación y proyectos que mejoran la vida escolar.'); ?>
 
   <section class="content-section">
     <div class="split">

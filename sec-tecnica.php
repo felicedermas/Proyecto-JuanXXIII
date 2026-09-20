@@ -5,7 +5,7 @@
 $page_title      = 'Secundaria Técnica';
 $page_desc       = 'Secundaria Técnica del Colegio Parroquial Juan XXIII: especialidades en Informática, Electrónica y Multimedios, título de Técnico.';
 $nav_active      = 'niveles';
-$nav_active_link = 'sec-tecnica.php';
+$nav_active_link = 'sec-tecnica';
 $page_style = <<<'CSS'
 /* ============================================================
        SECUNDARIA TÉCNICA — paleta industrial: azul profundo + naranja técnico
@@ -574,9 +574,9 @@ $page_style = <<<'CSS'
       .dc-grid        { grid-template-columns: 1fr 1fr; }
       .proyectos-grid { grid-template-columns: 1fr 1fr; }
       .ag-layout      { grid-template-columns: 1fr; }
-      .tablon-grid    { grid-template-columns: 1fr; }
+      .tablon-grid    { grid-template-columns: minmax(0, 1fr); }
       .feria-grid     { grid-template-columns: 1fr; }
-      .mesas-grid     { grid-template-columns: 1fr; }
+      .mesas-grid     { grid-template-columns: minmax(0, 1fr); }
       .taller-grid    { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
@@ -584,6 +584,11 @@ $page_style = <<<'CSS'
       .dc-grid        { grid-template-columns: 1fr; }
       .proyectos-grid { grid-template-columns: 1fr; }
       .st-section { padding: 3.5rem 1.25rem; }
+      .novedad-card   { padding: 1rem; gap: .8rem; }
+      .novedad-card > div:last-child { min-width: 0; }
+      .novedad-meta   { flex-wrap: wrap; }
+      .mesa-table th,
+      .mesa-table td  { padding: .55rem .5rem; }
     }
 CSS;
 require __DIR__ . '/partials/header.php';
@@ -592,9 +597,9 @@ require __DIR__ . '/partials/header.php';
   <section class="st-hero">
     <div class="st-hero-content">
       <div class="st-breadcrumb">
-        <a href="index.php">Inicio</a>
+        <a href="./">Inicio</a>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        <a href="nivel-secundario.php">Secundario</a>
+        <a href="nivel-secundario">Secundario</a>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         <span>Técnica</span>
       </div>
@@ -606,7 +611,7 @@ require __DIR__ . '/partials/header.php';
       <p class="st-hero-desc">Siete años de formación técnico-profesional con especialidades en Informática, Electrónica y Multimedios. Combinamos teoría, taller y práctica profesional para formar técnicos competentes.</p>
       <div class="hero-cta">
         <a href="#modalidad" class="btn btn-primary">¿Qué es la modalidad técnica?</a>
-        <a href="nivel-secundario.php" class="btn btn-outline">← Ver modalidad Orientada</a>
+        <a href="nivel-secundario" class="btn btn-outline">← Ver modalidad Orientada</a>
       </div>
     </div>
   </section>
@@ -620,7 +625,7 @@ require __DIR__ . '/partials/header.php';
       <li><a href="#taller"       class="st-anchor-link"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M22 12h-2M4 12H2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 22v-2M12 4V2"/></svg>Taller</a></li>
       <li><a href="#proyectos"    class="st-anchor-link"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Proyectos</a></li>
       <li><a href="#agenda"       class="st-anchor-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda</a></li>
-      <li><a href="novedades.php"    class="st-anchor-link"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>Novedades</a></li>
+      <li><a href="novedades"    class="st-anchor-link"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>Novedades</a></li>
       <li><a href="#feria"        class="st-anchor-link"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Feria y CE</a></li>
       <li><a href="#mesas"        class="st-anchor-link"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Mesas</a></li>
     </ul>
@@ -1160,7 +1165,7 @@ require __DIR__ . '/partials/header.php';
     <div class="contact-btns">
       <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-white">Consultas e inscripciones</a>
       <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-outline">Trabajar en la institución</a>
-      <a href="nivel-secundario.php" class="btn btn-dark">← Volver al selector</a>
+      <a href="nivel-secundario" class="btn btn-dark">← Volver al selector</a>
     </div>
   </div>
 

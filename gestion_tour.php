@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash('error', 'Error de base de datos: ' . $e->getMessage());
     }
 
-    header('Location: gestion_tour.php' . ($volver_a ? '?escena=' . $volver_a : ''));
+    header('Location: gestion_tour' . ($volver_a ? '?escena=' . $volver_a : ''));
     exit;
 }
 
@@ -191,7 +191,7 @@ require __DIR__ . '/panel_header.php';
 ?>
 
 <div class="panel-toolbar">
-  <a href="panel.php" class="back-link">
+  <a href="panel" class="back-link">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver al panel
   </a>
 </div>
@@ -253,7 +253,7 @@ require __DIR__ . '/panel_header.php';
       <?php else: ?>
         <?php foreach ($escenas as $e3): ?>
           <a class="escena-item <?= $sel && $e3['id_escena'] === $sel['id_escena'] ? 'sel' : '' ?>"
-             href="gestion_tour.php?escena=<?= (int)$e3['id_escena'] ?>">
+             href="gestion_tour?escena=<?= (int)$e3['id_escena'] ?>">
             <?= e($e3['nombre']) ?>
             <?php if (!$e3['activa']): ?><span class="off">oculta</span><?php endif; ?>
             <span class="ez"><?= e($e3['zona']) ?></span>

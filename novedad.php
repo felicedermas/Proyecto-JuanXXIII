@@ -9,7 +9,7 @@ $pdo = db();
 // Validar ID
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id || $id < 1) {
-    header('Location: novedades.php');
+    header('Location: novedades');
     exit;
 }
 
@@ -25,7 +25,7 @@ $stmt->execute([$id]);
 $nov = $stmt->fetch();
 
 if (!$nov) {
-    header('Location: novedades.php');
+    header('Location: novedades');
     exit;
 }
 
@@ -74,7 +74,7 @@ $portada = $imagenes[0]['url_imagen'] ?? null;
 
 $page_title      = (string) ($nov['titulo']);
 $page_desc       = (string) (mb_substr(strip_tags((string)$nov['descripcion']), 0, 180));
-$nav_active_link = 'novedad.php';
+$nav_active_link = 'novedad';
 $header_compacto = true;
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -328,9 +328,9 @@ require __DIR__ . '/partials/header.php';
 ?>
 <!-- ══ BREADCRUMB ══════════════════════════════════════════ -->
 <div class="breadcrumb">
-  <a href="index.php">Inicio</a>
+  <a href="./">Inicio</a>
   <span class="breadcrumb-sep">›</span>
-  <a href="novedades.php">Novedades</a>
+  <a href="novedades">Novedades</a>
   <span class="breadcrumb-sep">›</span>
   <span class="breadcrumb-current"><?= htmlspecialchars($nov['titulo']) ?></span>
 </div>
@@ -338,7 +338,7 @@ require __DIR__ . '/partials/header.php';
 <!-- ══ CONTENIDO ═══════════════════════════════════════════ -->
 <div class="nov-detail-wrap">
 
-  <a href="novedades.php" class="btn-volver">
+  <a href="novedades" class="btn-volver">
     <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
     Volver a novedades
   </a>
@@ -387,7 +387,7 @@ require __DIR__ . '/partials/header.php';
       <?php foreach ($relacionadas as $rel):
         $rel_color = etiqueta_color($rel['etiqueta']);
       ?>
-      <a href="novedad.php?id=<?= $rel['id_novedad'] ?>" class="rel-card">
+      <a href="novedad?id=<?= $rel['id_novedad'] ?>" class="rel-card">
         <?php if ($rel['portada']): ?>
           <img src="<?= htmlspecialchars($rel['portada']) ?>" alt="<?= htmlspecialchars($rel['titulo']) ?>" class="rel-img" loading="lazy"/>
         <?php else: ?>

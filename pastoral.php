@@ -5,12 +5,12 @@
 $page_title      = 'Pastoral';
 $page_desc       = 'Pastoral del Colegio Parroquial Juan XXIII: vida espiritual, acción solidaria y misiones.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'pastoral.php';
+$nav_active_link = 'pastoral';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Comunidad' => null, 'Pastoral' => null], 'Comunidad', 'Vida <em>Pastoral</em>', 'El corazón espiritual del colegio: un espacio de encuentro, fe y compromiso solidario que da identidad a nuestra comunidad.'); ?>
+  <?php page_hero(['Inicio' => './', 'Comunidad' => null, 'Pastoral' => null], 'Comunidad', 'Vida <em>Pastoral</em>', 'El corazón espiritual del colegio: un espacio de encuentro, fe y compromiso solidario que da identidad a nuestra comunidad.'); ?>
 
   <section class="content-section">
     <div class="split reverse">
@@ -45,7 +45,7 @@ require __DIR__ . '/partials/header.php';
       <span class="section-tag light">Nuestro lema</span>
       <h2 class="section-title light">Educar el corazón, no solo la mente</h2>
       <p>Inspirados en el espíritu del Papa Juan XXIII, buscamos formar personas capaces de transformar la realidad con bondad, justicia y esperanza.</p>
-      <a href="contacto.php" class="btn btn-primary">Sumate a la pastoral</a>
+      <a href="contacto" class="btn btn-primary">Sumate a la pastoral</a>
     </div>
     <div class="pastoral-image-wrap">
       <div class="image-placeholder pastoral-img"><span>Foto de la comunidad</span></div>

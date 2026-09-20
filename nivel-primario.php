@@ -5,7 +5,7 @@
 $page_title      = 'Nivel Primario';
 $page_desc       = 'Nivel Primario del Colegio Parroquial Juan XXIII: 1° a 6° grado, jornada, propuesta pedagógica y actividades.';
 $nav_active      = 'niveles';
-$nav_active_link = 'nivel-primario.php';
+$nav_active_link = 'nivel-primario';
 $page_style = <<<'CSS'
 /* ============================================================
        NIVEL PRIMARIO — estilos propios
@@ -699,7 +699,7 @@ require __DIR__ . '/partials/header.php';
     <div class="np-hero-shapes"><span></span><span></span><span></span></div>
     <div class="np-hero-content">
       <div class="np-breadcrumb">
-        <a href="index.php">Inicio</a>
+        <a href="./">Inicio</a>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         <span>Nivel Primario</span>
       </div>
@@ -1303,7 +1303,7 @@ require __DIR__ . '/partials/header.php';
     <p>Coordiná una visita guiada para conocer las aulas, los docentes y nuestra propuesta educativa en persona.</p>
     <div class="contacto-btns">
       <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-white">Solicitar visita guiada</a>
-      <a href="index.php" class="btn btn-outline">Volver al inicio</a>
+      <a href="./" class="btn btn-outline">Volver al inicio</a>
     </div>
   </div>
 

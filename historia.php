@@ -5,12 +5,12 @@
 $page_title      = 'Historia';
 $page_desc       = 'Más de seis décadas formando comunidad: la historia del Colegio Parroquial Juan XXIII desde su fundación en 1962.';
 $nav_active      = 'institucional';
-$nav_active_link = 'historia.php';
+$nav_active_link = 'historia';
 require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => 'index.php', 'Institucional' => null, 'Historia' => null], 'Institucional', 'Más de seis décadas <em>formando comunidad</em>', 'Desde 1962 acompañamos a miles de familias del oeste del Gran Buenos Aires con una propuesta educativa centrada en la persona, los valores y la excelencia.'); ?>
+  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Historia' => null], 'Institucional', 'Más de seis décadas <em>formando comunidad</em>', 'Desde 1962 acompañamos a miles de familias del oeste del Gran Buenos Aires con una propuesta educativa centrada en la persona, los valores y la excelencia.'); ?>
 
   <section class="content-section">
     <div class="split">
@@ -64,7 +64,7 @@ require __DIR__ . '/partials/header.php';
   <section class="cta-band">
     <h2>Una historia que seguís escribiendo vos</h2>
     <p>Sumate a una comunidad educativa con más de 70 años de trayectoria y proyecto a futuro.</p>
-    <a href="contacto.php" class="btn btn-white">Conocé el colegio</a>
+    <a href="contacto" class="btn btn-white">Conocé el colegio</a>
   </section>
 
   

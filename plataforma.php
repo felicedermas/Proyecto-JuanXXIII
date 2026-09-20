@@ -5,7 +5,7 @@
 $page_title      = 'Plataforma Xhendra';
 $page_desc       = 'Acceso a Xhendra, la plataforma de gestión académica del Colegio Parroquial Juan XXIII, para familias y alumnos.';
 $nav_active      = 'comunidad';
-$nav_active_link = 'plataforma.php';
+$nav_active_link = 'plataforma';
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
