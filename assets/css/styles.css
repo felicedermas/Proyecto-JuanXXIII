@@ -274,7 +274,7 @@ ul { list-style: none; }
   align-items: center;
   justify-content: center;
 
-  background-image: url('img/colegio.jpg');
+  background-image: url('../../img/colegio.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;

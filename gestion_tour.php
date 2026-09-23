@@ -4,9 +4,13 @@
 //  Panel de Control — Recorrido Virtual 360°
 //  Subida de fotos 360 (escenas) y editor visual de puntos de
 //  transición: doble click sobre el panorama para ubicarlos.
+//
+//  Acceso: usuarios con el permiso "Edición del recorrido 360°".
+//  El recorrido no está dividido en categorías, así que alcanza con
+//  la verificación al entrar: corta antes de procesar cualquier POST.
 // ============================================================
 require_once __DIR__ . '/panel_config.php';
-exigir_login();
+exigir_permiso('edita_tour', 'Edición del recorrido 360°');
 
 $u   = usuario_actual();
 $pdo = db();
@@ -196,8 +200,8 @@ require __DIR__ . '/panel_header.php';
   </a>
 </div>
 
-<link rel="stylesheet" href="pannellum/pannellum.css"/>
-<script src="pannellum/pannellum.js"></script>
+<link rel="stylesheet" href="vendor/pannellum/pannellum.css"/>
+<script src="vendor/pannellum/pannellum.js"></script>
 
 <style>
   .tour-grid{display:grid;grid-template-columns:320px 1fr;gap:1.2rem;align-items:start}

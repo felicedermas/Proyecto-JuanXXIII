@@ -10,7 +10,9 @@
 //  Si el formulario está deshabilitado desde el panel, se muestra
 //  únicamente el aviso "Actualmente el formulario no está habilitado".
 //
-//  Uso (antes del require):  $insc_clave = 'jardin' | 'primaria' | 'sec' | 'hermanos';
+//  Uso (antes del require):  $insc_clave = 'jardin' | 'primaria' |
+//  'sec' | 'hermanos' | 'mesas' | 'becas'. Cada clave es una entrada
+//  de insc_formularios(); esta página no sabe nada de los campos.
 // ============================================================
 
 declare(strict_types=1);
@@ -75,7 +77,24 @@ if ($habilitado && $_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$errores) {
             try {
                 $grupo = insc_guardar($pdo, $insc_clave, $r['alumnos'], $ip);
-                $_SESSION['insc_enviado'] = ['clave' => $insc_clave, 'grupo' => $grupo, 'n' => count($r['alumnos'])];
+
+                // Aviso por correo: confirmación a quien se inscribió y
+                // aviso a la casilla del colegio. Va después de guardar y
+                // aparte, para que un problema con el correo no tire abajo
+                // una inscripción que ya está registrada.
+                $aviso = false;
+                try {
+                    $aviso = insc_avisar_envio($def, $r['alumnos'], $grupo);
+                } catch (Throwable $ex) {
+                    error_log('[juan23] aviso de inscripción no enviado: ' . $ex->getMessage());
+                }
+
+                $_SESSION['insc_enviado'] = [
+                    'clave' => $insc_clave,
+                    'grupo' => $grupo,
+                    'n'     => count($r['alumnos']),
+                    'mail'  => $aviso ? ($r['alumnos'][0]['tutor_email'] ?? '') : '',
+                ];
                 header('Location: ' . $def['archivo'] . '?enviado=1');   // PRG: F5 no reenvía
                 exit;
             } catch (Throwable $ex) {
@@ -166,14 +185,14 @@ $colegio = cfg('nombre_colegio');
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Inscripción <?= e(strip_tags($def['nombre'])) ?> — <?= e($colegio) ?></title>
-  <meta name="description" content="Preinscripción <?= e($def['nombre']) ?> del <?= e($colegio) ?>."/>
+  <title><?= e(strip_tags($def['titulo'])) ?> — <?= e($colegio) ?></title>
+  <meta name="description" content="<?= e(strip_tags($def['titulo'])) ?> en línea del <?= e($colegio) ?>."/>
 <?php require __DIR__ . '/favicon.php'; ?>
   <meta name="theme-color" content="#1D3557"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link rel="stylesheet" href="<?= asset('styles.css') ?>"/>
-  <link rel="stylesheet" href="<?= asset('inscripciones.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('assets/css/styles.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('assets/css/inscripciones.css') ?>"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>:root { --accent: <?= e($def['accent']) ?>; --accent-light: <?= e($def['accent_light']) ?>; }</style>
 </head>
@@ -228,11 +247,16 @@ $colegio = cfg('nombre_colegio');
       <div class="insc-ok-icono" aria-hidden="true">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <h2>¡Recibimos la preinscripción!</h2>
+      <h2><?= e($def['ok_titulo'] ?? '¡Recibimos la preinscripción!') ?></h2>
       <p>
-        <?= $enviado['n'] > 1 ? 'Registramos a los ' . (int) $enviado['n'] . ' hijos/as.' : 'Registramos los datos del alumno/a.' ?>
+        <?= $enviado['n'] > 1
+              ? 'Registramos a los ' . (int) $enviado['n'] . ' hijos/as.'
+              : e($def['ok_texto'] ?? 'Registramos los datos del alumno/a.') ?>
         La Secretaría se va a comunicar con vos por teléfono o correo para seguir con el proceso.
       </p>
+      <?php if (!empty($enviado['mail'])): ?>
+        <p>Te mandamos la confirmación por correo a <b><?= e($enviado['mail']) ?></b>. Si no la ves, revisá la carpeta de correo no deseado.</p>
+      <?php endif; ?>
       <?php if ($enviado['grupo'] !== '—'): ?>
         <p class="insc-ok-codigo">Código de envío: <b><?= e($enviado['grupo']) ?></b></p>
       <?php endif; ?>
@@ -350,6 +374,28 @@ $colegio = cfg('nombre_colegio');
       sync();
     }
     atarModalidadAnio(document.getElementById('f_modalidad'), document.getElementById('f_anio'), '7');
+
+    // Becas: el nivel y el año salen de un mismo campo ("Secundario|3").
+    // La modalidad solo corresponde al Secundario: se muestra sola.
+    var selNivelF = document.getElementById('f_nivel');
+    var modCampoF = document.querySelector('.insc-form [data-campo="modalidad"]');
+    if (selNivelF && modCampoF) {
+      var modSelF = modCampoF.querySelector('select');
+      var syncNivelF = function () {
+        var esSec = selNivelF.value.indexOf('Secundario|') === 0;
+        modCampoF.hidden = !esSec;
+        modSelF.required = esSec;
+        if (!esSec) modSelF.value = '';
+        var op7 = selNivelF.querySelector('option[value="Secundario|7"]');
+        if (op7) {
+          op7.disabled = modSelF.value === 'Orientada';
+          if (op7.disabled && selNivelF.value === 'Secundario|7') selNivelF.value = '';
+        }
+      };
+      selNivelF.addEventListener('change', syncNivelF);
+      modSelF.addEventListener('change', syncNivelF);
+      syncNivelF();
+    }
 
     // ── Hermanos: agregar / quitar hijos ──
     var wrap = document.getElementById('hijosWrap');

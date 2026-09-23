@@ -1029,7 +1029,7 @@ require __DIR__ . '/partials/header.php';
           <div class="aside-widget">
             <h4>🔗 Accesos rápidos</h4>
             <ul>
-              <li><a href="https://forms.google.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);">Inscripción a mesas de examen</a></li>
+              <li><a href="inscripcion-mesas" style="color:rgba(255,255,255,.75);">Inscripción a mesas de examen</a></li>
               <li><a href="https://forms.google.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);">Feria de Ciencias — inscribir proyecto</a></li>
               <li><a href="https://forms.google.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);">Trabajar en la institución</a></li>
               <li><a href="https://forms.google.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);">Consultas a secretaría</a></li>

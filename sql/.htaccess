@@ -1,0 +1,4 @@
+# Volcados y migraciones de la base: nunca se sirven por web.
+# La regla por extensión del .htaccess raíz ya cubre los .sql; esto
+# protege la carpeta entera por si mañana cae acá un .txt o un .zip.
+Require all denied

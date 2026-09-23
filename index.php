@@ -77,5 +77,10 @@ require __DIR__ . '/partials/header.php';
     </div>
   </section>
 
-  
+  <section class="cta-band">
+    <h2>¿Querés conocer sobre nuestros eventos?</h2>
+    <p>Actos, reuniones de familias, exámenes y las fechas de inscripción: todo lo que viene está en la agenda del colegio.</p>
+    <a href="agenda" class="btn btn-white">Ver la agenda</a>
+  </section>
+
 <?php require __DIR__ . '/partials/footer.php';

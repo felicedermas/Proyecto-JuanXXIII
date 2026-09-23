@@ -1,21 +1,42 @@
 <?php
+// ============================================================
+//  gestion_agenda.php
+//  Panel de Control — Agenda institucional
+//
+//  Acceso: usuarios con el permiso "Publicación de agenda".
+//  Cada evento lleva una categoría (Inicial, Primario, Secundario,
+//  Técnica, Orientada, Global) y el nivel de permisos define en
+//  cuáles puede publicar el usuario. La categoría se valida SIEMPRE
+//  al procesar el formulario: recortar el <select> es una comodidad,
+//  no una barrera (se puede editar desde el navegador).
+// ============================================================
 require_once __DIR__ . '/panel_config.php';
-exigir_login();
+exigir_permiso('pub_agenda', 'Publicación de agenda');
 
 $u   = usuario_actual();
 $pdo = db();
+
+// Categorías en las que este usuario puede publicar (el admin, todas)
+$cats_permitidas = categorias_permitidas('pub_agenda');
+
+/** Aviso único cuando la categoría elegida no está habilitada para el nivel. */
+function ag_error_categoria(string $etiqueta): string {
+    return 'Tu nivel de permisos no incluye la categoría «' . $etiqueta . '» en la agenda.';
+}
 
 // ── Borrado ──
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borrar') {
     csrf_check();
     $id = (int)($_POST['id'] ?? 0);
-    $row = $pdo->prepare('SELECT id_usuario FROM agenda WHERE id_evento = ?');
+    $row = $pdo->prepare('SELECT id_usuario, etiqueta FROM agenda WHERE id_evento = ?');
     $row->execute([$id]);
-    $autor = $row->fetchColumn();
-    if ($autor === false) {
+    $ev = $row->fetch();
+    if (!$ev) {
         flash('error', 'El evento no existe.');
-    } elseif (!puede_gestionar((int)$autor)) {
+    } elseif (!puede_gestionar((int)$ev['id_usuario'])) {
         flash('error', 'No tenés permiso para borrar ese evento.');
+    } elseif (!puede('pub_agenda', (string)$ev['etiqueta'])) {
+        flash('error', ag_error_categoria((string)$ev['etiqueta']));
     } else {
         $pdo->prepare('DELETE FROM agenda WHERE id_evento = ?')->execute([$id]);
         flash('ok', 'Evento eliminado correctamente.');
@@ -27,8 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
 // ── Alta / edición ──
 $errores = [];
 $modo    = 'crear';
+$etiqueta_inicial = in_array('Global', $cats_permitidas, true) ? 'Global' : ($cats_permitidas[0] ?? 'Global');
 $edit    = [
-    'id_evento' => 0, 'titulo' => '', 'descripcion' => '', 'etiqueta' => 'Global',
+    'id_evento' => 0, 'titulo' => '', 'descripcion' => '', 'etiqueta' => $etiqueta_inicial,
     'tipo' => 'Otro', 'fecha_evento' => '', 'hora_inicio' => '', 'hora_fin' => '',
     'lugar' => '', 'enlace' => '',
 ];
@@ -38,7 +60,7 @@ if (isset($_GET['editar'])) {
     $stmt = $pdo->prepare('SELECT * FROM agenda WHERE id_evento = ?');
     $stmt->execute([$id]);
     $row = $stmt->fetch();
-    if ($row && puede_gestionar((int)$row['id_usuario'])) {
+    if ($row && puede_gestionar((int)$row['id_usuario']) && puede('pub_agenda', (string)$row['etiqueta'])) {
         $modo = 'editar';
         $edit = $row;
     } else {
@@ -64,7 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
 
     if ($titulo === '')                                 $errores[] = 'El título es obligatorio.';
     if (mb_strlen($titulo) > 180)                       $errores[] = 'El título es demasiado largo (máx. 180).';
-    if (!in_array($etiqueta, ETIQUETAS_VALIDAS, true))  $errores[] = 'Etiqueta inválida.';
+    if (!in_array($etiqueta, ETIQUETAS_VALIDAS, true)) {
+        $errores[] = 'Etiqueta inválida.';
+    } elseif (!puede('pub_agenda', $etiqueta)) {
+        // Acá se corta de verdad: el desplegable recortado no alcanza,
+        // porque el valor enviado puede venir editado desde el navegador.
+        $errores[] = ag_error_categoria($etiqueta);
+    }
     if (!in_array($tipo, TIPOS_EVENTO, true))           $errores[] = 'Tipo de evento inválido.';
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha))    $errores[] = 'La fecha del evento es obligatoria.';
     if ($h_ini !== '' && !preg_match('/^\d{2}:\d{2}$/', $h_ini)) $errores[] = 'Hora de inicio inválida.';
@@ -94,10 +122,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
             header('Location: gestion_agenda');
             exit;
         } else {
-            $chk = $pdo->prepare('SELECT id_usuario FROM agenda WHERE id_evento = ?');
+            $chk = $pdo->prepare('SELECT id_usuario, etiqueta FROM agenda WHERE id_evento = ?');
             $chk->execute([$id]);
-            $autor = $chk->fetchColumn();
-            if ($autor === false || !puede_gestionar((int)$autor)) {
+            $actual = $chk->fetch();
+            if (!$actual || !puede_gestionar((int)$actual['id_usuario'])
+                || !puede('pub_agenda', (string)$actual['etiqueta'])) {
                 flash('error', 'No tenés permiso para editar ese evento.');
                 header('Location: gestion_agenda');
                 exit;
@@ -132,6 +161,12 @@ $sql = 'SELECT a.id_evento, a.titulo, a.etiqueta, a.tipo, a.fecha_evento, a.hora
         FROM agenda a JOIN usuarios us ON us.id_usuario = a.id_usuario
         ORDER BY a.fecha_evento DESC, a.hora_inicio ASC';
 $lista = $pdo->query($sql)->fetchAll();
+
+// Períodos de inscripción: la agenda del sitio los muestra sola, a partir de
+// lo cargado en gestion_inscripciones.php. Se listan acá solo para que se vean
+// (no se editan desde este panel).
+require_once __DIR__ . '/partials/inscripciones.php';
+$eventos_insc = insc_eventos_agenda($pdo);
 
 function color_etiqueta_ag(string $e): string {
     return match ($e) {
@@ -181,10 +216,13 @@ require __DIR__ . '/panel_header.php';
           <div class="field">
             <label for="etiqueta">Nivel / Etiqueta</label>
             <select id="etiqueta" name="etiqueta">
-              <?php foreach (ETIQUETAS_VALIDAS as $et): ?>
+              <?php foreach ($cats_permitidas as $et): ?>
                 <option value="<?= e($et) ?>" <?= $edit['etiqueta'] === $et ? 'selected' : '' ?>><?= e($et) ?></option>
               <?php endforeach; ?>
             </select>
+            <?php if (count($cats_permitidas) < count(ETIQUETAS_VALIDAS)): ?>
+              <span class="hint">Tu nivel de permisos habilita: <?= e(implode(', ', $cats_permitidas)) ?>.</span>
+            <?php endif; ?>
           </div>
           <div class="field">
             <label for="tipo">Tipo de evento</label>
@@ -243,6 +281,35 @@ require __DIR__ . '/panel_header.php';
       </form>
     </div>
 
+    <?php if ($eventos_insc): ?>
+      <h2 style="font-family:var(--font-display);color:var(--blue-dark);font-size:1.25rem;margin-bottom:.4rem;">
+        Fechas de inscripción
+      </h2>
+      <p style="font-size:.88rem;color:#667;margin-bottom:1rem;">
+        Salen solas de los períodos cargados en
+        <a href="gestion_inscripciones">Gestión de inscripciones</a> y se publican en la agenda
+        mientras el formulario esté habilitado. No hace falta cargarlas como evento.
+      </p>
+      <div style="overflow-x:auto;margin-bottom:2.5rem;">
+      <table class="mng-table">
+        <thead>
+          <tr><th>Fecha</th><th>Título</th><th>Período</th><th>Duración</th><th>Etiqueta</th></tr>
+        </thead>
+        <tbody>
+        <?php foreach ($eventos_insc as $ev): ?>
+          <tr>
+            <td style="white-space:nowrap;"><?= e(date('d/m/y', strtotime($ev['fecha_evento']))) ?></td>
+            <td><?= e($ev['titulo']) ?></td>
+            <td style="color:#667;"><?= e($ev['periodo']) ?></td>
+            <td style="color:#667;white-space:nowrap;"><?= e($ev['duracion'] !== '' ? $ev['duracion'] : '—') ?></td>
+            <td><span class="mng-badge" style="background:<?= color_etiqueta_ag($ev['etiqueta']) ?>"><?= e($ev['etiqueta']) ?></span></td>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+      </div>
+    <?php endif; ?>
+
     <h2 style="font-family:var(--font-display);color:var(--blue-dark);font-size:1.25rem;margin-bottom:1rem;">
       Eventos cargados
     </h2>
@@ -260,10 +327,10 @@ require __DIR__ . '/panel_header.php';
         </thead>
         <tbody>
         <?php foreach ($lista as $row): ?>
-          <?php $puede = puede_gestionar((int)$row['id_usuario']); ?>
+          <?php $puede = puede_gestionar((int)$row['id_usuario']) && puede('pub_agenda', (string)$row['etiqueta']); ?>
           <tr>
             <td style="white-space:nowrap;">
-              <?= e(date('d/m/Y', strtotime($row['fecha_evento']))) ?>
+              <?= e(date('d/m/y', strtotime($row['fecha_evento']))) ?>
               <?php if ($row['hora_inicio']): ?>
                 <span style="color:#889;font-size:.8rem;"><?= e(substr($row['hora_inicio'],0,5)) ?></span>
               <?php endif; ?>
@@ -288,7 +355,7 @@ require __DIR__ . '/panel_header.php';
                     </button>
                   </form>
                 <?php else: ?>
-                  <button class="icon-btn" disabled title="Solo el autor o un admin pueden gestionarlo">
+                  <button class="icon-btn" disabled title="Solo el autor o un admin pueden gestionarlo, y con la categoría habilitada">
                     <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                   </button>
                 <?php endif; ?>

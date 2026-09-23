@@ -683,7 +683,7 @@ require __DIR__ . '/partials/header.php';
           <div style="font-size:1.8rem;margin-bottom:.6rem;">📋</div>
           <h4>Inscripción a mesas de examen — período ordinario</h4>
           <p>Para materias libres o previas durante el ciclo lectivo. Período habilitado: (completar fechas).</p>
-          <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-so">
+          <a href="inscripcion-mesas" class="btn-so">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             Abrir formulario
           </a>
@@ -692,7 +692,7 @@ require __DIR__ . '/partials/header.php';
           <div style="font-size:1.8rem;margin-bottom:.6rem;">📝</div>
           <h4>Inscripción a mesas de examen — diciembre / febrero</h4>
           <p>Para materias previas del ciclo que finaliza o materias de años anteriores. Período habilitado: (completar).</p>
-          <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-so" style="background:var(--red);">
+          <a href="inscripcion-mesas" class="btn-so" style="background:var(--red);">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             Abrir formulario
           </a>

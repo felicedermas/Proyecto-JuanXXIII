@@ -17,6 +17,11 @@
 
 declare(strict_types=1);
 
+// El colegio está en Argentina. El php.ini del servidor puede tener otra
+// zona horaria y las fechas del sitio (agenda, períodos de inscripción)
+// se correrían un día. Se fija una sola vez, para todo el sitio.
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
 $__db = is_file(__DIR__ . '/config.local.php')
     ? (array) require __DIR__ . '/config.local.php'
     : [];

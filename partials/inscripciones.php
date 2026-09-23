@@ -8,8 +8,13 @@
 //
 //  Acá se define UNA sola vez:
 //    - la clasificación nivel → modalidad → año
-//    - los 4 formularios y sus campos
+//    - los formularios y sus campos
 //    - el acceso a la base (tablas, habilitado, guardado)
+//
+//  Agregar un formulario nuevo es definir sus campos en
+//  insc_formularios() y crear la página que lo llama
+//  (inscripcion-<clave>.php): el panel, la agenda, el aviso por
+//  correo y la página de Inscripciones lo toman solos.
 //
 //  Tablas: inscripcion_formularios e inscripciones
 //  (se crean solas; ver también migracion_inscripciones.sql).
@@ -65,11 +70,23 @@ const INSC_COLOR_NIVEL = [
 const INSC_OPC_VINCULO = ['Madre', 'Padre', 'Tutor/a legal', 'Otro'];
 const INSC_OPC_REF     = ['Recomendación de una familia', 'Redes sociales', 'Cercanía al domicilio', 'Ex alumno/a', 'Otro'];
 
+//  Mesas de examen (completar carrera) y becas
+const INSC_OPC_CONDICION = ['Materia previa', 'Materia libre', 'Equivalencia', 'Completar carrera'];
+const INSC_OPC_TURNO     = ['Turno diciembre', 'Turno febrero / marzo', 'Turno ordinario (durante el ciclo lectivo)'];
+const INSC_OPC_BECA      = ['Beca solidaria', 'Beca al mérito', 'Beca hermanos', 'Beca total', 'No sé cuál corresponde'];
+const INSC_OPC_INGRESOS  = ['Hasta 1 salario mínimo', 'Entre 1 y 2 salarios mínimos',
+                            'Entre 2 y 3 salarios mínimos', 'Más de 3 salarios mínimos',
+                            'Ingresos variables o changas', 'Sin ingresos fijos'];
+const INSC_OPC_CONVIVEN  = ['2', '3', '4', '5', '6', '7 o más'];
+
 /**
  * Definición de un campo:
  *   n => name · l => etiqueta · t => text|date|email|tel|dni|select|textarea
  *   r => obligatorio · o => opciones (select) · full => ocupa las 2 columnas
  *   ph => placeholder · max => largo máximo
+ *   edad_max => (date) años hacia atrás admitidos; por defecto 25, que
+ *   sirve para un alumno/a, pero no para quien vuelve a rendir materias
+ *   años después de haber cursado (mesas de examen)
  */
 function insc_campos_alumno(): array {
     return [
@@ -111,6 +128,21 @@ function insc_opciones_anio(string $nivel): array {
     return INSC_NIVELES[$nivel]['anios'];
 }
 
+/**
+ * Opciones agrupadas "Nivel|orden" => texto, con <optgroup> por nivel.
+ * Es el desplegable de los formularios que no son de un nivel fijo
+ * (hermanos, becas): el nivel y el año salen del mismo campo.
+ */
+function insc_opciones_nivel_anio(): array {
+    $opc = [];
+    foreach (INSC_NIVELES as $nivel => $info) {
+        foreach ($info['anios'] as $orden => $texto) {
+            $opc[$nivel][$nivel . '|' . $orden] = $texto;
+        }
+    }
+    return $opc;
+}
+
 // ── Los 4 formularios ───────────────────────────────────────
 //  La clave coincide con la página: inscripcion-{clave}.php
 function insc_formularios(): array {
@@ -132,6 +164,7 @@ function insc_formularios(): array {
             'icono'    => '🧸',
             'accent'   => '#E63946', 'accent_light' => '#ffb3b8',
             'nivel'    => 'Inicial',
+            'grupo'    => 'nivel',
             'pasos'    => $pasos_base,
             'secciones' => [
                 ['titulo' => 'Datos del/la alumno/a', 'campos' => array_merge(insc_campos_alumno(), [
@@ -150,6 +183,7 @@ function insc_formularios(): array {
             'icono'    => '✏️',
             'accent'   => '#1D3557', 'accent_light' => '#A8DADC',
             'nivel'    => 'Primario',
+            'grupo'    => 'nivel',
             'pasos'    => $pasos_base,
             'secciones' => [
                 ['titulo' => 'Datos del/la alumno/a', 'campos' => array_merge(insc_campos_alumno(), [
@@ -173,6 +207,7 @@ function insc_formularios(): array {
             'icono'    => '🎓',
             'accent'   => '#457B9D', 'accent_light' => '#A8DADC',
             'nivel'    => 'Secundario',
+            'grupo'    => 'nivel',
             'pasos'    => $pasos_base,
             'secciones' => [
                 ['titulo' => 'Datos del/la alumno/a', 'campos' => array_merge(insc_campos_alumno(), [
@@ -198,11 +233,127 @@ function insc_formularios(): array {
             'icono'    => '👨‍👩‍👧‍👦',
             'accent'   => '#6d6875', 'accent_light' => '#cfc9d4',
             'nivel'    => null,           // cada hijo/a elige su nivel
+            'multiple' => true,           // un registro por hijo/a
+            'grupo'    => 'otros',
             'pasos'    => [],
+            'bajada_larga' => 'Para familias que inscriben a dos o más hijos/as: completás una sola vez los datos de la familia y cargás a cada hijo/a en su nivel.',
             'aviso'    => 'Completá <b>una sola vez</b> los datos del grupo familiar y agregá tantos hijos/as como necesites. Cada hijo/a queda registrado en su nivel, modalidad y año. Las familias con hermanos/as ya matriculados tienen <b>prioridad en la vacante</b>.',
             'secciones' => [
                 ['titulo' => 'Datos del responsable / tutor', 'campos' => insc_campos_tutor(true)],
                 ['titulo' => 'Hijos/as a inscribir', 'hijos' => true],
+                ['titulo' => 'Información adicional', 'campos' => insc_campos_adicional(false)],
+            ],
+        ],
+
+        // Mesas de examen: lo pidió Secretaría para quienes vuelven a
+        // rendir materias, sobre todo para completar la carrera. El
+        // inscripto es la misma persona que deja el contacto, así que
+        // no hay sección de responsable (si es menor, se agrega aparte).
+        'mesas' => [
+            'archivo'  => 'inscripcion-mesas',
+            'nombre'   => 'Mesas de examen',
+            'titulo'   => 'Inscripción a <em>mesas de examen</em>',
+            'bajada'   => 'Materias previas, libres y para completar la carrera',
+            'bajada_larga' => 'Para rendir materias previas o libres y para completar la carrera: cargás las materias, la condición y el turno, y Secretaría te confirma la fecha por correo.',
+            'icono'    => '📋',
+            'accent'   => '#0d1b2a', 'accent_light' => '#A8DADC',
+            'nivel'    => 'Secundario',
+            'grupo'    => 'otros',
+            'ag_abre'   => 'Se abre la inscripción a mesas de examen',
+            'ag_cierra' => 'Último día para inscribirse a las mesas de examen',
+            'ag_curso'  => 'Inscripción a mesas de examen abierta',
+            'ok_titulo' => '¡Recibimos tu inscripción a la mesa!',
+            'ok_texto'  => 'Registramos las materias que vas a rendir.',
+            'aviso'    => 'Si terminaste de cursar y te quedan materias para <b>completar la carrera</b>, este es el formulario. Cargá <b>todas</b> las materias que vas a rendir en el mismo envío.',
+            'aviso_correo' => "\n\nLa fecha, la hora y el aula de cada mesa te las confirmamos\npor este mismo medio. El día del examen presentate con el DNI.",
+            'pasos'    => [
+                ['Completá el formulario',  'Materias, condición y turno en el que las rendís.'],
+                ['Secretaría confirma',     'Te avisamos por correo la fecha, la hora y el aula.'],
+                ['Presentate con el DNI',   'El día de la mesa, con DNI o identificación institucional.'],
+            ],
+            'secciones' => [
+                ['titulo' => 'Datos del/la estudiante', 'campos' => [
+                    ['n' => 'alumno_nombre',   'l' => 'Nombres',          't' => 'text', 'r' => true, 'max' => 120],
+                    ['n' => 'alumno_apellido', 'l' => 'Apellidos',        't' => 'text', 'r' => true, 'max' => 120],
+                    ['n' => 'alumno_dni',      'l' => 'DNI',              't' => 'dni',  'r' => true, 'ph' => 'Sin puntos'],
+                    // edad_max alto: quien completa la carrera puede haber
+                    // cursado hace muchos años (el tope de 25 no sirve acá).
+                    ['n' => 'alumno_fnac',     'l' => 'Fecha de nacimiento', 't' => 'date', 'r' => true, 'edad_max' => 90],
+                    ['n' => 'mesas_egreso',    'l' => 'Último año que cursaste en el colegio', 't' => 'text', 'r' => true, 'max' => 4, 'ph' => 'Ej.: 2019'],
+                ]],
+                ['titulo' => 'Materias a rendir', 'campos' => [
+                    ['n' => 'modalidad', 'l' => 'Modalidad que cursaste', 't' => 'select', 'r' => true, 'clasif' => 'modalidad',
+                     'o' => ['Orientada' => 'Secundaria Orientada', 'Técnica' => 'Secundaria Técnica']],
+                    ['n' => 'anio', 'l' => 'Año al que corresponden las materias', 't' => 'select', 'r' => true,
+                     'o' => insc_opciones_anio('Secundario'), 'clasif' => 'anio',
+                     'hint' => '7° año corresponde solo a la modalidad Técnica.'],
+                    ['n' => 'mesas_condicion', 'l' => 'Condición', 't' => 'select', 'r' => true, 'o' => INSC_OPC_CONDICION],
+                    ['n' => 'mesas_turno',     'l' => 'Turno de examen', 't' => 'select', 'r' => true, 'o' => INSC_OPC_TURNO],
+                    ['n' => 'mesas_materias',  'l' => 'Materias que vas a rendir', 't' => 'textarea', 'r' => true, 'max' => 1000, 'full' => true,
+                     'ph' => 'Una por línea. Ej.: Matemática · Lengua y Literatura…'],
+                ]],
+                ['titulo' => 'Datos de contacto', 'campos' => [
+                    ['n' => 'tutor_email', 'l' => 'Correo electrónico', 't' => 'email', 'r' => true, 'full' => true,
+                     'hint' => 'Acá te llega la confirmación y después la fecha de la mesa.'],
+                    ['n' => 'tutor_tel',   'l' => 'Teléfono de contacto', 't' => 'tel', 'r' => true],
+                    ['n' => 'tutor_nombre', 'l' => 'Responsable (solo si sos menor de edad)', 't' => 'text', 'r' => false, 'max' => 160],
+                ]],
+                ['titulo' => 'Información adicional', 'campos' => insc_campos_adicional(false)],
+            ],
+        ],
+
+        // Becas: la página de Becas explicaba el sistema y los
+        // requisitos, pero la solicitud había que hacerla en la
+        // administración. Acá se completa en línea.
+        'becas' => [
+            'archivo'  => 'inscripcion-becas',
+            'nombre'   => 'Solicitud de beca',
+            'titulo'   => 'Solicitud de <em>beca</em>',
+            'bajada'   => 'Ayuda económica para sostener la trayectoria escolar',
+            'bajada_larga' => 'Ayuda económica para sostener la trayectoria escolar: completás la solicitud en línea y el comité la evalúa con total confidencialidad.',
+            'icono'    => '🤝',
+            'accent'   => '#e09f3e', 'accent_light' => '#f3dfba',
+            'nivel'    => null,           // el nivel lo elige quien solicita
+            'grupo'    => 'otros',
+            'ag_abre'   => 'Se abren las solicitudes de beca',
+            'ag_cierra' => 'Último día para solicitar la beca',
+            'ag_curso'  => 'Solicitud de beca abierta',
+            'ok_titulo' => '¡Recibimos tu solicitud de beca!',
+            'ok_texto'  => 'Registramos la solicitud y la situación que nos contaste.',
+            'aviso'    => 'Un comité evalúa cada solicitud con <b>total confidencialidad</b>. Completar el formulario no garantiza la beca: es el primer paso para que te contactemos y coordines la entrega de la documentación.',
+            'aviso_correo' => "\n\nEl comité evalúa cada solicitud de manera confidencial. Te vamos a\npedir la documentación que respalde lo declarado antes de resolver.",
+            'pasos'    => [
+                ['Completá la solicitud',   'Datos del alumno/a y situación del grupo familiar.'],
+                ['Presentá la documentación', 'Comprobantes de ingresos y lo que se te indique.'],
+                ['Evaluación y resolución', 'El comité analiza el caso y te comunicamos la respuesta.'],
+            ],
+            'secciones' => [
+                ['titulo' => 'Datos del/la alumno/a', 'campos' => [
+                    ['n' => 'alumno_nombre',   'l' => 'Nombres del/la alumno/a', 't' => 'text', 'r' => true, 'max' => 120],
+                    ['n' => 'alumno_apellido', 'l' => 'Apellidos',               't' => 'text', 'r' => true, 'max' => 120],
+                    ['n' => 'alumno_dni',      'l' => 'DNI',                     't' => 'dni',  'r' => true, 'ph' => 'Sin puntos'],
+                    ['n' => 'alumno_fnac',     'l' => 'Fecha de nacimiento',     't' => 'date', 'r' => true],
+                    ['n' => 'nivel', 'l' => 'Nivel y sala / grado / año', 't' => 'select', 'r' => true,
+                     'o' => insc_opciones_nivel_anio(), 'clasif' => 'nivel', 'full' => true],
+                    ['n' => 'modalidad', 'l' => 'Modalidad (solo Secundario)', 't' => 'select', 'r' => false, 'clasif' => 'modalidad',
+                     'o' => ['Orientada' => 'Secundaria Orientada', 'Técnica' => 'Secundaria Técnica', 'A definir' => 'Aún no lo decidí']],
+                    ['n' => 'beca_actual', 'l' => '¿Ya es alumno/a del colegio?', 't' => 'select', 'r' => true,
+                     'o' => ['Sí, ya asiste', 'No, ingresa el año que viene']],
+                ]],
+                ['titulo' => 'Datos del responsable / tutor', 'campos' => insc_campos_tutor(true)],
+                ['titulo' => 'Situación del grupo familiar', 'campos' => [
+                    ['n' => 'beca_tipo',      'l' => 'Beca que solicitás', 't' => 'select', 'r' => true, 'o' => INSC_OPC_BECA],
+                    ['n' => 'beca_conviven',  'l' => 'Personas que viven en el hogar', 't' => 'select', 'r' => true, 'o' => INSC_OPC_CONVIVEN],
+                    ['n' => 'beca_ingresos',  'l' => 'Ingreso mensual del grupo familiar', 't' => 'select', 'r' => true, 'o' => INSC_OPC_INGRESOS],
+                    ['n' => 'beca_ocupacion', 'l' => 'Ocupación de los adultos a cargo', 't' => 'text', 'r' => true, 'max' => 200, 'full' => true,
+                     'ph' => 'Ej.: empleada de comercio · trabajo independiente'],
+                    ['n' => 'beca_hermanos',  'l' => '¿Hay hermanos/as en el colegio?', 't' => 'select', 'r' => true,
+                     'o' => ['No', 'Sí, 1', 'Sí, 2', 'Sí, 3 o más']],
+                    ['n' => 'beca_ayuda',     'l' => '¿Reciben alguna ayuda social?', 't' => 'select', 'r' => true,
+                     'o' => ['No', 'AUH', 'Otra ayuda o pensión', 'Prefiero contarlo en la entrevista']],
+                    ['n' => 'beca_motivo',    'l' => 'Contanos la situación', 't' => 'textarea', 'r' => true, 'max' => 2000, 'full' => true,
+                     'ph' => 'Por qué solicitás la beca. Lo que escribas es confidencial.'],
+                ]],
                 ['titulo' => 'Información adicional', 'campos' => insc_campos_adicional(false)],
             ],
         ],
@@ -214,12 +365,7 @@ const INSC_MAX_HIJOS = 8;
 
 /** Campos de cada hijo/a en el formulario de hermanos. */
 function insc_campos_hijo(): array {
-    $opc_nivel = [];
-    foreach (INSC_NIVELES as $nivel => $info) {
-        foreach ($info['anios'] as $orden => $texto) {
-            $opc_nivel[$nivel][$nivel . '|' . $orden] = $texto;   // se renderiza con <optgroup>
-        }
-    }
+    $opc_nivel = insc_opciones_nivel_anio();   // se renderiza con <optgroup>
     return [
         ['n' => 'nombre',    'l' => 'Nombres',              't' => 'text',   'r' => true, 'max' => 120],
         ['n' => 'apellido',  'l' => 'Apellidos',            't' => 'text',   'r' => true, 'max' => 120],
@@ -330,9 +476,10 @@ function insc_fecha_valida(string $v): bool {
     return $d !== false && $d->format('Y-m-d') === $v;
 }
 
-/** 2026-11-01 → 01/11/2026 */
+/** 2026-11-01 → 01/11/26 (formato corto que se usa en todo el módulo) */
 function insc_fecha_ar(string $ymd): string {
-    return implode('/', array_reverse(explode('-', $ymd)));
+    [$a, $m, $d] = array_pad(explode('-', $ymd), 3, '');
+    return $d . '/' . $m . '/' . substr($a, -2);
 }
 
 /** "Del 01/11/2026 al 15/12/2026", "Desde el …", "Hasta el …" o '' si no hay fechas. */
@@ -365,6 +512,118 @@ function insc_estado(?array $fila): array {
         'hasta'   => $hasta,
         'periodo' => insc_texto_periodo($desde, $hasta),
     ];
+}
+
+// ============================================================
+//  EVENTOS PARA LA AGENDA
+// ============================================================
+
+/** Días que dura un período, contando el primero y el último. 0 si falta una fecha. */
+function insc_dias_periodo(?string $desde, ?string $hasta): int {
+    if (!$desde || !$hasta) return 0;
+    $d = DateTimeImmutable::createFromFormat('!Y-m-d', $desde);
+    $h = DateTimeImmutable::createFromFormat('!Y-m-d', $hasta);
+    if (!$d || !$h || $h < $d) return 0;
+    return (int) $d->diff($h)->days + 1;
+}
+
+/** "1 día" · "45 días" · '' cuando el período no tiene las dos fechas. */
+function insc_texto_duracion(?string $desde, ?string $hasta): string {
+    $n = insc_dias_periodo($desde, $hasta);
+    if ($n === 0) return '';
+    return $n === 1 ? '1 día' : $n . ' días';
+}
+
+/**
+ * Eventos de agenda generados a partir de los períodos de inscripción
+ * cargados en el panel (gestion_inscripciones.php).
+ *
+ * NO se guardan en la tabla `agenda`: se calculan en cada visita, así la
+ * agenda siempre coincide con lo que está configurado y no hay que
+ * acordarse de cargar (ni de borrar) el evento a mano.
+ *
+ * Se publica solo lo que realmente va a pasar: el formulario tiene que
+ * estar habilitado y tener al menos una de las dos fechas.
+ *
+ * Por cada formulario puede salir:
+ *   - la apertura (en fecha_desde)
+ *   - el último día (en fecha_hasta)
+ *   - "inscripción abierta" en el día de hoy, mientras el período corre,
+ *     para que no desaparezca de la agenda apenas pasa la apertura.
+ *
+ * Las filas tienen la misma forma que las de `agenda`, más:
+ *   url · periodo · duracion · auto
+ */
+function insc_eventos_agenda(?PDO $pdo): array {
+    if ($pdo === null) return [];
+    try {
+        $filas = insc_estados_formularios($pdo);
+    } catch (Throwable $ex) {
+        return [];                       // sin tablas todavía: la agenda sigue andando
+    }
+
+    $hoy = insc_hoy();
+    $out = [];
+
+    foreach (insc_formularios() as $clave => $def) {
+        $fila = $filas[$clave] ?? null;
+        if ($fila === null || (int) $fila['habilitado'] !== 1) continue;
+
+        $desde = ($fila['fecha_desde'] ?? null) ?: null;
+        $hasta = ($fila['fecha_hasta'] ?? null) ?: null;
+        if (!$desde && !$hasta) continue;   // abierto sin período: no es una fecha de agenda
+
+        $nombre = $def['nombre'];
+        $base = [
+            'id_evento'   => null,
+            'etiqueta'    => $def['nivel'] ?? 'Global',
+            'tipo'        => 'Inscripción',
+            'hora_inicio' => null,
+            'hora_fin'    => null,
+            'lugar'       => null,
+            'enlace'      => $def['archivo'],
+            'autor'       => null,
+            'url'         => $def['archivo'],
+            'periodo'     => insc_texto_periodo($desde, $hasta),
+            'duracion'    => insc_texto_duracion($desde, $hasta),
+            'auto'        => true,
+        ];
+
+        if ($desde) {
+            $out[] = $base + [
+                'fecha_evento' => $desde,
+                'titulo'       => $def['ag_abre'] ?? ('Se abre la inscripción · ' . $nombre),
+                'descripcion'  => $hasta
+                    ? 'Desde este día y hasta el ' . insc_fecha_ar($hasta)
+                      . ' se puede completar el formulario en línea de ' . $nombre . '.'
+                    : 'Desde este día se puede completar el formulario en línea de ' . $nombre
+                      . '. La fecha de cierre todavía no está definida.',
+            ];
+        }
+
+        if ($hasta && $hasta !== $desde) {
+            $out[] = $base + [
+                'fecha_evento' => $hasta,
+                'titulo'       => $def['ag_cierra'] ?? ('Último día para inscribirse · ' . $nombre),
+                'descripcion'  => 'Cierra el formulario en línea de ' . $nombre . '.'
+                    . ($desde ? ' El período abrió el ' . insc_fecha_ar($desde) . '.' : ''),
+            ];
+        }
+
+        // Período en curso (la apertura ya pasó y todavía no cierra)
+        if ((!$desde || $desde < $hoy) && (!$hasta || $hoy < $hasta)) {
+            $out[] = $base + [
+                'fecha_evento' => $hoy,
+                'titulo'       => $def['ag_curso'] ?? ('Inscripción abierta · ' . $nombre),
+                'descripcion'  => $hasta
+                    ? 'El formulario en línea se puede completar hasta el ' . insc_fecha_ar($hasta) . '.'
+                    : 'El formulario en línea está abierto.',
+            ];
+        }
+    }
+
+    usort($out, fn($a, $b) => [$a['fecha_evento'], $a['titulo']] <=> [$b['fecha_evento'], $b['titulo']]);
+    return $out;
 }
 
 // ============================================================
@@ -402,7 +661,9 @@ function insc_validar_campo(array $c, $bruto): array {
             $d = DateTime::createFromFormat('!Y-m-d', $v);
             if (!$d || $d->format('Y-m-d') !== $v) return [$v, 'Fecha inválida.'];
             $anios = (int) $d->diff(new DateTime('today'))->format('%r%y');
-            if ($d > new DateTime('today') || $anios > 25) return [$v, 'Revisá la fecha de nacimiento.'];
+            if ($d > new DateTime('today') || $anios > (int) ($c['edad_max'] ?? 25)) {
+                return [$v, 'Revisá la fecha de nacimiento.'];
+            }
             break;
         case 'select':
             if (!in_array($v, insc_valores_opciones($c['o']), true)) return ['', 'Elegí una opción de la lista.'];
@@ -451,6 +712,7 @@ function insc_procesar(string $clave, array $post): array {
 
     $modalidad = 'General';
     $anio_ord  = 0;
+    $nivel_sel = '';       // formularios que preguntan el nivel (becas)
 
     foreach ($def['secciones'] as $sec) {
         if (!empty($sec['hijos'])) continue;
@@ -462,6 +724,11 @@ function insc_procesar(string $clave, array $post): array {
 
             if (($c['clasif'] ?? '') === 'anio')      $anio_ord  = (int) $v;
             if (($c['clasif'] ?? '') === 'modalidad') $modalidad = $v;
+            if (($c['clasif'] ?? '') === 'nivel') {
+                // Un solo campo trae las dos cosas: "Secundario|3"
+                [$nivel_sel, $ord_sel] = array_pad(explode('|', $v), 2, '');
+                $anio_ord = (int) $ord_sel;
+            }
 
             if ($v !== '') {
                 $filas[] = [$c['l'], $c['t'] === 'select' ? insc_texto_opcion($c['o'], $v) : insc_formatear($c, $v)];
@@ -483,15 +750,36 @@ function insc_procesar(string $clave, array $post): array {
         'tutor_email'  => $valores['tutor_email'] ?? '',
         'tutor_tel'    => $valores['tutor_tel'] ?? '',
     ];
+    // Mesas de examen: el inscripto es su propio contacto (el campo de
+    // responsable solo se completa si es menor de edad).
+    if ($tutor['tutor_nombre'] === '') {
+        $tutor['tutor_nombre'] = trim(($valores['alumno_nombre'] ?? '') . ' ' . ($valores['alumno_apellido'] ?? ''));
+    }
 
     $alumnos = [];
 
-    if ($def['nivel'] !== null) {
-        // ── Formulario individual ──
-        $nivel = $def['nivel'];
-        if (!isset($errores['anio']) && !isset($errores['modalidad'])
+    if (empty($def['multiple'])) {
+        // ── Formulario individual (un solo alumno/a) ──
+        //  El nivel puede venir fijo del formulario (jardín, primaria,
+        //  secundaria, mesas) o elegirse en un campo (becas).
+        $nivel      = $def['nivel'] ?? $nivel_sel;
+        $campo_anio = ($def['nivel'] ?? null) === null ? 'nivel' : 'anio';
+
+        if (!isset(INSC_NIVELES[$nivel])) {
+            $errores[$campo_anio] = $errores[$campo_anio] ?? 'Elegí una opción de la lista.';
+            $nivel = '';
+        } elseif ($nivel !== 'Secundario') {
+            $modalidad = 'General';          // solo el Secundario tiene modalidades
+        } elseif ($modalidad === '') {
+            $errores['modalidad'] = 'Para Secundario, elegí la modalidad.';
+        }
+
+        if ($nivel !== '' && !isset($errores[$campo_anio]) && !isset($errores['modalidad'])
             && $anio_ord > 0 && !insc_anio_valido($nivel, $modalidad, $anio_ord)) {
-            $errores['anio'] = 'La modalidad Orientada tiene 6 años: elegí de 1° a 6°.';
+            $errores[$campo_anio] = 'La modalidad Orientada tiene 6 años: elegí de 1° a 6°.';
+        }
+        if ($nivel === '') {
+            return ['valores' => $valores, 'errores' => $errores, 'alumnos' => []];
         }
         $alumnos[] = $tutor + [
             'nivel'           => $nivel,
@@ -613,4 +901,83 @@ function insc_limite_superado(PDO $pdo, string $ip): bool {
     );
     $st->execute([$ip]);
     return (int) $st->fetchColumn() >= 6;
+}
+
+// ============================================================
+//  AVISO POR CORREO
+// ------------------------------------------------------------
+//  Lo que pidió Secretaría: que quien se inscribe reciba una
+//  confirmación automática, y que la casilla del colegio reciba
+//  el aviso de que entró algo nuevo (hasta ahora la inscripción
+//  quedaba registrada y solo se veía entrando al panel).
+//
+//  Se llama después de guardar. Si el correo falla, la
+//  inscripción YA está guardada: solo queda el registro en el log.
+// ============================================================
+
+require_once __DIR__ . '/correo.php';
+
+/** Una línea por alumno/a: "Apellido, Nombre — Secundario › Técnica › 3° año". */
+function insc_resumen_alumnos(array $alumnos): string {
+    $lineas = [];
+    foreach ($alumnos as $a) {
+        $lineas[] = '- ' . $a['alumno_apellido'] . ', ' . $a['alumno_nombre']
+                  . ' — ' . insc_sector($a['nivel'], $a['modalidad'], $a['anio'])
+                  . ' (DNI ' . $a['alumno_dni'] . ')';
+    }
+    return implode("\n", $lineas);
+}
+
+/**
+ * Confirmación a quien completó el formulario + aviso a la casilla
+ * del colegio. Devuelve true si salió la confirmación a la familia.
+ */
+function insc_avisar_envio(array $def, array $alumnos, string $grupo): bool {
+    if (!$alumnos) return false;
+
+    $colegio  = cfg('nombre_colegio');
+    $formu    = $def['nombre'];
+    $contacto = (string) ($alumnos[0]['tutor_email'] ?? '');
+    $resumen  = insc_resumen_alumnos($alumnos);
+    $cuantos  = count($alumnos);
+
+    // ── 1. Confirmación a quien se inscribió ──
+    $cuerpo = "¡Hola, {$alumnos[0]['tutor_nombre']}!\n\n"
+        . "Recibimos la preinscripción a $formu en $colegio.\n\n"
+        . ($cuantos > 1 ? "Quedaron registrados:\n" : "Quedó registrado:\n")
+        . $resumen . "\n\n"
+        . "Código de envío: $grupo\n"
+        . "Guardalo: es el número con el que seguimos el trámite.\n\n"
+        . "¿Cómo sigue? La Secretaría se va a comunicar por teléfono o por\n"
+        . "correo para coordinar la entrevista y la presentación de la\n"
+        . "documentación. Este mensaje confirma que el formulario llegó, no\n"
+        . "confirma la vacante.\n"
+        . ($def['aviso_correo'] ?? '')
+        . correo_pie();
+
+    $ok = correo_enviar(
+        $contacto,
+        'Recibimos tu preinscripción · ' . $formu,
+        $cuerpo,
+        correo_casilla_interna()
+    );
+
+    // ── 2. Aviso interno (Secretaría / Admisiones) ──
+    $interna = correo_casilla_interna();
+    if ($interna !== '') {
+        $cuerpo_int = "Entró una inscripción nueva por el sitio.\n\n"
+            . "Formulario: $formu\n"
+            . "Código de envío: $grupo\n"
+            . "Fecha: " . date('d/m/Y H:i') . "\n\n"
+            . ($cuantos > 1 ? "Alumnos/as ($cuantos):\n" : "Alumno/a:\n")
+            . $resumen . "\n\n"
+            . "Responsable: {$alumnos[0]['tutor_nombre']}\n"
+            . "Correo: $contacto\n"
+            . "Teléfono: {$alumnos[0]['tutor_tel']}\n\n"
+            . "Se ve completa en el panel → Inscripciones."
+            . correo_pie();
+        correo_enviar($interna, 'Inscripción nueva · ' . $formu, $cuerpo_int, $contacto);
+    }
+
+    return $ok;
 }

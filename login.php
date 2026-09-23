@@ -48,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Acceso al Panel — Colegio Parroquial Juan XXIII</title>
 <?php require __DIR__ . '/partials/favicon.php'; ?>
-  <link rel="stylesheet" href="<?= asset('styles.css') ?>"/>
-  <link rel="stylesheet" href="<?= asset('panel.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('assets/css/styles.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('assets/css/panel.css') ?>"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>

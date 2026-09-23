@@ -91,6 +91,22 @@ function exigir_admin(): void {
     }
 }
 
+/**
+ * Exige un permiso del nivel (pub_novedades, pub_agenda, edita_tour…).
+ * Es la verificación "al entrar" de cada página del panel: sin esto,
+ * bastaba con estar logueado para abrirla escribiendo la URL.
+ * $seccion es el nombre que ve el usuario en el aviso.
+ */
+function exigir_permiso(string $permiso, string $seccion): void {
+    exigir_login();
+    if (!puede($permiso)) {
+        http_response_code(403);
+        die('<p style="font-family:sans-serif;padding:2rem;color:#c1121f;">'
+            . 'Acceso denegado: tu nivel de permisos no incluye ' . e($seccion) . '.'
+            . '</p><p style="font-family:sans-serif;padding:0 2rem;"><a href="panel">Volver al panel</a></p>');
+    }
+}
+
 // ── CSRF (token anti-falsificación de formularios) ──
 function csrf_token(): string {
     if (empty($_SESSION['csrf'])) {
@@ -161,6 +177,12 @@ function nivel_actual(): ?array {
  * Permisos válidos: pub_novedades, pub_agenda, edita_tour,
  *                   alta_usuarios, inscripciones, mensajes.
  * El admin siempre puede todo.
+ *
+ * IMPORTANTE: limitar las opciones del <select> con
+ * categorias_permitidas() es una comodidad para el usuario, NO un
+ * permiso: el formulario se puede editar desde el navegador. La
+ * categoría elegida se vuelve a validar con puede($permiso, $cat)
+ * al procesar el POST.
  */
 function puede(string $permiso, ?string $categoria = null): bool {
     if (es_admin()) return true;

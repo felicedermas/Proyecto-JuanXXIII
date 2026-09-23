@@ -10,7 +10,7 @@
 require_once __DIR__ . '/partials/inscripciones.php';
 
 $page_title      = 'Inscripciones';
-$page_desc       = 'Preinscripción en línea al Colegio Parroquial Juan XXIII: Jardín de Infantes, Nivel Primario, Nivel Secundario (Orientada y Técnica) y hermanos.';
+$page_desc       = 'Preinscripción en línea al Colegio Parroquial Juan XXIII: Jardín de Infantes, Nivel Primario, Nivel Secundario (Orientada y Técnica), hermanos, mesas de examen y solicitud de beca.';
 $nav_active      = 'inscripciones';
 $nav_active_link = 'inscripciones';
 
@@ -26,9 +26,12 @@ if ($pdo !== null && insc_asegurar_tablas($pdo)) {
 }
 $estado_de = fn(string $clave): array => insc_estado($estados[$clave] ?? null);
 
+//  'nivel' = una tarjeta por nivel (jardín, primaria, secundaria).
+//  'otros' = trámites que no son el ingreso a un nivel: hermanos,
+//            mesas de examen y solicitud de beca. Van a lo ancho.
 $formularios = insc_formularios();
-$por_nivel   = array_filter($formularios, fn($f) => $f['nivel'] !== null);
-$hermanos    = $formularios['hermanos'];
+$por_nivel   = array_filter($formularios, fn($f) => ($f['grupo'] ?? 'nivel') === 'nivel');
+$otros       = array_filter($formularios, fn($f) => ($f['grupo'] ?? 'nivel') === 'otros');
 
 $page_style = <<<'CSS'
   .ih-wrap { max-width: 1120px; margin: 0 auto; padding: 3rem 1.5rem 4.5rem; }
@@ -83,7 +86,13 @@ $page_style = <<<'CSS'
   .ih-card.is-cerrada .ih-btn { background: #fff; color: var(--blue-dark); border: 1.5px solid rgba(29,53,87,.2); }
   .ih-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* Hermanos: tarjeta horizontal a lo ancho */
+  /* Hermanos, mesas y becas: tarjetas horizontales a lo ancho */
+  .ih-otros { margin-top: 2.8rem; }
+  .ih-otros-titulo {
+    font-family: var(--font-display); font-size: 1.5rem; color: var(--blue-dark);
+    text-align: center; margin-bottom: .4rem;
+  }
+  .ih-otros-bajada { text-align: center; color: #5b6270; font-size: .93rem; margin-bottom: 1rem; }
   .ih-card--ancha { margin-top: 1.4rem; }
   .ih-card--ancha .ih-cuerpo { flex-direction: row; align-items: center; gap: 1.4rem; padding: 1.5rem 1.8rem; }
   .ih-card--ancha .ih-top { margin: 0; }
@@ -137,7 +146,7 @@ function ih_tarjeta(string $clave, array $f, array $est, bool $ancha = false): v
           <div class="ih-top"><span class="ih-icono" aria-hidden="true"><?= $f['icono'] ?></span></div>
           <div class="ih-texto">
             <h2><?= $f['titulo'] ?></h2>
-            <p class="ih-bajada"><?= e($f['bajada']) ?>: completás una sola vez los datos de la familia y cargás a cada hijo/a en su nivel.</p>
+            <p class="ih-bajada"><?= e($f['bajada_larga'] ?? $f['bajada']) ?></p>
             <?= $periodo ?>
           </div>
           <div class="ih-lado"><?= $estado . $boton ?></div>
@@ -160,7 +169,7 @@ function ih_tarjeta(string $clave, array $f, array $est, bool $ancha = false): v
   ['Inicio' => './', 'Inscripciones' => null],
   'Admisiones',
   'Inscripciones <em>en línea</em>',
-  'Elegí el nivel al que querés inscribir y completá la preinscripción. Si vas a inscribir a más de un hijo/a, usá el formulario de hermanos.'
+  'Elegí el nivel al que querés inscribir y completá la preinscripción. Si vas a inscribir a más de un hijo/a, usá el formulario de hermanos. Más abajo están la inscripción a mesas de examen y la solicitud de beca.'
 ); ?>
 
 <section class="ih-wrap">
@@ -168,7 +177,11 @@ function ih_tarjeta(string $clave, array $f, array $est, bool $ancha = false): v
     <?php foreach ($por_nivel as $clave => $f) ih_tarjeta($clave, $f, $estado_de($clave)); ?>
   </div>
 
-  <?php ih_tarjeta('hermanos', $hermanos, $estado_de('hermanos'), true); ?>
+  <div class="ih-otros">
+    <h2 class="ih-otros-titulo">Otros trámites en línea</h2>
+    <p class="ih-otros-bajada">Hermanos, mesas de examen y solicitud de beca: se completan y se envían por acá, igual que las inscripciones.</p>
+    <?php foreach ($otros as $clave => $f) ih_tarjeta($clave, $f, $estado_de($clave), true); ?>
+  </div>
 
   <div class="ih-proceso">
     <h2>¿Cómo sigue?</h2>

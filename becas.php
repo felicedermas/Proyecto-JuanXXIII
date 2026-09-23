@@ -6,6 +6,20 @@ $page_title      = 'Becas';
 $page_desc       = 'Sistema de becas y ayudas económicas del Colegio Parroquial Juan XXIII: requisitos, plazos y cómo solicitarlas.';
 $nav_active      = 'institucional';
 $nav_active_link = 'becas';
+
+// Estado del formulario de beca (se habilita desde el panel → Inscripciones).
+// Sin base de datos, la página se sigue viendo: el formulario queda cerrado.
+require_once __DIR__ . '/partials/inscripciones.php';
+$becas_estado = insc_estado(null);
+$pdo_becas = db_opcional();
+if ($pdo_becas !== null && insc_asegurar_tablas($pdo_becas)) {
+    try {
+        $becas_estado = insc_estado(insc_fila_formulario($pdo_becas, 'becas'));
+    } catch (Throwable $ex) {
+        // se queda con el estado cerrado
+    }
+}
+
 require __DIR__ . '/partials/header.php';
 ?>
   
@@ -45,7 +59,7 @@ require __DIR__ . '/partials/header.php';
       <h2 class="section-title">El proceso en 4 pasos</h2>
     </div>
     <div class="steps">
-      <div class="step"><h3>Solicitud</h3><p>Completá el formulario de pedido de beca en la administración del colegio.</p></div>
+      <div class="step"><h3>Solicitud</h3><p>Completá el formulario de pedido de beca en línea, desde esta misma página.</p></div>
       <div class="step"><h3>Documentación</h3><p>Presentá los comprobantes de ingresos y la documentación requerida.</p></div>
       <div class="step"><h3>Evaluación</h3><p>El comité analiza cada caso de manera confidencial y objetiva.</p></div>
       <div class="step"><h3>Resolución</h3><p>Recibís la respuesta y, de ser aprobada, se aplica la reducción.</p></div>
@@ -53,9 +67,28 @@ require __DIR__ . '/partials/header.php';
   </section>
 
   <section class="cta-band">
-    <h2>¿Necesitás más información?</h2>
-    <p>Nuestro equipo administrativo está disponible para asesorarte sobre el sistema de becas.</p>
-    <a href="contacto" class="btn btn-white">Consultar por becas</a>
+    <?php if ($becas_estado['abierto']): ?>
+      <h2>Solicitá tu beca en línea</h2>
+      <p>
+        Completás la solicitud desde acá y el comité la evalúa con total confidencialidad.
+        <?php if ($becas_estado['periodo'] !== ''): ?><br><b><?= e($becas_estado['periodo']) ?></b><?php endif; ?>
+      </p>
+      <a href="inscripcion-becas" class="btn btn-white">Completar la solicitud</a>
+      <a href="contacto" class="btn btn-outline">Consultar por becas</a>
+    <?php else: ?>
+      <h2>¿Necesitás más información?</h2>
+      <p>
+        <?php if ($becas_estado['motivo'] === 'proximamente'): ?>
+          La solicitud en línea se habilita el <?= e(insc_fecha_ar($becas_estado['desde'])) ?>.
+        <?php elseif ($becas_estado['motivo'] === 'finalizado'): ?>
+          El período de solicitudes finalizó el <?= e(insc_fecha_ar($becas_estado['hasta'])) ?>.
+        <?php else: ?>
+          La solicitud en línea no está habilitada en este momento.
+        <?php endif; ?>
+        Nuestro equipo administrativo está disponible para asesorarte sobre el sistema de becas.
+      </p>
+      <a href="contacto" class="btn btn-white">Consultar por becas</a>
+    <?php endif; ?>
   </section>
 
   

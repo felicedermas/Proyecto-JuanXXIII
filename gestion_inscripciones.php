@@ -384,7 +384,11 @@ require __DIR__ . '/panel_header.php';
               </label>
             </div>
             <button type="submit" class="ins-fechas-btn">Guardar fechas</button>
-            <span class="ins-fechas-ayuda">Opcional. Borrá las dos y guardá para quitarlas.</span>
+            <span class="ins-fechas-ayuda">
+              Opcional. Borrá las dos y guardá para quitarlas.
+              Con el formulario habilitado, el período aparece solo en la
+              <a href="agenda" target="_blank" rel="noopener">Agenda</a> del sitio.
+            </span>
           </form>
         <?php elseif ($est['periodo'] !== ''): ?>
           <p class="ins-fechas-ro"><?= e($est['periodo']) ?></p>
@@ -551,10 +555,12 @@ require __DIR__ . '/panel_header.php';
   .ins-switch[aria-checked="true"] .ins-switch-txt, .is-on .ins-switch-ro { color: #1b7a44; }
 
   .ins-fechas { display: flex; flex-direction: column; gap: .45rem; padding-top: .7rem; border-top: 1px solid #eef0f3; }
-  .ins-fechas-campos { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
-  .ins-fechas label { display: flex; flex-direction: column; gap: .2rem; font-size: .74rem; font-weight: 700; color: #667; }
+  /* auto-fit: si las dos no entran a lo ancho de la tarjeta, se apilan
+     (el <input type=date> de Chrome no achica más allá de su contenido) */
+  .ins-fechas-campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: .5rem; }
+  .ins-fechas label { display: flex; flex-direction: column; gap: .2rem; min-width: 0; font-size: .74rem; font-weight: 700; color: #667; }
   .ins-fechas input[type=date] {
-    font-family: var(--font-body); font-size: .82rem; padding: .4rem .45rem; min-width: 0;
+    font-family: var(--font-body); font-size: .82rem; padding: .4rem .45rem; width: 100%; min-width: 0;
     border: 1.5px solid #dfe3e8; border-radius: 8px; background: #fff; color: var(--blue-dark);
   }
   .ins-fechas-btn {

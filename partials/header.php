@@ -70,7 +70,7 @@ function menu_es_actual(string $href): bool {
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link rel="stylesheet" href="<?= asset('styles.css') ?>"/>
+  <link rel="stylesheet" href="<?= asset('assets/css/styles.css') ?>"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 <?= $page_head_extra ?>
 <?php if ($page_style !== ''): ?>

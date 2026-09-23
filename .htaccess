@@ -3,10 +3,12 @@
 # ============================================================
 
 Options -Indexes
-DirectoryIndex index.php index.html
-# Sin esto, "/contacto" se redirige a "/contacto/" porque hay carpetas con el
-# mismo nombre (en Windows no importan las mayúsculas: Contacto/, Inscripciones/…)
-# y nunca llega a contacto.php.
+DirectoryIndex index.php
+# Las carpetas vacías que chocaban con una página del mismo nombre
+# (Contacto/, Inscripciones/, Institucional/…) se eliminaron al ordenar
+# el proyecto. Se deja DirectorySlash apagado igual: la regla de más
+# abajo agrega la barra final solo a las carpetas reales, y así una
+# futura carpeta homónima no vuelve a tapar su .php.
 DirectorySlash Off
 
 # ── Redirecciones 301: las páginas pasaron de .html a .php ──
@@ -20,6 +22,24 @@ DirectorySlash Off
   RewriteEngine On
   # Aplica las reglas también a carpetas pedidas sin barra final ("/JUAN23CLAUDE", "/contacto")
   RewriteOptions AllowNoSlash
+
+  # ── HTTP → HTTPS (se activa sola el día de la publicación) ──
+  # El certificado y el filtrado de tráfico los da Cloudflare sobre el
+  # dominio definitivo; esto es la parte que depende del código: que
+  # nadie termine navegando el sitio en claro.
+  # Va PRIMERO para que una URL vieja (.html, .php) haga un solo salto
+  # a su versión https, y no uno a http y otro a https.
+  #  - %{HTTPS} cubre el certificado instalado en el propio servidor.
+  #  - X-Forwarded-Proto cubre el modo "proxy" de Cloudflare: ahí el
+  #    visitante ya viene por https y solo el tramo interno es http;
+  #    sin esta condición la redirección se repetiría en bucle.
+  #  - localhost / 127.0.0.1 quedan afuera: en el XAMPP de desarrollo
+  #    no hay certificado y la regla dejaría el sitio inaccesible.
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=HTTPS
+  RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:[0-9]+)?$ [NC]
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
 
   # La antigua "recorrido-virtual.html" nunca existió: iba al 360°
   RewriteCond %{REQUEST_URI} ^(.*)/recorrido-virtual\.html$
@@ -66,7 +86,7 @@ DirectorySlash Off
 <FilesMatch "\.(sql|md|log|ini|bak|json)$">
   Require all denied
 </FilesMatch>
-<FilesMatch "^(conexion|config|config\.local|panel_config|panel_header)\.php$">
+<FilesMatch "^(conexion|config\.local|panel_config|panel_header)\.php$">
   # Son includes: no tiene sentido abrirlos directo, pero PHP los
   # ejecuta y no filtran nada. Se bloquean por prolijidad.
   Require all denied
@@ -74,10 +94,13 @@ DirectorySlash Off
 <Files "posts_simulados.json">
   Require all denied
 </Files>
-<Files "generar_hash.php">
-  # Utilidad para uso local: nunca accesible desde el sitio
+# Archivos marcados "-sinuso": versiones viejas y utilidades locales que
+# quedaron en el repo como referencia (los .html previos al pasaje a PHP,
+# config-sinuso.php, generar_hash-sinuso.php). No forman parte del sitio y
+# no deben servirse: si no, "/historia-sinuso.html" mostraría la página vieja.
+<FilesMatch "-sinuso\.">
   Require all denied
-</Files>
+</FilesMatch>
 
 # ── Páginas de error propias ────────────────────────────────
 ErrorDocument 404 /404.php
@@ -104,4 +127,11 @@ ErrorDocument 403 /404.php
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set X-Frame-Options "SAMEORIGIN"
+
+  # HSTS: le dice al navegador que, durante un año, entre siempre por
+  # https sin pasar por la redirección de arriba. Solo se manda cuando
+  # la visita YA llegó por https (env=HTTPS), así en el XAMPP local
+  # —donde no hay certificado— la cabecera no sale y no deja el
+  # navegador "clavado" en https contra localhost.
+  Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
 </IfModule>

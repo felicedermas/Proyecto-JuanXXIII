@@ -1,0 +1,4 @@
+# Documentación interna y capturas de pantalla: no forman parte del
+# sitio público. Los .md ya están bloqueados por extensión en la raíz;
+# esto alcanza también a docs/capturas/*.png.
+Require all denied

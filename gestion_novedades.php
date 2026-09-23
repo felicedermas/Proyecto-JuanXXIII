@@ -1,9 +1,28 @@
 <?php
+// ============================================================
+//  gestion_novedades.php
+//  Panel de Control — Novedades (e historias de egresados)
+//
+//  Acceso: usuarios con el permiso "Publicación de novedades".
+//  Además, cada novedad lleva una categoría (Inicial, Primario,
+//  Secundario, Técnica, Orientada, Global) y el nivel de permisos
+//  define en cuáles puede publicar el usuario. Esa categoría se
+//  valida SIEMPRE al procesar el formulario: el <select> recortado
+//  es una comodidad, no una barrera (se edita desde el navegador).
+// ============================================================
 require_once __DIR__ . '/panel_config.php';
-exigir_login();
+exigir_permiso('pub_novedades', 'Publicación de novedades');
 
 $u   = usuario_actual();
 $pdo = db();
+
+// Categorías en las que este usuario puede publicar (el admin, todas)
+$cats_permitidas = categorias_permitidas('pub_novedades');
+
+/** Aviso único cuando la categoría elegida no está habilitada para el nivel. */
+function nov_error_categoria(string $etiqueta): string {
+    return 'Tu nivel de permisos no incluye la categoría «' . $etiqueta . '» en novedades.';
+}
 
 // ── Pestaña "Historias de egresados" (gestion_novedades?tipo=egresados) ──
 if (($_GET['tipo'] ?? '') === 'egresados') {
@@ -106,10 +125,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
     csrf_check();
     $id_img = (int)($_POST['id_imagen'] ?? 0);
     $id_nov = (int)($_POST['id'] ?? 0);
-    $row = $pdo->prepare('SELECT id_usuario FROM novedades WHERE id_novedad = ?');
+    $row = $pdo->prepare('SELECT id_usuario, etiqueta FROM novedades WHERE id_novedad = ?');
     $row->execute([$id_nov]);
-    $autor = $row->fetchColumn();
-    if ($autor !== false && puede_gestionar((int)$autor)) {
+    $nov = $row->fetch();
+    if ($nov && puede_gestionar((int)$nov['id_usuario']) && puede('pub_novedades', (string)$nov['etiqueta'])) {
         eliminar_imagen($pdo, $id_img, $id_nov);
         flash('ok', 'Imagen eliminada.');
     } else {
@@ -123,13 +142,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borrar') {
     csrf_check();
     $id = (int)($_POST['id'] ?? 0);
-    $row = $pdo->prepare('SELECT id_usuario FROM novedades WHERE id_novedad = ?');
+    $row = $pdo->prepare('SELECT id_usuario, etiqueta FROM novedades WHERE id_novedad = ?');
     $row->execute([$id]);
-    $autor = $row->fetchColumn();
-    if ($autor === false) {
+    $nov = $row->fetch();
+    if (!$nov) {
         flash('error', 'La novedad no existe.');
-    } elseif (!puede_gestionar((int)$autor)) {
+    } elseif (!puede_gestionar((int)$nov['id_usuario'])) {
         flash('error', 'No tenés permiso para borrar esa novedad.');
+    } elseif (!puede('pub_novedades', (string)$nov['etiqueta'])) {
+        flash('error', nov_error_categoria((string)$nov['etiqueta']));
     } else {
         // Borrar archivos físicos de las imágenes subidas antes de eliminar la novedad
         $imgs = $pdo->prepare('SELECT url_imagen FROM imagenes_novedades WHERE id_novedad = ?');
@@ -150,7 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'borra
 // ── Alta / edición ──
 $errores = [];
 $modo    = 'crear';
-$edit    = ['id_novedad' => 0, 'titulo' => '', 'descripcion' => '', 'etiqueta' => 'Global'];
+$etiqueta_inicial = in_array('Global', $cats_permitidas, true) ? 'Global' : ($cats_permitidas[0] ?? 'Global');
+$edit    = ['id_novedad' => 0, 'titulo' => '', 'descripcion' => '', 'etiqueta' => $etiqueta_inicial];
 $imagenes_edit = [];   // imágenes ya cargadas de la novedad que se edita
 
 // ¿Estamos editando? (?editar=ID)
@@ -159,7 +181,7 @@ if (isset($_GET['editar'])) {
     $stmt = $pdo->prepare('SELECT id_novedad, titulo, descripcion, etiqueta, id_usuario FROM novedades WHERE id_novedad = ?');
     $stmt->execute([$id]);
     $row = $stmt->fetch();
-    if ($row && puede_gestionar((int)$row['id_usuario'])) {
+    if ($row && puede_gestionar((int)$row['id_usuario']) && puede('pub_novedades', (string)$row['etiqueta'])) {
         $modo = 'editar';
         $edit = $row;
         $qimg = $pdo->prepare('SELECT id_imagen, url_imagen FROM imagenes_novedades WHERE id_novedad = ? ORDER BY orden ASC, id_imagen ASC');
@@ -183,7 +205,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
     if ($titulo === '')                              $errores[] = 'El título es obligatorio.';
     if (mb_strlen($titulo) > 255)                    $errores[] = 'El título es demasiado largo (máx. 255).';
     if ($desc === '')                                $errores[] = 'La descripción es obligatoria.';
-    if (!in_array($etiqueta, ETIQUETAS_VALIDAS, true)) $errores[] = 'Etiqueta inválida.';
+    if (!in_array($etiqueta, ETIQUETAS_VALIDAS, true)) {
+        $errores[] = 'Etiqueta inválida.';
+    } elseif (!puede('pub_novedades', $etiqueta)) {
+        // Acá se corta de verdad: el desplegable recortado no alcanza,
+        // porque el valor enviado puede venir editado desde el navegador.
+        $errores[] = nov_error_categoria($etiqueta);
+    }
 
     if (!$errores) {
         if ($accion === 'crear') {
@@ -203,10 +231,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array(($_POST['accion'] ?? ''), 
             exit;
         } else {
             // Verificar permiso sobre el registro real
-            $chk = $pdo->prepare('SELECT id_usuario FROM novedades WHERE id_novedad = ?');
+            $chk = $pdo->prepare('SELECT id_usuario, etiqueta FROM novedades WHERE id_novedad = ?');
             $chk->execute([$id]);
-            $autor = $chk->fetchColumn();
-            if ($autor === false || !puede_gestionar((int)$autor)) {
+            $actual = $chk->fetch();
+            if (!$actual || !puede_gestionar((int)$actual['id_usuario'])
+                || !puede('pub_novedades', (string)$actual['etiqueta'])) {
                 flash('error', 'No tenés permiso para editar esa novedad.');
                 header('Location: gestion_novedades');
                 exit;
@@ -290,10 +319,13 @@ require __DIR__ . '/panel_header.php';
         <div class="field">
           <label for="etiqueta">Nivel / Etiqueta</label>
           <select id="etiqueta" name="etiqueta">
-            <?php foreach (ETIQUETAS_VALIDAS as $et): ?>
+            <?php foreach ($cats_permitidas as $et): ?>
               <option value="<?= e($et) ?>" <?= $edit['etiqueta'] === $et ? 'selected' : '' ?>><?= e($et) ?></option>
             <?php endforeach; ?>
           </select>
+          <?php if (count($cats_permitidas) < count(ETIQUETAS_VALIDAS)): ?>
+            <span class="hint">Tu nivel de permisos habilita: <?= e(implode(', ', $cats_permitidas)) ?>.</span>
+          <?php endif; ?>
         </div>
 
         <div class="field">
@@ -372,7 +404,7 @@ require __DIR__ . '/panel_header.php';
         </thead>
         <tbody>
         <?php foreach ($lista as $row): ?>
-          <?php $puede = puede_gestionar((int)$row['id_usuario']); ?>
+          <?php $puede = puede_gestionar((int)$row['id_usuario']) && puede('pub_novedades', (string)$row['etiqueta']); ?>
           <tr>
             <td><?= e($row['titulo']) ?></td>
             <td><span class="mng-badge" style="background:<?= color_etiqueta($row['etiqueta']) ?>"><?= e($row['etiqueta']) ?></span></td>
@@ -405,7 +437,7 @@ require __DIR__ . '/panel_header.php';
                     </button>
                   </form>
                 <?php else: ?>
-                  <button class="icon-btn" disabled title="Solo el autor o un admin pueden gestionarla">
+                  <button class="icon-btn" disabled title="Solo el autor o un admin pueden gestionarla, y con la categoría habilitada">
                     <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                   </button>
                 <?php endif; ?>

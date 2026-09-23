@@ -38,6 +38,10 @@ try {
     $n_msj_nuevos = 0;
 }
 
+// Categorías habilitadas (se muestran en las tarjetas de Novedades y Agenda)
+$cats_nov = categorias_permitidas('pub_novedades');
+$cats_ag  = categorias_permitidas('pub_agenda');
+
 $panel_page_title = 'Panel de Control';
 $panel_heading    = 'Panel de <span>Control</span>';
 $panel_sub        = 'Gestioná los contenidos del sitio del colegio.';
@@ -46,30 +50,65 @@ require __DIR__ . '/panel_header.php';
 
     <div class="action-grid">
 
+      <?php if (puede('pub_novedades')): ?>
       <!-- Novedades -->
       <a href="gestion_novedades" class="action-card">
         <div class="ac-icon">
           <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg>
         </div>
         <h3>Novedades</h3>
-        <p>Creá y gestioná las novedades y las historias de egresados del sitio. Hay <strong><?= $n_nov ?></strong> novedad<?= $n_nov === 1 ? "" : "es" ?> publicada<?= $n_nov === 1 ? "" : "s" ?>.</p>
+        <p>Creá y gestioná las novedades y las historias de egresados del sitio. Hay <strong><?= $n_nov ?></strong> novedad<?= $n_nov === 1 ? "" : "es" ?> publicada<?= $n_nov === 1 ? "" : "s" ?>.
+          <?php if ($cats_nov && count($cats_nov) < count(ETIQUETAS_VALIDAS)): ?>Publicás en: <strong><?= e(implode(', ', $cats_nov)) ?></strong>.<?php endif; ?></p>
         <span class="ac-cta">Ir a novedades
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>
       </a>
+      <?php else: ?>
+      <!-- Novedades (sin permiso) -->
+      <div class="action-card muted is-locked" aria-disabled="true">
+        <span class="lock-badge">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sin permiso
+        </span>
+        <div class="ac-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg>
+        </div>
+        <h3>Novedades</h3>
+        <p>Tu nivel de permisos no incluye la publicación de novedades.</p>
+        <span class="ac-cta" style="color:var(--gray-500);">Pedile acceso a un administrador</span>
+      </div>
+      <?php endif; ?>
 
+      <?php if (puede('pub_agenda')): ?>
       <!-- Agenda -->
       <a href="gestion_agenda" class="action-card blue">
         <div class="ac-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         </div>
         <h3>Agenda</h3>
-        <p>Cargá y administrá los eventos del calendario institucional. Hay <strong><?= $n_evt ?></strong> evento<?= $n_evt === 1 ? '' : 's' ?> cargado<?= $n_evt === 1 ? '' : 's' ?>.</p>
+        <p>Cargá y administrá los eventos del calendario institucional. Hay <strong><?= $n_evt ?></strong> evento<?= $n_evt === 1 ? '' : 's' ?> cargado<?= $n_evt === 1 ? '' : 's' ?>.
+          <?php if ($cats_ag && count($cats_ag) < count(ETIQUETAS_VALIDAS)): ?>Publicás en: <strong><?= e(implode(', ', $cats_ag)) ?></strong>.<?php endif; ?></p>
         <span class="ac-cta">Ir a agenda
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>
       </a>
+      <?php else: ?>
+      <!-- Agenda (sin permiso) -->
+      <div class="action-card muted is-locked" aria-disabled="true">
+        <span class="lock-badge">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sin permiso
+        </span>
+        <div class="ac-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3>Agenda</h3>
+        <p>Tu nivel de permisos no incluye la publicación de eventos en la agenda.</p>
+        <span class="ac-cta" style="color:var(--gray-500);">Pedile acceso a un administrador</span>
+      </div>
+      <?php endif; ?>
 
+      <?php if (puede('edita_tour')): ?>
       <!-- Recorrido Virtual 360° -->
       <a href="gestion_tour" class="action-card blue">
         <div class="ac-icon">
@@ -81,6 +120,21 @@ require __DIR__ . '/panel_header.php';
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>
       </a>
+      <?php else: ?>
+      <!-- Recorrido Virtual 360° (sin permiso) -->
+      <div class="action-card muted is-locked" aria-disabled="true">
+        <span class="lock-badge">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sin permiso
+        </span>
+        <div class="ac-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3>Recorrido Virtual 360°</h3>
+        <p>Tu nivel de permisos no incluye la edición del recorrido 360°.</p>
+        <span class="ac-cta" style="color:var(--gray-500);">Pedile acceso a un administrador</span>
+      </div>
+      <?php endif; ?>
 
       <?php if (puede('inscripciones')): ?>
       <!-- Inscripciones -->

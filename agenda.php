@@ -6,6 +6,7 @@
 // ============================================================
 
 require_once __DIR__ . '/conexion.php';
+require_once __DIR__ . '/partials/inscripciones.php';   // períodos de inscripción
 $pdo = db();
 
 $etiquetas_validas = ['Inicial', 'Primario', 'Secundario', 'Técnica', 'Orientada', 'Global'];
@@ -50,6 +51,28 @@ foreach ($pdo->query("SELECT etiqueta, COUNT(*) as total FROM agenda$cond_count 
     $total_todas += $r['total'];
 }
 
+$hoy = date('Y-m-d');
+
+// ── Períodos de inscripción ──────────────────────────────────
+//  No están en la tabla `agenda`: los arma insc_eventos_agenda() con lo
+//  que se configuró en el panel (gestion_inscripciones.php), así la
+//  agenda muestra siempre las fechas reales de los formularios.
+$insc_por_fecha = [];
+foreach (insc_eventos_agenda($pdo) as $ev) {
+    if (!$ver_pasados && $ev['fecha_evento'] < $hoy) continue;
+    $conteos[$ev['etiqueta']] = ($conteos[$ev['etiqueta']] ?? 0) + 1;
+    $total_todas++;
+    if ($filtro !== 'todas' && $ev['etiqueta'] !== $filtro) continue;
+    $insc_por_fecha[$ev['fecha_evento']][] = $ev;
+}
+if ($insc_por_fecha) {
+    foreach ($insc_por_fecha as $f => $evs) {
+        // No tienen horario: van arriba de los eventos con hora de ese día
+        $por_fecha[$f] = array_merge($evs, $por_fecha[$f] ?? []);
+    }
+    $ver_pasados ? krsort($por_fecha) : ksort($por_fecha);   // las fechas nuevas quedaron al final
+}
+
 function etiqueta_color(string $e): string {
     return match($e) {
         'Inicial'   => '#E63946',
@@ -84,7 +107,6 @@ function rango_horario(?string $ini, ?string $fin): string {
     if ($fin) $h .= ' – ' . substr($fin, 0, 5);
     return $h . ' hs';
 }
-$hoy = date('Y-m-d');
 
 $page_title      = 'Agenda';
 $page_desc       = 'Agenda institucional del Colegio Parroquial Juan XXIII: actos, reuniones, exámenes y fechas importantes.';
@@ -256,6 +278,15 @@ $page_style = <<<'CSS'
       font-size: .8rem; color: #666; line-height: 1.55;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
+    /* Período de inscripción: fechas + cuánto dura */
+    .ag-event--insc { background: linear-gradient(180deg, #fbfcfe, #fff 55%); }
+    .ag-event-periodo {
+      display: inline-flex; align-items: center; gap: .35rem; margin-top: .55rem;
+      font-size: .72rem; font-weight: 800; color: var(--blue-dark);
+      background: var(--gray-100); border: 1px solid var(--gray-200);
+      padding: .22rem .6rem; border-radius: 50px;
+    }
+    .ag-event--insc .ag-event-hora { font-weight: 800; }
     .ag-event-meta { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; font-size: .72rem; color: var(--gray-500); margin-top: .45rem; }
     .ag-event-meta span { display: inline-flex; align-items: center; gap: .3rem; }
     .ag-event-link {
@@ -393,24 +424,39 @@ require __DIR__ . '/partials/header.php';
           <div class="ag-day-events">
             <?php foreach ($items as $ev):
               $color = etiqueta_color($ev['etiqueta']);
+              // Los períodos de inscripción no viven en la tabla `agenda`:
+              // no tienen ficha propia, llevan al formulario del sitio.
+              $auto = !empty($ev['auto']);
+              $url  = $auto ? $ev['url'] : 'evento?id=' . $ev['id_evento'];
             ?>
-            <a href="evento?id=<?= $ev['id_evento'] ?>" class="ag-event"
+            <a href="<?= htmlspecialchars($url) ?>" class="ag-event<?= $auto ? ' ag-event--insc' : '' ?>"
                style="border-left-color:<?= $color ?>;">
               <div class="ag-event-top">
                 <span class="ag-event-icon"><?= tipo_icono($ev['tipo']) ?></span>
                 <span class="ag-event-badge" style="background:<?= $color ?>"><?= htmlspecialchars($ev['etiqueta']) ?></span>
                 <span class="ag-event-tipo"><?= htmlspecialchars($ev['tipo']) ?></span>
-                <span class="ag-event-hora"><?= rango_horario($ev['hora_inicio'], $ev['hora_fin']) ?></span>
+                <span class="ag-event-hora">
+                  <?= $auto
+                      ? ($ev['duracion'] !== '' ? '⏳ ' . htmlspecialchars($ev['duracion']) : 'Todo el día')
+                      : rango_horario($ev['hora_inicio'], $ev['hora_fin']) ?>
+                </span>
               </div>
               <div class="ag-event-title"><?= htmlspecialchars($ev['titulo']) ?></div>
               <?php if (!empty($ev['descripcion'])): ?>
                 <div class="ag-event-desc"><?= htmlspecialchars($ev['descripcion']) ?></div>
               <?php endif; ?>
+              <?php if (!empty($ev['periodo'])): ?>
+                <div class="ag-event-periodo">
+                  🗓 <?= htmlspecialchars($ev['periodo']) ?><?= $ev['duracion'] !== '' ? ' · ' . htmlspecialchars($ev['duracion']) : '' ?>
+                </div>
+              <?php endif; ?>
               <div class="ag-event-meta">
                 <?php if (!empty($ev['lugar'])): ?>
                   <span>📍 <?= htmlspecialchars($ev['lugar']) ?></span>
                 <?php endif; ?>
-                <?php if (!empty($ev['enlace'])): ?>
+                <?php if ($auto): ?>
+                  <span class="ag-event-link">🔗 Ir al formulario</span>
+                <?php elseif (!empty($ev['enlace'])): ?>
                   <span class="ag-event-link">🔗 Abrir formulario / enlace</span>
                 <?php endif; ?>
               </div>
