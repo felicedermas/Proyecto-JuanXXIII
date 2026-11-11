@@ -20,7 +20,7 @@ require __DIR__ . '/partials/header.php';
         <p>A lo largo del año proponemos retiros, celebraciones litúrgicas, campañas solidarias y grupos de reflexión abiertos a estudiantes, familias y docentes.</p>
       </div>
       <div class="split-media">
-        <div class="image-placeholder split-img"><span>Foto de actividad pastoral</span></div>
+        <img class="split-img" src="img/imgs/Comunidad-Pastoral.png" alt="Alumnos del colegio en una misa" width="667" height="668" loading="lazy"/>
       </div>
     </div>
   </section>
@@ -48,7 +48,7 @@ require __DIR__ . '/partials/header.php';
       <a href="contacto" class="btn btn-primary">Sumate a la pastoral</a>
     </div>
     <div class="pastoral-image-wrap">
-      <div class="image-placeholder pastoral-img"><span>Foto de la comunidad</span></div>
+      <img class="pastoral-img" src="img/imgs/Imagen-Parroquia.png" alt="La parroquia junto al colegio" width="587" height="599" loading="lazy"/>
       <div class="pastoral-quote">
         <blockquote>"Busquemos lo que une, no lo que separa." — San Juan XXIII</blockquote>
       </div>
