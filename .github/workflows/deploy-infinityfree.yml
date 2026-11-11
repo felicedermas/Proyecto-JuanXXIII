@@ -1,0 +1,68 @@
+# ============================================================
+#  Subida automática al hosting (InfinityFree) por FTP
+#
+#  Cada vez que se sube algo a `main`, GitHub copia al hosting los
+#  archivos que cambiaron. También se puede correr a mano desde la
+#  pestaña Actions → "Subir al hosting" → Run workflow.
+#
+#  Necesita tres secretos en GitHub (Settings → Secrets and
+#  variables → Actions → New repository secret), que salen del
+#  panel de InfinityFree → "FTP Details":
+#    FTP_SERVER    → FTP Hostname (ej.: ftpupload.net)
+#    FTP_USERNAME  → FTP Username (ej.: if0_12345678)
+#    FTP_PASSWORD  → FTP Password
+#
+#  Qué NO sube (y por lo tanto tampoco pisa ni borra en el hosting):
+#  - config.local.php con la conexión a la base del hosting
+#  - las carpetas donde el panel guarda lo que suben los usuarios
+#    (fotos del recorrido, novedades, egresados y PDFs de páginas)
+#  - documentación interna y archivos de trabajo
+# ============================================================
+name: Subir al hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Si se suben dos cambios seguidos, el segundo espera a que termine el primero.
+concurrency:
+  group: deploy-infinityfree
+  cancel-in-progress: false
+
+jobs:
+  subir:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+    steps:
+      - name: Revisar que estén cargados los datos de FTP
+        if: env.FTP_SERVER == ''
+        run: echo "::warning::Faltan los secretos FTP_SERVER, FTP_USERNAME y FTP_PASSWORD (Settings → Secrets and variables → Actions). No se subió nada."
+
+      - name: Bajar el código
+        if: env.FTP_SERVER != ''
+        uses: actions/checkout@v4
+
+      - name: Subir por FTP a htdocs
+        if: env.FTP_SERVER != ''
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /htdocs/
+          timeout: 120000
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            docs/**
+            imagenespanoramicas/**
+            conexion-hosting/**
+            config.local.php
+            sincronizar_instagram.bat
+            img/tour/**
+            img/novedades/**
+            img/egresados/**
+            archivos/paginas/**
