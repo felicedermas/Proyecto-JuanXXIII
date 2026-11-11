@@ -6,6 +6,19 @@ $page_title      = 'Feria de Ciencias';
 $page_desc       = 'Feria Anual de Ciencias del Colegio Parroquial Juan XXIII: proyectos, innovación y trabajo de los alumnos.';
 $nav_active      = 'comunidad';
 $nav_active_link = 'feria-ciencias';
+
+// Fecha de la próxima Feria. Los textos de la página cambian solos:
+// antes del día anuncian la fecha, ese día dicen "hoy" y después la dan por hecha.
+const FERIA_FECHA = '2026-11-20';
+$feria_tz   = new DateTimeZone('America/Argentina/Buenos_Aires');
+$feria_hoy  = (new DateTimeImmutable('now', $feria_tz))->format('Y-m-d');
+$feria_dia  = new DateTimeImmutable(FERIA_FECHA, $feria_tz);
+$feria_anio = $feria_dia->format('Y');
+$feria_dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+$feria_mes  = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+$feria_txt  = $feria_dias[(int) $feria_dia->format('w')] . ' ' . (int) $feria_dia->format('j') . ' de ' . $feria_mes[(int) $feria_dia->format('n')];
+$feria_estado = $feria_hoy < FERIA_FECHA ? 'antes' : ($feria_hoy === FERIA_FECHA ? 'hoy' : 'despues');
+
 require __DIR__ . '/partials/header.php';
 ?>
   
@@ -17,6 +30,15 @@ require __DIR__ . '/partials/header.php';
       <h2>Una tradición que despierta vocaciones</h2>
       <p>La Feria de Ciencias es uno de los eventos más esperados del calendario escolar. Durante toda una jornada, las aulas se convierten en laboratorios donde los alumnos de los tres niveles presentan sus investigaciones ante familias, docentes y visitantes.</p>
     </div>
+    <p class="feria-aviso feria-aviso--<?= $feria_estado ?>" data-ed-no>
+      <?php if ($feria_estado === 'antes'): ?>
+        Próxima edición: <b><?= e($feria_txt) ?> de <?= e($feria_anio) ?></b>.
+      <?php elseif ($feria_estado === 'hoy'): ?>
+        <b>¡Es hoy!</b> La Feria de Ciencias <?= e($feria_anio) ?> es este <?= e($feria_txt) ?>.
+      <?php else: ?>
+        La edición <?= e($feria_anio) ?> se realizó el <?= e($feria_txt) ?>.
+      <?php endif; ?>
+    </p>
   </section>
 
   <section class="band">
@@ -60,9 +82,17 @@ require __DIR__ . '/partials/header.php';
     </div>
   </section>
 
-  <section class="cta-band">
-    <h2>Próxima edición: octubre 2026</h2>
-    <p>Te esperamos para descubrir el ingenio y la creatividad de nuestros estudiantes.</p>
+  <section class="cta-band" data-ed-no><?php /* cambia sola según la fecha de la Feria: no se edita desde la página */ ?>
+    <?php if ($feria_estado === 'antes'): ?>
+      <h2>Feria <?= e($feria_anio) ?>: <?= e($feria_txt) ?></h2>
+      <p>Te esperamos para descubrir el ingenio y la creatividad de nuestros estudiantes.</p>
+    <?php elseif ($feria_estado === 'hoy'): ?>
+      <h2>¡Hoy es la Feria de Ciencias <?= e($feria_anio) ?>!</h2>
+      <p>Te esperamos en el colegio para recorrer los proyectos de nuestros estudiantes.</p>
+    <?php else: ?>
+      <h2>¡Gracias por acompañarnos en la Feria <?= e($feria_anio) ?>!</h2>
+      <p>La edición <?= e($feria_anio) ?> fue el <?= e($feria_txt) ?>. Muy pronto, la próxima.</p>
+    <?php endif; ?>
     <a href="agenda" class="btn btn-white">Ver agenda</a>
   </section>
 

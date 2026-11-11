@@ -1,5 +1,6 @@
 # Credenciales locales (nunca subir)
 config.local.php
+conexion-hosting/
 
 # Archivos de sistema
 Thumbs.db
@@ -10,3 +11,6 @@ Thumbs.db
 
 # Configuración local de Claude Code
 .claude/settings.local.json
+
+# Fotos de trabajo para el recorrido 360 (originales de WhatsApp y conversiones)
+imagenespanoramicas/

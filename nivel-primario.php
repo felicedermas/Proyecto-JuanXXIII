@@ -90,10 +90,10 @@ $page_style = <<<'CSS'
     }
 
     /* ---- ANCHOR NAV ---- */
+    /* Barra fija en su lugar: no acompaña el scroll (el header del sitio ya es sticky). */
     .np-anchor-nav {
-      position: sticky;
-      top: 78px;
-      z-index: 900;
+      position: relative;
+      z-index: 2;
       background: #fff;
       border-bottom: 2px solid var(--gray-200);
       box-shadow: 0 2px 12px rgba(29,53,87,.08);
@@ -692,6 +692,38 @@ $page_style = <<<'CSS'
       .aaci-nivel-grado  { display: none; }
     }
 CSS;
+
+// Estado de los formularios de Primaria y de Hermanos (se habilitan desde el
+// panel → Inscripciones). El calendario y los botones se arman con esto, así
+// la página siempre dice lo mismo que el formulario.
+require_once __DIR__ . '/partials/inscripciones.php';
+$np_forms = ['primaria' => insc_estado(null), 'hermanos' => insc_estado(null)];
+$np_pdo = db_opcional();
+if ($np_pdo !== null && insc_asegurar_tablas($np_pdo)) {
+    try {
+        foreach ($np_forms as $clave => $_) {
+            $np_forms[$clave] = insc_estado(insc_fila_formulario($np_pdo, $clave));
+        }
+    } catch (Throwable $ex) {
+        // quedan cerrados
+    }
+}
+/** Día y mes abreviado de una fecha Y-m-d, para el círculo del calendario. */
+function np_dia_mes(?string $ymd): array {
+    if (!$ymd) return ['—', ''];
+    $meses = ['', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    [, $m, $d] = explode('-', $ymd);
+    return [(string) (int) $d, $meses[(int) $m]];
+}
+/** Etiqueta y clase del estado de un formulario. */
+function np_badge(array $st): array {
+    return match ($st['motivo']) {
+        'abierto'      => ['Inscripción abierta', 'badge-abierto'],
+        'proximamente' => ['Próximamente', 'badge-proximo'],
+        'finalizado'   => ['Finalizada', 'badge-cerrado'],
+        default        => ['Cerrada', 'badge-cerrado'],
+    };
+}
 require __DIR__ . '/partials/header.php';
 ?>
   <!-- ===== HERO ===== -->
@@ -788,10 +820,7 @@ require __DIR__ . '/partials/header.php';
       </div>
       <div class="proyecto-visual">
         <div class="proyecto-img-wrap">
-          <div class="proyecto-img-placeholder">
-            <!-- Reemplazá con: <img src="primario-proyecto.jpg" alt="Alumnos en clase"> -->
-            Foto de aula / actividad Nivel Primario
-          </div>
+          <img src="img/imgs/Actividad-Primaria.png" alt="Alumnos del Nivel Primario en una actividad del colegio" width="376" height="499" loading="lazy" style="display:block;width:100%;height:100%;max-height:520px;object-fit:cover;"/>
         </div>
         <div class="proyecto-badge">
           <strong>1°–6°</strong>
@@ -813,53 +842,42 @@ require __DIR__ . '/partials/header.php';
         <!-- Columna izquierda: calendario -->
         <div class="fechas-panel">
           <h3>Calendario de inscripciones</h3>
+          <?php /* sale del estado de los formularios: no se edita desde la página */ ?>
+          <div data-ed-no>
+          <?php
+            $np_items = [
+              ['primaria', 'Preinscripción — alumnos nuevos (1° a 6° grado)', 'Se completa en línea desde esta página. Después, Secretaría se comunica con la familia.'],
+              ['hermanos', 'Inscripción de hermanos', 'Para familias que inscriben a dos o más hijos/as en el colegio.'],
+            ];
+            foreach ($np_items as [$clave, $titulo, $texto]):
+              $st = $np_forms[$clave];
+              [$dia, $mes] = np_dia_mes($st['desde']);
+              [$badge, $cls] = np_badge($st);
+          ?>
+          <div class="fecha-item">
+            <div class="fecha-dot<?= $st['abierto'] ? ' highlight' : '' ?>">
+              <strong><?= e($dia) ?></strong>
+              <span><?= e($mes) ?></span>
+            </div>
+            <div class="fecha-info">
+              <h4><?= e($titulo) ?></h4>
+              <p><?= e($texto) ?> <?= $st['periodo'] !== '' ? '<b>' . e($st['periodo']) . '.</b>' : 'Fechas a confirmar.' ?></p>
+              <span class="fecha-badge <?= $cls ?>"><?= e($badge) ?></span>
+            </div>
+          </div>
+          <?php endforeach; ?>
 
           <div class="fecha-item">
             <div class="fecha-dot">
-              <strong>XX</strong>
-              <span>Mes</span>
-            </div>
-            <div class="fecha-info">
-              <h4>Apertura de inscripciones — alumnos nuevos</h4>
-              <p>Inicio del período de pre-inscripción para alumnos que ingresan por primera vez al colegio. Completar el formulario online y aguardar contacto de secretaría.</p>
-              <span class="fecha-badge badge-abierto">Completar fecha</span>
-            </div>
-          </div>
-
-          <div class="fecha-item">
-            <div class="fecha-dot">
-              <strong>XX</strong>
-              <span>Mes</span>
-            </div>
-            <div class="fecha-info">
-              <h4>Re-inscripción — alumnos actuales</h4>
-              <p>Período de confirmación de vacante para alumnos que ya asisten al colegio. Se realiza a través de secretaría o del formulario habilitado.</p>
-              <span class="fecha-badge badge-proximo">Completar fecha</span>
-            </div>
-          </div>
-
-          <div class="fecha-item">
-            <div class="fecha-dot highlight">
-              <strong>XX</strong>
-              <span>Mes</span>
-            </div>
-            <div class="fecha-info">
-              <h4>Cierre de inscripciones</h4>
-              <p>Fecha límite para presentar la documentación completa y confirmar la vacante. Las inscripciones fuera de término quedan sujetas a disponibilidad.</p>
-              <span class="fecha-badge badge-cerrado">Completar fecha</span>
-            </div>
-          </div>
-
-          <div class="fecha-item">
-            <div class="fecha-dot">
-              <strong>XX</strong>
-              <span>Mes</span>
+              <strong>—</strong>
+              <span></span>
             </div>
             <div class="fecha-info">
               <h4>Inicio del ciclo lectivo</h4>
-              <p>Primer día de clases del año. Se informará oportunamente el horario de ingreso y las indicaciones para los alumnos que ingresan por primera vez.</p>
-              <span class="fecha-badge badge-proximo">Completar fecha</span>
+              <p>Primer día de clases del año. Fecha a confirmar.</p>
+              <span class="fecha-badge badge-proximo">A confirmar</span>
             </div>
+          </div>
           </div>
 
           <div class="insc-nota">
@@ -901,30 +919,32 @@ require __DIR__ . '/partials/header.php';
             </div>
           </div>
 
+          <div data-ed-no>
+          <?php
+            $np_cards = [
+              ['primaria', 'inscripcion-primaria', '📋', 'Preinscripción — Alumnos nuevos (1° a 6° grado)', 'Para familias que ingresan al colegio por primera vez. Completar con los datos del alumno y del responsable.'],
+              ['hermanos', 'inscripcion-hermanos', '👨‍👩‍👧‍👦', 'Inscripción de hermanos', 'Completás una sola vez los datos de la familia y cargás a cada hijo/a en su nivel.'],
+            ];
+            foreach ($np_cards as [$clave, $href, $icono, $titulo, $texto]):
+              $st = $np_forms[$clave];
+          ?>
           <div class="form-card">
-            <div class="form-card-icon">📋</div>
-            <h4>Pre-inscripción — Alumnos nuevos (1° a 6° grado)</h4>
-            <p>Para familias que ingresan al colegio por primera vez. Completar con los datos del alumno y ambos tutores.</p>
-            <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-form">
-              <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Abrir formulario
+            <div class="form-card-icon"><?= $icono ?></div>
+            <h4><?= e($titulo) ?></h4>
+            <p><?= e($texto) ?><?php if ($st['periodo'] !== ''): ?> <b><?= e($st['periodo']) ?>.</b><?php endif; ?></p>
+            <a href="<?= $href ?>" class="btn-form">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <?= $st['abierto'] ? 'Completar formulario' : 'Ver formulario (' . e(mb_strtolower(np_badge($st)[0])) . ')' ?>
             </a>
           </div>
-          <div class="form-card">
-            <div class="form-card-icon">🔄</div>
-            <h4>Re-inscripción — Alumnos actuales</h4>
-            <p>Para confirmar la continuidad de alumnos que ya asisten al colegio durante el ciclo lectivo en curso.</p>
-            <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-form">
-              <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Abrir formulario
-            </a>
+          <?php endforeach; ?>
           </div>
           <div class="form-card">
             <div class="form-card-icon">❓</div>
             <h4>Consultas e información</h4>
             <p>¿Tenés preguntas sobre el proceso de inscripción? Envianos tu consulta y te respondemos a la brevedad.</p>
-            <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-form" style="background:var(--blue-mid);">
-              <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <a href="contacto" class="btn-form" style="background:var(--blue-mid);">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               Enviar consulta
             </a>
           </div>
@@ -994,7 +1014,7 @@ require __DIR__ . '/partials/header.php';
       </div>
       <div class="materia-nota">
         <span>📌</span>
-        <p>Esta lista es orientativa. La lista definitiva y actualizada para el ciclo lectivo se enviará por cuaderno de comunicaciones antes del inicio de clases. <strong>Reemplazá los ítems marcados con los datos reales.</strong></p>
+        <p>Esta lista es orientativa. La lista definitiva y actualizada para el ciclo lectivo se enviará por cuaderno de comunicaciones antes del inicio de clases.</p>
       </div>
     </div>
 
@@ -1071,81 +1091,18 @@ require __DIR__ . '/partials/header.php';
 
   <!-- ===== 4. INGLÉS AACI ===== -->
   <div class="aaci-section" id="ingles">
-    <div class="aaci-inner">
+    <div class="aaci-inner" style="grid-template-columns:1fr;max-width:820px;">
       <div class="aaci-content">
-        <span class="section-tag light">Certificación internacional</span>
+        <span class="section-tag light">Inglés</span>
         <h2>Examen de Inglés AACI</h2>
         <p>
-          Nuestro colegio participa en el programa de exámenes de inglés propuesto por la <strong style="color:#fff;">AACI (Asociación Argentina de Cultura Inglesa)</strong>, que permite a los alumnos obtener una certificación internacional de su nivel de dominio del idioma al finalizar el nivel primario.
+          El Nivel Primario ofrece el examen de inglés de la <strong style="color:#fff;">AACI (Asociación Argentina de Cultura Inglesa)</strong>.
         </p>
-        <p>
-          Los exámenes evalúan las cuatro habilidades del idioma: comprensión lectora, expresión escrita, comprensión auditiva y expresión oral, siguiendo estándares del Marco Común Europeo de Referencia.
-        </p>
-
-        <div class="aaci-niveles">
-          <div class="aaci-nivel">
-            <div class="aaci-nivel-icon">🌱</div>
-            <div>
-              <h4>Starters / Movers</h4>
-              <p>Primer acercamiento al inglés formal con vocabulario básico y situaciones cotidianas.</p>
-            </div>
-            <span class="aaci-nivel-grado">2° – 3° grado</span>
-          </div>
-          <div class="aaci-nivel">
-            <div class="aaci-nivel-icon">📗</div>
-            <div>
-              <h4>Flyers / KET</h4>
-              <p>Nivel elemental a básico, lectura y escritura de textos simples, conversación guiada.</p>
-            </div>
-            <span class="aaci-nivel-grado">4° – 5° grado</span>
-          </div>
-          <div class="aaci-nivel">
-            <div class="aaci-nivel-icon">🏆</div>
-            <div>
-              <h4>PET (B1)</h4>
-              <p>Nivel intermedio. Capacidad de comunicarse con fluidez en situaciones cotidianas y laborales.</p>
-            </div>
-            <span class="aaci-nivel-grado">6° grado</span>
-          </div>
-        </div>
-
-        <!-- Completar con el nombre del examen real que rinde el colegio -->
-        <p style="font-size:.82rem;opacity:.6;margin-top:1.25rem;">
-          * Los niveles de examen son referenciales. El colegio indicará oportunamente el nivel correspondiente a cada grado para el ciclo lectivo en curso.
-        </p>
-      </div>
-
-      <div class="aaci-info-panel">
-        <div class="aaci-info-card">
-          <h4><span>📅</span> Fechas del examen</h4>
-          <p>Los exámenes se realizan habitualmente durante el segundo semestre del año. Las fechas exactas son informadas por la AACI y comunicadas a las familias con anticipación a través del cuaderno de comunicaciones.</p>
-          <!-- Completar con fechas reales cuando estén disponibles -->
-          <ul>
-            <li>Fecha tentativa: <strong style="color:#fff;">XX de mes XXXX</strong> (completar)</li>
-            <li>Inscripción al examen: hasta el <strong style="color:#fff;">XX de mes</strong> (completar)</li>
-          </ul>
-        </div>
-        <div class="aaci-info-card">
-          <h4><span>💰</span> Aranceles y pago</h4>
-          <p>El arancel del examen es fijado anualmente por la AACI y varía según el nivel de certificación. El colegio actúa como centro de inscripción.</p>
-          <ul>
-            <li>El arancel se abona directamente (completar: al colegio / a la AACI)</li>
-            <li>Modalidad de pago: (completar)</li>
-            <li>Fecha límite de pago: (completar)</li>
-          </ul>
-        </div>
-        <div class="aaci-info-card">
-          <h4><span>📚</span> Preparación</h4>
-          <p>Los alumnos reciben preparación específica para el examen durante las clases de inglés a lo largo del año. Se recomienda además práctica adicional en casa.</p>
-          <ul>
-            <li>Material de práctica: (completar si se distribuye)</li>
-            <li>Clases de apoyo: (completar si se ofrecen)</li>
-          </ul>
-          <a href="https://www.aaci.org.ar" target="_blank" rel="noopener" class="aaci-link">
-            Sitio oficial AACI
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-        </div>
+        <p>Niveles, fechas, aranceles y preparación: información a confirmar.</p>
+        <a href="https://www.aaci.org.ar" target="_blank" rel="noopener" class="aaci-link">
+          Sitio oficial AACI
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
       </div>
     </div>
   </div>
@@ -1156,143 +1113,8 @@ require __DIR__ . '/partials/header.php';
       <div class="becas-header">
         <span class="section-tag blue">Acceso e igualdad</span>
         <h2 class="section-title">Solicitudes de Beca</h2>
-        <p>El colegio cuenta con un programa de becas y ayudas económicas destinado a garantizar el acceso a la educación de calidad a familias que lo necesiten. Las becas son evaluadas de forma individualizada y confidencial.</p>
-      </div>
-
-      <div class="becas-grid">
-        <!-- Tipos de beca -->
-        <div class="beca-tipos">
-          <div class="beca-card">
-            <div class="beca-head azul">
-              <div class="beca-head-icon">🎓</div>
-              <div>
-                <h3>Beca por mérito académico</h3>
-                <p>Reconocimiento a la trayectoria escolar</p>
-              </div>
-            </div>
-            <div class="beca-body">
-              <p>Destinada a alumnos con desempeño académico sobresaliente sostenido, que presenten promedio de calificaciones igual o superior a (completar). Cubre un porcentaje de la cuota mensual.</p>
-              <div class="beca-req">
-                <div class="beca-req-item">Promedio de calificaciones: (completar)</div>
-                <div class="beca-req-item">Boletín del ciclo anterior sin aplazos</div>
-                <div class="beca-req-item">Carta de postulación (completar si aplica)</div>
-                <div class="beca-req-item">Sin sanciones disciplinarias</div>
-              </div>
-              <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-form" style="font-size:.82rem;padding:.5rem 1.2rem;">
-                <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Solicitar esta beca
-              </a>
-            </div>
-          </div>
-
-          <div class="beca-card">
-            <div class="beca-head azul2">
-              <div class="beca-head-icon">🏠</div>
-              <div>
-                <h3>Beca socioeconómica</h3>
-                <p>Apoyo a familias con necesidades acreditadas</p>
-              </div>
-            </div>
-            <div class="beca-body">
-              <p>Dirigida a familias que atraviesen dificultades económicas documentadas. La cobertura se establece según la evaluación del servicio social del colegio y puede cubrir entre el (completar)% de la cuota.</p>
-              <div class="beca-req">
-                <div class="beca-req-item">Recibos de sueldo o constancia de ingresos</div>
-                <div class="beca-req-item">Composición y tamaño del grupo familiar</div>
-                <div class="beca-req-item">Informe socioeconómico (completar si aplica)</div>
-                <div class="beca-req-item">Entrevista con asistente social</div>
-              </div>
-              <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-form" style="font-size:.82rem;padding:.5rem 1.2rem;background:var(--blue-mid);">
-                <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Solicitar esta beca
-              </a>
-            </div>
-          </div>
-
-          <div class="beca-card">
-            <div class="beca-head rojo">
-              <div class="beca-head-icon">👨‍👩‍👧‍👦</div>
-              <div>
-                <h3>Descuento familiar</h3>
-                <p>Para familias con más de un hijo en el colegio</p>
-              </div>
-            </div>
-            <div class="beca-body">
-              <p>Las familias con dos o más hijos matriculados en cualquier nivel del colegio acceden a un descuento en la cuota mensual del segundo hijo en adelante. El porcentaje de descuento es de (completar)%.</p>
-              <div class="beca-req">
-                <div class="beca-req-item">Tener 2 o más hijos matriculados</div>
-                <div class="beca-req-item">La solicitud se realiza en secretaría</div>
-                <div class="beca-req-item">DNI de ambos alumnos (completar si aplica)</div>
-              </div>
-              <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-form" style="font-size:.82rem;padding:.5rem 1.2rem;background:var(--red);">
-                <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Solicitar descuento
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel de solicitud -->
-        <div class="becas-solicitud">
-          <div class="solicitud-card">
-            <h4><span>📄</span> Documentación general requerida</h4>
-            <div class="doc-list">
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                DNI del alumno (copia)
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                DNI de los tutores (copia)
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Último boletín de calificaciones
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Recibos de sueldo (últimos 3 meses)
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Formulario de solicitud completo
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                (Completar con documentación adicional)
-              </div>
-            </div>
-          </div>
-
-          <div class="solicitud-card" style="border-left-color:var(--blue-mid);">
-            <h4><span>📅</span> Período de solicitud</h4>
-            <div class="doc-list">
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                Apertura: (completar fecha)
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                Cierre de solicitudes: (completar fecha)
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                Resolución: (completar fecha aproximada)
-              </div>
-              <div class="doc-item">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                Vigencia de la beca: ciclo lectivo completo
-              </div>
-            </div>
-          </div>
-
-          <div class="becas-cta">
-            <p>Las becas se otorgan de manera confidencial y son renovables anualmente. Para consultas personalizadas o situaciones particulares, comunicarse con la dirección del nivel.</p>
-            <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-form" style="display:inline-flex;">
-              <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Iniciar solicitud de beca
-            </a>
-          </div>
-        </div>
+        <p>El colegio cuenta con un sistema de becas y ayudas económicas para las familias que lo necesiten. Los tipos de beca, los requisitos y cómo solicitarla están en la página de Becas.</p>
+        <p style="margin-top:1.4rem;"><a href="becas" class="btn-form" style="display:inline-flex;">Ver la página de Becas</a></p>
       </div>
     </div>
   </div>
@@ -1302,7 +1124,7 @@ require __DIR__ . '/partials/header.php';
     <h2>¿Querés conocer el Nivel Primario?</h2>
     <p>Coordiná una visita guiada para conocer las aulas, los docentes y nuestra propuesta educativa en persona.</p>
     <div class="contacto-btns">
-      <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-white">Solicitar visita guiada</a>
+      <a href="contacto" class="btn btn-white">Solicitar visita guiada</a>
       <a href="./" class="btn btn-outline">Volver al inicio</a>
     </div>
   </div>

@@ -1,0 +1,10 @@
+# Archivos subidos desde el sitio (panel → Páginas del sitio).
+# De esta carpeta solo se sirven PDF: cualquier otra cosa que
+# llegara a quedar acá no se puede abrir ni ejecutar.
+Options -Indexes
+<FilesMatch "\.(?!pdf$)[^.]*$">
+  Require all denied
+</FilesMatch>
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>

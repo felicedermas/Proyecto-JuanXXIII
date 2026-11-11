@@ -20,7 +20,7 @@ require __DIR__ . '/partials/header.php';
         <p>La articulación entre niveles garantiza una trayectoria coherente, donde cada etapa prepara para la siguiente sin perder la identidad propia de cada edad.</p>
       </div>
       <div class="split-media">
-        <div class="image-placeholder split-img"><span>Foto del aula</span></div>
+        <img class="split-img" src="img/imgs/Colegio-Jardin.png" alt="Alumnos durante una actividad en el aula" width="374" height="626" loading="lazy"/>
       </div>
     </div>
   </section>

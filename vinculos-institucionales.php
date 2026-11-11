@@ -13,7 +13,7 @@ require __DIR__ . '/partials/header.php';
 
   
 
-  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Becas' => null], 'Comunidad', 'Vínculos <em>Institucionales</em>', 'Trabajamos junto a instituciones, colegios y empresas que acompañan y enriquecen nuestra propuesta educativa. Estos son algunos de los aliados con los que construimos comunidad.'); ?>
+  <?php page_hero(['Inicio' => './', 'Comunidad' => null, 'Vínculos Institucionales' => null], 'Comunidad', 'Vínculos <em>Institucionales</em>', 'Trabajamos junto a instituciones, colegios y empresas que acompañan y enriquecen nuestra propuesta educativa. Estos son algunos de los aliados con los que construimos comunidad.'); ?>
 
   <section class="content-section narrow">
     <div class="prose">

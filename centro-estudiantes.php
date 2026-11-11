@@ -20,7 +20,7 @@ require __DIR__ . '/partials/header.php';
         <p>Cada año se renuevan las autoridades mediante elecciones, fomentando el compromiso cívico y el trabajo en equipo desde la escuela.</p>
       </div>
       <div class="split-media">
-        <div class="image-placeholder split-img"><span>Foto del Centro de Estudiantes</span></div>
+        <div class="image-placeholder split-img" aria-hidden="true"></div>
       </div>
     </div>
   </section>
@@ -47,15 +47,15 @@ require __DIR__ . '/partials/header.php';
     </div>
     <div class="people-grid">
       <div class="person-card">
-        <div class="image-placeholder person-photo"><span>Foto</span></div>
+        <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <div class="person-body"><h3>Julián Ferreyra</h3><span class="person-role">Presidente</span><p>Estudiante de 6° año, orientación técnica.</p></div>
       </div>
       <div class="person-card">
-        <div class="image-placeholder person-photo"><span>Foto</span></div>
+        <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <div class="person-body"><h3>Camila Ríos</h3><span class="person-role">Vicepresidenta</span><p>Estudiante de 5° año, orientación economía.</p></div>
       </div>
       <div class="person-card">
-        <div class="image-placeholder person-photo"><span>Foto</span></div>
+        <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <div class="person-body"><h3>Tomás Aguirre</h3><span class="person-role">Secretario</span><p>Estudiante de 5° año, orientación sociales.</p></div>
       </div>
     </div>

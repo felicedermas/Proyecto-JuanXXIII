@@ -142,9 +142,13 @@ require __DIR__ . '/partials/header.php';
             <div class="form-field full">
               <button type="submit" class="btn btn-primary">Enviar mensaje</button>
               <p class="form-aviso">
+                <?php if (cfg('email')): ?>
                 También podés escribirnos a
                 <a href="mailto:<?= cfg_e('email') ?>"><?= cfg_e('email') ?></a>
                 o llamarnos al <a href="tel:<?= e(tel_href()) ?>"><?= cfg_e('telefono') ?></a>.
+                <?php else: ?>
+                También podés llamarnos al <a href="tel:<?= e(tel_href()) ?>"><?= cfg_e('telefono') ?></a>.
+                <?php endif; ?>
               </p>
             </div>
           </form>

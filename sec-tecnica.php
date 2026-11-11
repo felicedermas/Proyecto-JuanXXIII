@@ -15,9 +15,7 @@ $page_style = <<<'CSS'
       --t-blue:    #1D3557;
       --t-mid:     #457B9D;
       --t-accent:  #e07b39;   /* naranja técnico */
-      --t-info:    #3a86a8;
-      --t-info:    #3d5a80;
-      --t-inf:     #4361ee;   /* Informática */
+      --t-inf:    #4361ee;   /* Informática */
       --t-ele:     #e07b39;   /* Electrónica */
       --t-mul:     #9b5de5;   /* Multimedios */
     }
@@ -38,8 +36,11 @@ $page_style = <<<'CSS'
       position: relative; z-index: 1;
       text-align: center; padding: 4rem 2rem; max-width: 820px;
     }
+    /* Flex de bloque (no inline-flex): así la ficha del director
+       queda en su propia línea debajo y no al costado. */
     .st-breadcrumb {
-      display: inline-flex; align-items: center; gap: .5rem;
+      display: flex; flex-wrap: wrap; justify-content: center;
+      align-items: center; gap: .5rem;
       color: #A8DADC; font-size: .78rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: .12em; margin-bottom: 1.2rem;
     }
@@ -71,17 +72,23 @@ $page_style = <<<'CSS'
     .director-chip strong { color: #fff; }
 
     /* ---- ANCHOR NAV ---- */
+    /* Barra fija en su lugar: no acompaña el scroll (el header del sitio ya es sticky). */
     .st-anchor-nav {
-      position: sticky; top: 78px; z-index: 900;
+      position: relative; z-index: 2;
       background: var(--t-main); border-bottom: 2px solid rgba(255,255,255,.1);
       box-shadow: 0 4px 20px rgba(0,0,0,.3);
     }
+    /* Centrado con márgenes automáticos en vez de justify-content:
+       center, que con overflow cortaba los primeros links en pantallas
+       angostas y no se podía scrollear hasta ellos. */
     .st-anchor-list {
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center;
       gap: .4rem; padding: .65rem 2rem;
       max-width: 1400px; margin: 0 auto;
       overflow-x: auto; scrollbar-width: none;
     }
+    .st-anchor-list > li:first-child { margin-left: auto; }
+    .st-anchor-list > li:last-child  { margin-right: auto; }
     .st-anchor-list::-webkit-scrollbar { display: none; }
     .st-anchor-link {
       display: inline-flex; align-items: center; gap: .4rem;
@@ -99,11 +106,8 @@ $page_style = <<<'CSS'
     /* ---- SHARED ---- */
     .st-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
     .st-alt { background: var(--gray-100); }
-    .st-alt > .st-section { padding: 5rem 2rem; }
     .st-dark { background: var(--t-main); }
-    .st-dark > .st-section { padding: 5rem 2rem; }
     .st-mid-dark { background: var(--t-blue); }
-    .st-mid-dark > .st-section { padding: 5rem 2rem; }
 
     .tag-orange {
       display: inline-block;
@@ -137,8 +141,9 @@ $page_style = <<<'CSS'
       padding: 1.1rem 1.25rem; margin-top: .5rem;
     }
     .modalidad-diff h4 { font-family: var(--font-display); color: var(--blue-dark); font-size: 1rem; margin-bottom: .6rem; }
-    .modalidad-diff ul { display: flex; flex-direction: column; gap: .4rem; padding-left: 1rem; }
+    .modalidad-diff ul { display: flex; flex-direction: column; gap: .4rem; padding-left: 1.1rem; list-style: disc; }
     .modalidad-diff li { font-size: .88rem; color: #555; line-height: 1.6; }
+    .modalidad-diff li::marker { color: var(--t-accent); }
 
     .estructura-grid { display: flex; flex-direction: column; gap: 1.1rem; }
     .ciclo-blk {
@@ -252,6 +257,8 @@ $page_style = <<<'CSS'
       background: #fff; border-radius: var(--radius-lg); overflow: hidden;
       box-shadow: var(--shadow-sm);
     }
+    /* 7° año: sola en su fila, centrada */
+    .dc-year-card.final { grid-column: 1 / -1; width: 100%; max-width: 380px; margin: 0 auto; }
     .dc-year-head {
       padding: .9rem 1.25rem; text-align: center;
     }
@@ -308,10 +315,10 @@ $page_style = <<<'CSS'
     .taller-esp-head span { font-size: 1.3rem; }
     .taller-esp-head h4  { font-family: var(--font-display); color: #fff; font-size: .95rem; }
     .taller-esp-body { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-top: none; padding: 1rem 1.25rem; }
-    .taller-row { display: flex; justify-content: space-between; align-items: center; padding: .4rem 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: .84rem; }
+    .taller-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .4rem 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: .84rem; }
     .taller-row:last-child { border: none; }
-    .taller-row .tr-label { color: rgba(255,255,255,.65); }
-    .taller-row .tr-val   { color: #fff; font-weight: 700; }
+    .taller-row .tr-label { color: rgba(255,255,255,.65); flex-shrink: 0; }
+    .taller-row .tr-val   { color: #fff; font-weight: 700; text-align: right; }
 
     /* ============================================================
        5. PROYECTOS
@@ -466,6 +473,7 @@ $page_style = <<<'CSS'
     }
     .admin-toggle:hover { background: rgba(255,255,255,.14); }
     .admin-toggle svg { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s; }
+    .admin-toggle.open { border-radius: var(--radius) var(--radius) 0 0; }
     .admin-toggle.open svg { transform: rotate(180deg); }
     .admin-panel {
       display: none; background: rgba(255,255,255,.04);
@@ -543,6 +551,7 @@ $page_style = <<<'CSS'
     }
     .ing-toggle:hover { background: rgba(255,255,255,.13); }
     .ing-toggle svg { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s;flex-shrink:0; }
+    .ing-toggle.open { border-radius: var(--radius) var(--radius) 0 0; }
     .ing-toggle.open svg { transform: rotate(180deg); }
     .ing-panel {
       display: none; background: rgba(255,255,255,.04);
@@ -572,8 +581,15 @@ $page_style = <<<'CSS'
       .modalidad-grid { grid-template-columns: 1fr; }
       .aut-grid       { grid-template-columns: 1fr; }
       .dc-grid        { grid-template-columns: 1fr 1fr; }
+      .dc-year-card.final { grid-column: auto; max-width: none; }
       .proyectos-grid { grid-template-columns: 1fr 1fr; }
       .ag-layout      { grid-template-columns: 1fr; }
+      /* Meses en fila (con salto) en lugar de una columna de 9 botones */
+      .ag-meses       { display: flex; flex-wrap: wrap; gap: .4rem; }
+      .ag-meses h3,
+      .ag-meses .ag-nota { flex-basis: 100%; }
+      .ag-meses h3    { margin-bottom: .6rem; }
+      .ag-mes-btn     { width: auto; margin-bottom: 0; text-align: center; }
       .tablon-grid    { grid-template-columns: minmax(0, 1fr); }
       .feria-grid     { grid-template-columns: 1fr; }
       .mesas-grid     { grid-template-columns: minmax(0, 1fr); }
@@ -591,6 +607,7 @@ $page_style = <<<'CSS'
       .mesa-table td  { padding: .55rem .5rem; }
     }
 CSS;
+require_once __DIR__ . '/partials/bloques_nivel.php';
 require __DIR__ . '/partials/header.php';
 ?>
   <!-- HERO -->
@@ -611,7 +628,7 @@ require __DIR__ . '/partials/header.php';
       <p class="st-hero-desc">Siete años de formación técnico-profesional con especialidades en Informática, Electrónica y Multimedios. Combinamos teoría, taller y práctica profesional para formar técnicos competentes.</p>
       <div class="hero-cta">
         <a href="#modalidad" class="btn btn-primary">¿Qué es la modalidad técnica?</a>
-        <a href="nivel-secundario" class="btn btn-outline">← Ver modalidad Orientada</a>
+        <a href="sec-orientada" class="btn btn-outline">Ver modalidad Orientada →</a>
       </div>
     </div>
   </section>
@@ -640,7 +657,7 @@ require __DIR__ . '/partials/header.php';
     </div>
     <div class="modalidad-grid">
       <div class="modalidad-info">
-        <p>La Secundaria Técnica tiene una duración de <strong>7 años</strong> (dos años más que la orientada), lo que permite una formación más profunda en la especialidad elegida. Al finalizar, los egresados obtienen el título de <strong>Técnico</strong> en la especialidad, habilitante tanto para ejercer la profesión como para continuar estudios universitarios.</p>
+        <p>La Secundaria Técnica tiene una duración de <strong>7 años</strong> (un año más que la orientada), lo que permite una formación más profunda en la especialidad elegida. Al finalizar, los egresados obtienen el título de <strong>Técnico</strong> en la especialidad, habilitante tanto para ejercer la profesión como para continuar estudios universitarios.</p>
         <p>El plan de estudios combina materias del área general (comunes a todo nivel secundario) con materias técnicas específicas de la especialidad y horas de taller práctico, donde los alumnos aplican lo aprendido en proyectos reales.</p>
         <div class="modalidad-diff">
           <h4>¿Qué diferencia a un técnico de un bachiller?</h4>
@@ -715,11 +732,8 @@ require __DIR__ . '/partials/header.php';
               <div class="aut-avatar" style="font-size:1.5rem;">👤</div>
               <div><h4>Oscar Villarruel</h4><p>Director — Modalidad Técnica</p></div>
             </div>
-            <div class="aut-card"><div class="aut-avatar">👤</div><div><h4>Nombre Vicedirector/a</h4><p>Vicedirección — Modalidad Técnica</p></div></div>
-            <div class="aut-card"><div class="aut-avatar">👤</div><div><h4>Nombre Secretario/a</h4><p>Secretaría académica</p></div></div>
-            <div class="aut-card"><div class="aut-avatar">👤</div><div><h4>Nombre Preceptor/a</h4><p>Preceptoría — Ciclo Básico</p></div></div>
-            <div class="aut-card"><div class="aut-avatar">👤</div><div><h4>Nombre Preceptor/a</h4><p>Preceptoría — Ciclo Técnico</p></div></div>
-            <div class="aut-card"><div class="aut-avatar">🔧</div><div><h4>Nombre Jefe/a de Taller</h4><p>Coordinación de Talleres</p></div></div>
+            <div class="aut-card"><div class="aut-avatar">👤</div><div><h4>Sebastián De Jesús</h4><p>Vicedirector — Modalidad Técnica</p></div></div>
+            <div class="aut-card"><div class="aut-avatar">👤</div><div><h4>Alejo Salzman</h4><p>Secretario — Modalidad Técnica</p></div></div>
           </div>
         </div>
         <div>
@@ -791,33 +805,33 @@ require __DIR__ . '/partials/header.php';
     <div class="dc-panel active" id="dc-inf">
       <div class="dc-grid">
         <div class="dc-year-card"><div class="dc-year-head inf"><h4>4° año</h4><p>Inicio del ciclo técnico</p></div><div class="dc-materias"><div class="dc-materia">Algoritmos y Programación</div><div class="dc-materia">Sistemas Operativos I</div><div class="dc-materia">Redes I</div><div class="dc-materia">Matemática Aplicada</div><div class="dc-materia">Inglés Técnico</div><div class="dc-materia">Taller de Informática I</div></div></div>
-        <div class="dc-year-card"><div class="dc-year-head inf"><h4>5° año</h4><p></p></div><div class="dc-materias"><div class="dc-materia">Prog. Orientada a Objetos</div><div class="dc-materia">Bases de Datos I</div><div class="dc-materia">Redes II</div><div class="dc-materia">Sistemas Operativos II</div><div class="dc-materia">Inglés Técnico II</div><div class="dc-materia">Taller de Informática II</div></div></div>
-        <div class="dc-year-card"><div class="dc-year-head inf"><h4>6° año</h4><p></p></div><div class="dc-materias"><div class="dc-materia">Desarrollo Web</div><div class="dc-materia">Bases de Datos II</div><div class="dc-materia">Administración de Sistemas</div><div class="dc-materia">Seguridad Informática</div><div class="dc-materia">Práctica Profesional I</div><div class="dc-materia">Taller de Informática III</div></div></div>
-        <div class="dc-year-card" style="grid-column:1/-1;max-width:380px;margin:0 auto;"><div class="dc-year-head inf"><h4>7° año</h4><p>Proyecto integrador y egreso</p></div><div class="dc-materias"><div class="dc-materia">Proyecto Integrador</div><div class="dc-materia">Gestión de Proyectos TI</div><div class="dc-materia">Práctica Profesional II</div><div class="dc-materia">Ética y Legislación Informática</div></div></div>
+        <div class="dc-year-card"><div class="dc-year-head inf"><h4>5° año</h4><p>Profundización técnica</p></div><div class="dc-materias"><div class="dc-materia">Prog. Orientada a Objetos</div><div class="dc-materia">Bases de Datos I</div><div class="dc-materia">Redes II</div><div class="dc-materia">Sistemas Operativos II</div><div class="dc-materia">Inglés Técnico II</div><div class="dc-materia">Taller de Informática II</div></div></div>
+        <div class="dc-year-card"><div class="dc-year-head inf"><h4>6° año</h4><p>Prácticas profesionalizantes</p></div><div class="dc-materias"><div class="dc-materia">Desarrollo Web</div><div class="dc-materia">Bases de Datos II</div><div class="dc-materia">Administración de Sistemas</div><div class="dc-materia">Seguridad Informática</div><div class="dc-materia">Práctica Profesional I</div><div class="dc-materia">Taller de Informática III</div></div></div>
+        <div class="dc-year-card final"><div class="dc-year-head inf"><h4>7° año</h4><p>Proyecto integrador y egreso</p></div><div class="dc-materias"><div class="dc-materia">Proyecto Integrador</div><div class="dc-materia">Gestión de Proyectos TI</div><div class="dc-materia">Práctica Profesional II</div><div class="dc-materia">Ética y Legislación Informática</div></div></div>
       </div>
-      <div class="dc-nota"><span>📌</span><p>El diseño curricular se ajusta a la Resolución (completar número y organismo). Las materias del área general (Lengua, Matemática, Historia, etc.) se dictan en todos los años. Completar con el documento oficial del establecimiento.</p></div>
+      <div class="dc-nota"><span>📌</span><p>El diseño curricular se ajusta a la normativa provincial vigente. Las materias del área general (Lengua, Matemática, Historia, etc.) se dictan en todos los años.</p></div>
     </div>
 
     <!-- Electrónica -->
     <div class="dc-panel" id="dc-ele">
       <div class="dc-grid">
         <div class="dc-year-card"><div class="dc-year-head ele"><h4>4° año</h4><p>Inicio del ciclo técnico</p></div><div class="dc-materias"><div class="dc-materia">Electrónica Analógica I</div><div class="dc-materia">Circuitos Eléctricos</div><div class="dc-materia">Matemática Aplicada</div><div class="dc-materia">Inglés Técnico</div><div class="dc-materia">Taller de Electrónica I</div></div></div>
-        <div class="dc-year-card"><div class="dc-year-head ele"><h4>5° año</h4><p></p></div><div class="dc-materias"><div class="dc-materia">Electrónica Digital</div><div class="dc-materia">Microcontroladores I</div><div class="dc-materia">Instrumentación</div><div class="dc-materia">Inglés Técnico II</div><div class="dc-materia">Taller de Electrónica II</div></div></div>
-        <div class="dc-year-card"><div class="dc-year-head ele"><h4>6° año</h4><p></p></div><div class="dc-materias"><div class="dc-materia">Microcontroladores II</div><div class="dc-materia">Automatización</div><div class="dc-materia">Robótica Básica</div><div class="dc-materia">Práctica Profesional I</div><div class="dc-materia">Taller de Electrónica III</div></div></div>
-        <div class="dc-year-card" style="grid-column:1/-1;max-width:380px;margin:0 auto;"><div class="dc-year-head ele"><h4>7° año</h4><p>Proyecto integrador y egreso</p></div><div class="dc-materias"><div class="dc-materia">Proyecto Integrador</div><div class="dc-materia">Domótica</div><div class="dc-materia">Práctica Profesional II</div><div class="dc-materia">Gestión y Legislación Técnica</div></div></div>
+        <div class="dc-year-card"><div class="dc-year-head ele"><h4>5° año</h4><p>Profundización técnica</p></div><div class="dc-materias"><div class="dc-materia">Electrónica Digital</div><div class="dc-materia">Microcontroladores I</div><div class="dc-materia">Instrumentación</div><div class="dc-materia">Inglés Técnico II</div><div class="dc-materia">Taller de Electrónica II</div></div></div>
+        <div class="dc-year-card"><div class="dc-year-head ele"><h4>6° año</h4><p>Prácticas profesionalizantes</p></div><div class="dc-materias"><div class="dc-materia">Microcontroladores II</div><div class="dc-materia">Automatización</div><div class="dc-materia">Robótica Básica</div><div class="dc-materia">Práctica Profesional I</div><div class="dc-materia">Taller de Electrónica III</div></div></div>
+        <div class="dc-year-card final"><div class="dc-year-head ele"><h4>7° año</h4><p>Proyecto integrador y egreso</p></div><div class="dc-materias"><div class="dc-materia">Proyecto Integrador</div><div class="dc-materia">Domótica</div><div class="dc-materia">Práctica Profesional II</div><div class="dc-materia">Gestión y Legislación Técnica</div></div></div>
       </div>
-      <div class="dc-nota"><span>📌</span><p>Diseño curricular sujeto a la resolución provincial vigente. Completar con el documento oficial del establecimiento.</p></div>
+      <div class="dc-nota"><span>📌</span><p>Diseño curricular sujeto a la normativa provincial vigente.</p></div>
     </div>
 
     <!-- Multimedios -->
     <div class="dc-panel" id="dc-mul">
       <div class="dc-grid">
         <div class="dc-year-card"><div class="dc-year-head mul"><h4>4° año</h4><p>Inicio del ciclo técnico</p></div><div class="dc-materias"><div class="dc-materia">Diseño Gráfico I</div><div class="dc-materia">Fotografía Digital</div><div class="dc-materia">Narrativa Audiovisual</div><div class="dc-materia">Inglés Técnico</div><div class="dc-materia">Taller Multimedios I</div></div></div>
-        <div class="dc-year-card"><div class="dc-year-head mul"><h4>5° año</h4><p></p></div><div class="dc-materias"><div class="dc-materia">Producción Audiovisual</div><div class="dc-materia">Diseño Web</div><div class="dc-materia">Animación Digital I</div><div class="dc-materia">Inglés Técnico II</div><div class="dc-materia">Taller Multimedios II</div></div></div>
-        <div class="dc-year-card"><div class="dc-year-head mul"><h4>6° año</h4><p></p></div><div class="dc-materias"><div class="dc-materia">Postproducción de Video</div><div class="dc-materia">Animación Digital II</div><div class="dc-materia">Identidad Visual</div><div class="dc-materia">Práctica Profesional I</div><div class="dc-materia">Taller Multimedios III</div></div></div>
-        <div class="dc-year-card" style="grid-column:1/-1;max-width:380px;margin:0 auto;"><div class="dc-year-head mul"><h4>7° año</h4><p>Proyecto integrador y egreso</p></div><div class="dc-materias"><div class="dc-materia">Proyecto Integrador</div><div class="dc-materia">Producción Transmedia</div><div class="dc-materia">Práctica Profesional II</div><div class="dc-materia">Gestión Cultural y Derechos</div></div></div>
+        <div class="dc-year-card"><div class="dc-year-head mul"><h4>5° año</h4><p>Profundización técnica</p></div><div class="dc-materias"><div class="dc-materia">Producción Audiovisual</div><div class="dc-materia">Diseño Web</div><div class="dc-materia">Animación Digital I</div><div class="dc-materia">Inglés Técnico II</div><div class="dc-materia">Taller Multimedios II</div></div></div>
+        <div class="dc-year-card"><div class="dc-year-head mul"><h4>6° año</h4><p>Prácticas profesionalizantes</p></div><div class="dc-materias"><div class="dc-materia">Postproducción de Video</div><div class="dc-materia">Animación Digital II</div><div class="dc-materia">Identidad Visual</div><div class="dc-materia">Práctica Profesional I</div><div class="dc-materia">Taller Multimedios III</div></div></div>
+        <div class="dc-year-card final"><div class="dc-year-head mul"><h4>7° año</h4><p>Proyecto integrador y egreso</p></div><div class="dc-materias"><div class="dc-materia">Proyecto Integrador</div><div class="dc-materia">Producción Transmedia</div><div class="dc-materia">Práctica Profesional II</div><div class="dc-materia">Gestión Cultural y Derechos</div></div></div>
       </div>
-      <div class="dc-nota"><span>📌</span><p>Diseño curricular sujeto a la resolución provincial vigente. Completar con el documento oficial del establecimiento.</p></div>
+      <div class="dc-nota"><span>📌</span><p>Diseño curricular sujeto a la normativa provincial vigente.</p></div>
     </div>
   </section>
 
@@ -916,59 +930,8 @@ require __DIR__ . '/partials/header.php';
         <span class="tag-orange">Organización del año</span>
         <h2>Agenda escolar — Modalidad Técnica</h2>
       </div>
-      <div class="ag-layout">
-        <div class="ag-meses">
-          <h3>Seleccioná el mes</h3>
-          <button class="ag-mes-btn active" data-ag="marzo">Marzo</button>
-          <button class="ag-mes-btn" data-ag="abril">Abril</button>
-          <button class="ag-mes-btn" data-ag="mayo">Mayo</button>
-          <button class="ag-mes-btn" data-ag="junio">Junio</button>
-          <button class="ag-mes-btn" data-ag="agosto">Agosto</button>
-          <button class="ag-mes-btn" data-ag="septiembre">Septiembre</button>
-          <button class="ag-mes-btn" data-ag="octubre">Octubre</button>
-          <button class="ag-mes-btn" data-ag="noviembre">Noviembre</button>
-          <button class="ag-mes-btn" data-ag="diciembre">Diciembre</button>
-          <div class="ag-nota">Las fechas se confirman al inicio de cada ciclo lectivo. Ante consultas, comunicarse con secretaría técnica.</div>
-        </div>
-        <div>
-          <div class="ag-eventos active" id="ag-marzo"><p class="ag-mes-title">Marzo</p>
-            <div class="ag-item"><div class="ag-dia nar"><strong>DD</strong><span>Mar</span></div><div class="ag-info"><h4>Inicio del ciclo lectivo</h4><p>Primer día de clases para todos los años. Completar con fecha exacta.</p><span class="ag-tag inscr">Inicio de clases</span></div></div>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Mar</span></div><div class="ag-info"><h4>Reunión de padres de 1° año</h4><p>Presentación del proyecto educativo, reglamento de taller y autoridades. Completar con fecha y hora.</p><span class="ag-tag acto">Reunión</span></div></div>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Mar</span></div><div class="ag-info"><h4>Inicio de talleres — todos los cursos</h4><p>Comienzo formal de las actividades de taller por especialidad. Completar con fecha.</p><span class="ag-tag taller">Taller</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-abril"><p class="ag-mes-title">Abril</p>
-            <div class="ag-item"><div class="ag-dia nar"><strong>DD</strong><span>Abr</span></div><div class="ag-info"><h4>Acto por el Día del Veterano</h4><p>Acto institucional con participación de todos los cursos. Completar con detalles.</p><span class="ag-tag acto">Acto escolar</span></div></div>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Abr</span></div><div class="ag-info"><h4>Entrega de propuesta de proyecto integrador — 7° año</h4><p>Los alumnos de 7° año presentan la propuesta preliminar de su proyecto final. Completar con fecha.</p><span class="ag-tag taller">Proyecto</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-mayo"><p class="ag-mes-title">Mayo</p>
-            <div class="ag-item"><div class="ag-dia nar"><strong>25</strong><span>May</span></div><div class="ag-info"><h4>Acto por el 25 de Mayo</h4><p>Acto escolar conmemorativo de la Revolución de Mayo. Participan todos los cursos.</p><span class="ag-tag acto">Acto escolar</span></div></div>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>May</span></div><div class="ag-info"><h4>Evaluaciones de taller — primer período</h4><p>Evaluaciones parciales de avance en los proyectos de taller de cada especialidad. Completar.</p><span class="ag-tag taller">Evaluación de taller</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-junio"><p class="ag-mes-title">Junio</p>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Jun</span></div><div class="ag-info"><h4>Cierre del 1er. trimestre</h4><p>Período de cierre y acreditación del primer trimestre. Completar con fechas.</p><span class="ag-tag acto">Cierre trimestre</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-agosto"><p class="ag-mes-title">Agosto</p>
-            <div class="ag-item"><div class="ag-dia nar"><strong>DD</strong><span>Ago</span></div><div class="ag-info"><h4>Regreso de clases — 2do. semestre</h4><p>Inicio del segundo semestre. Completar con fecha exacta.</p><span class="ag-tag inscr">Inicio de clases</span></div></div>
-            <div class="ag-item"><div class="ag-dia fer"><strong>DD</strong><span>Ago</span></div><div class="ag-info"><h4>Inscripción a la Feria de Ciencias</h4><p>Apertura del período de inscripción para proyectos que participarán en la Feria. Completar con fechas.</p><span class="ag-tag feria">Feria de Ciencias</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-septiembre"><p class="ag-mes-title">Septiembre</p>
-            <div class="ag-item"><div class="ag-dia nar"><strong>DD</strong><span>Sep</span></div><div class="ag-info"><h4>Día del estudiante — actividades especiales</h4><p>Festejo del Día del Estudiante con actividades organizadas por el Centro de Estudiantes. Completar.</p><span class="ag-tag acto">Acto escolar</span></div></div>
-            <div class="ag-item"><div class="ag-dia fer"><strong>DD</strong><span>Sep</span></div><div class="ag-info"><h4>Feria de Ciencias Institucional</h4><p>Muestra de proyectos de taller de todas las especialidades, abierta a la comunidad. Completar con fecha y lugar.</p><span class="ag-tag feria">Feria de Ciencias</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-octubre"><p class="ag-mes-title">Octubre</p>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Oct</span></div><div class="ag-info"><h4>Defensa preliminar de proyectos integradores — 7° año</h4><p>Los alumnos de 7° presentan el avance de su proyecto final ante el tribunal técnico. Completar.</p><span class="ag-tag taller">Proyecto integrador</span></div></div>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Oct</span></div><div class="ag-info"><h4>Inscripción a mesas de examen</h4><p>Período de inscripción a mesas para materias libres y previas. Completar con fechas.</p><span class="ag-tag inscr">Inscripción</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-noviembre"><p class="ag-mes-title">Noviembre</p>
-            <div class="ag-item"><div class="ag-dia nar"><strong>DD</strong><span>Nov</span></div><div class="ag-info"><h4>Colación de egresados — 7° año</h4><p>Ceremonia de egreso de los técnicos. Completar con fecha, hora y lugar.</p><span class="ag-tag acto">Colación</span></div></div>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Nov</span></div><div class="ag-info"><h4>Defensa final de proyectos integradores</h4><p>Defensa ante tribunal de los proyectos finales de 7° año. Completar con fecha.</p><span class="ag-tag taller">Proyecto integrador</span></div></div>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Nov</span></div><div class="ag-info"><h4>Mesas de examen — período regular</h4><p>Mesas de examen para materias libres y previas. Completar con días y horarios.</p><span class="ag-tag examen">Mesa de examen</span></div></div>
-          </div>
-          <div class="ag-eventos" id="ag-diciembre"><p class="ag-mes-title">Diciembre</p>
-            <div class="ag-item"><div class="ag-dia"><strong>DD</strong><span>Dic</span></div><div class="ag-info"><h4>Cierre del ciclo lectivo</h4><p>Último día de clases. Completar con fecha según calendario oficial.</p><span class="ag-tag acto">Cierre</span></div></div>
-            <div class="ag-item"><div class="ag-dia nar"><strong>DD</strong><span>Dic</span></div><div class="ag-info"><h4>Mesas de examen — período diciembre</h4><p>Mesas de fin de año. Completar con fechas y horarios.</p><span class="ag-tag examen">Mesa de examen</span></div></div>
-          </div>
-        </div>
+      <div style="--nb-acento:#e76f51;max-width:860px;margin:0 auto;">
+        <?php nb_agenda(['Técnica', 'Secundario'], 'Técnica'); ?>
       </div>
     </div>
   </div>
@@ -981,76 +944,27 @@ require __DIR__ . '/partials/header.php';
         <h2>Tablón de novedades</h2>
       </div>
       <div class="tablon-grid">
-        <div class="tablon-main">
-          <div class="novedad-card">
-            <div class="novedad-icon">📢</div>
-            <div>
-              <h4>Título de la novedad</h4>
-              <p>Descripción de la novedad. Completar con información real de la institución. Las novedades se publican aquí para mantener informada a la comunidad educativa.</p>
-              <div class="novedad-meta"><span class="novedad-fecha">DD/MM/AAAA</span><span class="nov-tag imp">Importante</span></div>
-            </div>
-          </div>
-          <div class="novedad-card">
-            <div class="novedad-icon">🗓️</div>
-            <div>
-              <h4>Título de la novedad</h4>
-              <p>Información sobre próximas actividades, modificaciones de horario o anuncios institucionales. Completar con contenido real.</p>
-              <div class="novedad-meta"><span class="novedad-fecha">DD/MM/AAAA</span><span class="nov-tag info">Información</span></div>
-            </div>
-          </div>
-          <div class="novedad-card">
-            <div class="novedad-icon">🏆</div>
-            <div>
-              <h4>Título de la novedad</h4>
-              <p>Reconocimiento, logro o noticia positiva de la institución o de los alumnos. Completar con el contenido real.</p>
-              <div class="novedad-meta"><span class="novedad-fecha">DD/MM/AAAA</span><span class="nov-tag act">Logro</span></div>
-            </div>
-          </div>
-          <div class="novedad-card">
-            <div class="novedad-icon">📋</div>
-            <div>
-              <h4>Título de la novedad</h4>
-              <p>Anuncio sobre inscripciones, cambios de calendario o cualquier información relevante para los alumnos y familias. Completar con contenido real.</p>
-              <div class="novedad-meta"><span class="novedad-fecha">DD/MM/AAAA</span><span class="nov-tag info">Información</span></div>
-            </div>
-          </div>
+        <div class="tablon-main" style="--nb-acento:#e76f51;">
+          <?php nb_novedades(['Técnica', 'Secundario'], 'Técnica'); ?>
         </div>
         <div class="tablon-aside">
-          <div class="aside-widget">
-            <h4>📅 Próximas fechas clave</h4>
-            <ul>
-              <li><strong>DD/MM</strong> — Nombre del evento (completar)</li>
-              <li><strong>DD/MM</strong> — Nombre del evento (completar)</li>
-              <li><strong>DD/MM</strong> — Nombre del evento (completar)</li>
-              <li><strong>DD/MM</strong> — Nombre del evento (completar)</li>
-              <li><strong>DD/MM</strong> — Nombre del evento (completar)</li>
-            </ul>
-          </div>
           <div class="aside-widget">
             <h4>🔗 Accesos rápidos</h4>
             <ul>
               <li><a href="inscripcion-mesas" style="color:rgba(255,255,255,.75);">Inscripción a mesas de examen</a></li>
-              <li><a href="https://forms.google.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);">Feria de Ciencias — inscribir proyecto</a></li>
-              <li><a href="https://forms.google.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);">Trabajar en la institución</a></li>
-              <li><a href="https://forms.google.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);">Consultas a secretaría</a></li>
+              <li><a href="feria-ciencias" style="color:rgba(255,255,255,.75);">Feria de Ciencias</a></li>
+              <li><a href="trabaja-con-nosotros" style="color:rgba(255,255,255,.75);">Trabajar en la institución</a></li>
+              <li><a href="contacto" style="color:rgba(255,255,255,.75);">Consultas a secretaría</a></li>
             </ul>
           </div>
           <!-- Acceso autorizado para actualizar novedades -->
           <div class="aside-widget">
             <h4>🔒 Acceso institucional</h4>
-            <button class="admin-toggle" id="adminToggle">
-              Actualizar novedades
-              <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="admin-panel" id="adminPanel">
-              <p>Acceso exclusivo para personal autorizado de la institución.</p>
-              <input type="text" placeholder="Usuario institucional"/>
-              <input type="password" placeholder="Contraseña"/>
-              <button class="admin-btn">
-                <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                Ingresar
-              </button>
-            </div>
+            <p style="font-size:.85rem;color:rgba(255,255,255,.7);margin:0 0 .8rem;">Las novedades se publican desde el panel del colegio, con usuario autorizado.</p>
+            <a href="login" class="admin-btn" style="display:inline-flex;text-decoration:none;">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              Ingresar al panel
+            </a>
           </div>
         </div>
       </div>
@@ -1083,7 +997,7 @@ require __DIR__ . '/partials/header.php';
         </div>
         <div class="ce-st-card" style="border-left-color:var(--t-inf);">
           <h4>🗳️ Elecciones del Centro</h4>
-          <p>Las elecciones se realizan en (completar mes) de cada año. Pueden postularse alumnos de (completar) año en adelante. La comisión directiva está integrada por: Presidente/a, Vicepresidente/a, Secretario/a y Tesorero/a.</p>
+          <p>El Centro de Estudiantes se renueva todos los años. Las elecciones se realizan en (completar mes) de cada año. Pueden postularse alumnos de (completar) año en adelante. La comisión directiva está integrada por: Presidente/a, Vicepresidente/a, Secretario/a y Tesorero/a.</p>
         </div>
         <div class="ce-st-card" style="border-left-color:var(--t-mul);">
           <h4>📣 Actividades del Centro</h4>
@@ -1103,14 +1017,14 @@ require __DIR__ . '/partials/header.php';
       <div class="mesas-grid">
         <div class="mesas-info">
           <h3>Mesas de examen</h3>
-          <p>Los alumnos que adeudan materias o desean rendir en condición de libre deben inscribirse en los períodos habilitados. Existen tres períodos de examen por año.</p>
+          <p>Los alumnos que adeudan materias o desean rendir en condición de libre deben inscribirse en los períodos habilitados. Existen cuatro períodos de examen por año.</p>
           <table class="mesa-table">
             <thead><tr><th>Período</th><th>Fechas</th><th>Inscripción hasta</th></tr></thead>
             <tbody>
-              <tr><td><strong>Período de Mayo</strong></td><td>Completar fechas</td><td>Completar fecha</td></tr>
-              <tr><td><strong>Período de Noviembre</strong></td><td>Completar fechas</td><td>Completar fecha</td></tr>
-              <tr><td><strong>Período de Diciembre</strong></td><td>Completar fechas</td><td>Completar fecha</td></tr>
-              <tr><td><strong>Período de Febrero</strong></td><td>Completar fechas</td><td>Completar fecha</td></tr>
+              <tr><td><strong>Período de Mayo</strong></td><td>A confirmar</td><td>A confirmar</td></tr>
+              <tr><td><strong>Período de Noviembre</strong></td><td>A confirmar</td><td>A confirmar</td></tr>
+              <tr><td><strong>Período de Diciembre</strong></td><td>A confirmar</td><td>A confirmar</td></tr>
+              <tr><td><strong>Período de Febrero</strong></td><td>A confirmar</td><td>A confirmar</td></tr>
             </tbody>
           </table>
           <div style="background:rgba(255,255,255,.05);border-radius:var(--radius);padding:.9rem 1.1rem;margin-top:1rem;font-size:.83rem;color:rgba(255,255,255,.65);">
@@ -1119,40 +1033,7 @@ require __DIR__ . '/partials/header.php';
         </div>
         <div class="ingreso-col">
           <h3>Ingreso escalonado</h3>
-          <p>El ingreso escalonado es una modalidad de cursada que permite a los alumnos incorporarse a determinadas materias o etapas del ciclo técnico en momentos específicos del año. Esta información es gestionada por autorización de la dirección.</p>
-          <p>Hacé clic en cada ítem para ver los detalles (acceso a información desplegable para usuarios autorizados):</p>
-
-          <button class="ing-toggle" id="ing1">
-            Criterios para el ingreso escalonado
-            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="ing-panel" id="panel-ing1">
-            <p>Completar con los criterios institucionales que habilitan el ingreso escalonado: situación del alumno, materias que puede cursar, condiciones que debe cumplir, aval de la dirección, etc.</p>
-          </div>
-
-          <button class="ing-toggle" id="ing2">
-            Procedimiento de solicitud
-            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="ing-panel" id="panel-ing2">
-            <p>Completar con el procedimiento: formulario de solicitud, plazos, documentación requerida, instancias de aprobación (docente, dirección, preceptoría), y notificación al alumno y la familia.</p>
-          </div>
-
-          <button class="ing-toggle" id="ing3">
-            Materias habilitadas para ingreso escalonado
-            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="ing-panel" id="panel-ing3">
-            <p>Completar con el listado de materias del ciclo técnico que pueden cursarse bajo esta modalidad, y las que por su naturaleza práctica (taller) no admiten este formato.</p>
-          </div>
-
-          <button class="ing-toggle" id="ing4">
-            Seguimiento y condición académica
-            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="ing-panel" id="panel-ing4">
-            <p>Completar con cómo se hace el seguimiento del alumno bajo ingreso escalonado, cómo afecta a la condición regular o libre, y qué ocurre si no cumple con las condiciones establecidas.</p>
-          </div>
+          <p>Información a confirmar. Cuando la dirección publique el protocolo de ingreso escalonado, va a estar disponible en esta sección.</p>
         </div>
       </div>
     </div>
@@ -1163,11 +1044,53 @@ require __DIR__ . '/partials/header.php';
     <h2>¿Querés ser parte de la Secundaria Técnica?</h2>
     <p>Para consultas sobre inscripciones, trabajar en la institución o visitar nuestros talleres, completá el formulario.</p>
     <div class="contact-btns">
-      <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-white">Consultas e inscripciones</a>
-      <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-outline">Trabajar en la institución</a>
+      <a href="contacto" class="btn btn-white">Consultas e inscripciones</a>
+      <a href="trabaja-con-nosotros" class="btn btn-outline">Trabajar en la institución</a>
       <a href="nivel-secundario" class="btn btn-dark">← Volver al selector</a>
     </div>
   </div>
 
-  
-<?php require __DIR__ . '/partials/footer.php';
+<?php
+$page_script = <<<'JS'
+  (function () {
+    'use strict';
+
+    // Pestañas: al hacer click en un botón se activa el panel con
+    // id = prefijo + valor del data-atributo, y se apagan los demás.
+    function pestanas(selBtn, attr, prefijo) {
+      var btns = document.querySelectorAll(selBtn);
+      Array.prototype.forEach.call(btns, function (btn) {
+        btn.addEventListener('click', function () {
+          var panel = document.getElementById(prefijo + btn.getAttribute(attr));
+          if (!panel) return;
+          Array.prototype.forEach.call(btns, function (b) {
+            b.classList.remove('active');
+            var p = document.getElementById(prefijo + b.getAttribute(attr));
+            if (p) p.classList.remove('active');
+          });
+          btn.classList.add('active');
+          panel.classList.add('active');
+        });
+      });
+    }
+    pestanas('.esp-tab',    'data-esp', 'esp-');
+    pestanas('.dc-tab',     'data-dc',  'dc-');
+    pestanas('.ag-mes-btn', 'data-ag',  'ag-');
+
+    // Desplegables: el botón abre/cierra el panel que le sigue.
+    function desplegable(btn, panel) {
+      if (!btn || !panel) return;
+      btn.setAttribute('aria-expanded', 'false');
+      btn.addEventListener('click', function () {
+        var abierto = panel.classList.toggle('open');
+        btn.classList.toggle('open', abierto);
+        btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+      });
+    }
+    desplegable(document.getElementById('adminToggle'), document.getElementById('adminPanel'));
+    Array.prototype.forEach.call(document.querySelectorAll('.ing-toggle'), function (btn) {
+      desplegable(btn, document.getElementById('panel-' + btn.id));
+    });
+  })();
+JS;
+require __DIR__ . '/partials/footer.php';

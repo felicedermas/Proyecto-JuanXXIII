@@ -44,10 +44,10 @@ require __DIR__ . '/partials/header.php';
           <tr><th>Tipo de beca</th><th>Cobertura</th><th>Dirigida a</th></tr>
         </thead>
         <tbody>
-          <tr><td>Beca solidaria</td><td>25% a 50% del arancel</td><td>Familias con dificultades económicas comprobables</td></tr>
-          <tr><td>Beca al mérito</td><td>30% del arancel</td><td>Estudiantes con desempeño académico destacado</td></tr>
-          <tr><td>Beca hermanos</td><td>15% por hijo adicional</td><td>Familias con varios hijos en la institución</td></tr>
-          <tr><td>Beca total</td><td>100% del arancel</td><td>Casos de vulnerabilidad evaluados por el comité</td></tr>
+          <tr><td>Beca solidaria</td><td>A confirmar</td><td>Familias con dificultades económicas comprobables</td></tr>
+          <tr><td>Beca al mérito</td><td>A confirmar</td><td>Estudiantes con desempeño académico destacado</td></tr>
+          <tr><td>Beca hermanos</td><td>A confirmar</td><td>Familias con varios hijos en la institución</td></tr>
+          <tr><td>Beca total</td><td>A confirmar</td><td>Casos de vulnerabilidad evaluados por el comité</td></tr>
         </tbody>
       </table>
     </div>
@@ -59,14 +59,22 @@ require __DIR__ . '/partials/header.php';
       <h2 class="section-title">El proceso en 4 pasos</h2>
     </div>
     <div class="steps">
-      <div class="step"><h3>Solicitud</h3><p>Completá el formulario de pedido de beca en línea, desde esta misma página.</p></div>
+      <div class="step" data-ed-no><?php /* cambia según el estado del formulario de becas */ ?><h3>Solicitud</h3>
+        <?php if ($becas_estado['abierto']): ?>
+          <p>Completá el <a href="inscripcion-becas">formulario de pedido de beca</a> en línea, desde esta misma página.</p>
+        <?php elseif ($becas_estado['motivo'] === 'proximamente'): ?>
+          <p>El formulario en línea se habilita el <?= e(insc_fecha_ar($becas_estado['desde'])) ?>. Desde ese día lo completás en esta misma página.</p>
+        <?php else: ?>
+          <p>Cuando el colegio habilite el período de solicitudes, completás el formulario en línea desde esta misma página.</p>
+        <?php endif; ?>
+      </div>
       <div class="step"><h3>Documentación</h3><p>Presentá los comprobantes de ingresos y la documentación requerida.</p></div>
       <div class="step"><h3>Evaluación</h3><p>El comité analiza cada caso de manera confidencial y objetiva.</p></div>
       <div class="step"><h3>Resolución</h3><p>Recibís la respuesta y, de ser aprobada, se aplica la reducción.</p></div>
     </div>
   </section>
 
-  <section class="cta-band">
+  <section class="cta-band" data-ed-no><?php /* cambia sola según el estado del formulario: no se edita desde la página */ ?>
     <?php if ($becas_estado['abierto']): ?>
       <h2>Solicitá tu beca en línea</h2>
       <p>

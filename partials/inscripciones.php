@@ -16,6 +16,13 @@
 //  (inscripcion-<clave>.php): el panel, la agenda, el aviso por
 //  correo y la página de Inscripciones lo toman solos.
 //
+//  Además, quien tiene el permiso "Edición de formularios" puede
+//  retocar cada formulario desde el panel (gestion_formularios.php):
+//  textos, etiquetas, campos obligatorios u ocultos, opciones de las
+//  listas y campos nuevos. Eso se guarda como un JSON de diferencias
+//  en inscripcion_formularios.config y se aplica encima de lo definido
+//  acá (ver "FORMULARIOS EDITADOS DESDE EL PANEL", más abajo).
+//
 //  Tablas: inscripcion_formularios e inscripciones
 //  (se crean solas; ver también migracion_inscripciones.sql).
 // ============================================================
@@ -143,9 +150,11 @@ function insc_opciones_nivel_anio(): array {
     return $opc;
 }
 
-// ── Los 4 formularios ───────────────────────────────────────
+// ── Los formularios, tal como están definidos en el código ──
 //  La clave coincide con la página: inscripcion-{clave}.php
-function insc_formularios(): array {
+//  Para usarlos, llamar a insc_formularios(): devuelve estos mismos
+//  con los cambios hechos desde el panel ya aplicados.
+function insc_formularios_base(): array {
     static $defs = null;
     if ($defs !== null) return $defs;
 
@@ -358,6 +367,18 @@ function insc_formularios(): array {
             ],
         ],
     ];
+
+    // Secciones con datos propios del alumno/a (las demás son comunes al
+    // grupo familiar). Se marca acá, con el título original, para que
+    // renombrar una sección desde el panel no cambie cómo se guarda.
+    foreach ($defs as &$d) {
+        foreach ($d['secciones'] as &$sec) {
+            $sec['alumno'] = str_starts_with($sec['titulo'], 'Datos del/la')
+                || in_array($sec['titulo'], ['Escuela de procedencia', 'Trayectoria escolar'], true);
+        }
+        unset($sec);
+    }
+    unset($d);
     return $defs;
 }
 
@@ -384,6 +405,160 @@ function insc_formulario(string $clave): ?array {
 }
 
 // ============================================================
+//  FORMULARIOS EDITADOS DESDE EL PANEL
+// ------------------------------------------------------------
+//  Lo que pidió Secretaría: poder ajustar los formularios sin
+//  depender de quien programa. La configuración guardada tiene
+//  solo las DIFERENCIAS con el código:
+//
+//    textos    => [bajada, aviso, ok_titulo, declaracion, boton…]
+//    pasos     => [[título, detalle], …]
+//    secciones => [n° de sección => [titulo]]
+//    campos    => [name => [l, ph, hint, r, oculto, o]]
+//    extra     => [[id, sec, l, t, r, o, ph, hint], …]  campos nuevos
+//    sig       => próximo número de campo nuevo (no se reutilizan)
+//
+//  Hay campos que no se pueden ocultar ni volver opcionales: los que
+//  clasifican la inscripción (nivel, modalidad, año) y los que van a
+//  columnas propias de la tabla (nombre, DNI, contacto…).
+// ============================================================
+
+const INSC_CAMPOS_FIJOS = ['alumno_nombre', 'alumno_apellido', 'alumno_dni', 'alumno_fnac',
+                           'tutor_nombre', 'tutor_email', 'tutor_tel'];
+
+/** Tipos disponibles para los campos que se agregan desde el panel. */
+const INSC_TIPOS_EXTRA = [
+    'text'     => 'Texto corto',
+    'textarea' => 'Texto largo',
+    'select'   => 'Lista de opciones',
+    'email'    => 'Correo electrónico',
+    'tel'      => 'Teléfono',
+];
+
+/** Textos del formulario que se pueden cambiar (clave => para qué sirve). */
+const INSC_TEXTOS_EDITABLES = [
+    'bajada'       => 'Texto bajo el título',
+    'bajada_larga' => 'Descripción en la página de Inscripciones',
+    'aviso'        => 'Aviso destacado antes del formulario',
+    'declaracion'  => 'Declaración que se acepta al enviar',
+    'boton'        => 'Texto del botón de envío',
+    'ok_titulo'    => 'Título del mensaje de confirmación',
+    'ok_texto'     => 'Texto del mensaje de confirmación',
+];
+
+const INSC_DECLARACION = 'Declaro que los datos consignados son correctos y acepto ser contactado/a por la institución.';
+const INSC_BOTON       = 'Enviar preinscripción';
+const INSC_MAX_EXTRAS  = 30;
+
+/** ¿Es un campo que el sistema necesita sí o sí? (no se oculta ni se vuelve opcional) */
+function insc_campo_fijo(array $c): bool {
+    return isset($c['clasif']) || in_array($c['n'], INSC_CAMPOS_FIJOS, true);
+}
+
+/** ¿Se pueden cambiar sus opciones desde el panel? (listas simples, no las que clasifican) */
+function insc_opciones_editables(array $c): bool {
+    return $c['t'] === 'select' && !isset($c['clasif']) && array_is_list($c['o'] ?? []);
+}
+
+/** Aviso (HTML con <b>) → texto para editar, con *asteriscos* para la negrita. */
+function insc_aviso_a_texto(string $html): string {
+    $t = preg_replace('~<br\s*/?>~i', "\n", $html);
+    $t = preg_replace('~</?(b|strong)\b[^>]*>~i', '*', $t);
+    return html_entity_decode(strip_tags($t), ENT_QUOTES, 'UTF-8');
+}
+
+/** Texto con *asteriscos* → HTML seguro del aviso. */
+function insc_texto_a_aviso(string $texto): string {
+    $h = e(trim($texto));
+    $h = preg_replace('~\*([^*\n]+)\*~', '<b>$1</b>', $h);
+    return str_replace(["\r\n", "\n"], '<br>', $h);
+}
+
+/** Aplica sobre un formulario del código los cambios guardados desde el panel. */
+function insc_aplicar_config(array $def, array $cfg): array {
+    foreach (array_keys(INSC_TEXTOS_EDITABLES) as $k) {
+        $v = $cfg['textos'][$k] ?? null;
+        if (!is_string($v)) continue;
+        if ($v !== '') {
+            $def[$k] = $v;
+        } elseif ($k === 'aviso' || $k === 'bajada_larga') {
+            unset($def[$k]);            // vaciado a propósito: no se muestra
+        }
+    }
+    if (isset($cfg['pasos']) && is_array($cfg['pasos'])) {
+        $def['pasos'] = array_values(array_filter($cfg['pasos'], fn($p) => is_array($p) && count($p) === 2));
+    }
+
+    foreach ($def['secciones'] as $i => $sec) {
+        $titulo = $cfg['secciones'][$i]['titulo'] ?? '';
+        if (is_string($titulo) && $titulo !== '') $sec['titulo'] = $titulo;
+
+        if (empty($sec['hijos'])) {
+            $campos = [];
+            foreach ($sec['campos'] as $c) {
+                $o = $cfg['campos'][$c['n']] ?? null;
+                if (is_array($o)) {
+                    $fijo = insc_campo_fijo($c);
+                    if (!$fijo && !empty($o['oculto'])) continue;
+                    if (($o['l'] ?? '') !== '')                 $c['l'] = (string) $o['l'];
+                    if (array_key_exists('ph', $o))             $c['ph'] = (string) $o['ph'];
+                    if (array_key_exists('hint', $o))           $c['hint'] = (string) $o['hint'];
+                    if (!$fijo && array_key_exists('r', $o))    $c['r'] = (bool) $o['r'];
+                    if (insc_opciones_editables($c) && !empty($o['o']) && is_array($o['o'])) {
+                        $c['o'] = array_values(array_map('strval', $o['o']));
+                    }
+                }
+                $campos[] = $c;
+            }
+            foreach (($cfg['extra'] ?? []) as $x) {
+                if (!is_array($x) || (int) ($x['sec'] ?? -1) !== $i || !isset(INSC_TIPOS_EXTRA[$x['t'] ?? ''])) continue;
+                $nuevo = [
+                    'n' => 'x' . (int) $x['id'], 'l' => (string) $x['l'], 't' => $x['t'], 'r' => !empty($x['r']),
+                    'ph' => (string) ($x['ph'] ?? ''), 'hint' => (string) ($x['hint'] ?? ''), 'extra' => true,
+                    'max' => $x['t'] === 'textarea' ? 2000 : 200,
+                ];
+                if ($x['t'] === 'select')   $nuevo['o'] = array_values(array_map('strval', (array) ($x['o'] ?? [])));
+                if ($x['t'] === 'textarea') $nuevo['full'] = true;
+                if ($x['t'] === 'select' && !$nuevo['o']) continue;     // lista sin opciones: no se muestra
+                $campos[] = $nuevo;
+            }
+            $sec['campos'] = $campos;
+        }
+        $def['secciones'][$i] = $sec;
+    }
+    return $def;
+}
+
+/** Configuración guardada de cada formulario: clave => array. Sin base o sin columna → []. */
+function insc_configs(): array {
+    static $cfgs = null;
+    if ($cfgs !== null) return $cfgs;
+    $cfgs = [];
+    $pdo = db_opcional();
+    if ($pdo === null) return $cfgs;
+    try {
+        foreach ($pdo->query('SELECT clave, config FROM inscripcion_formularios WHERE config IS NOT NULL') as $f) {
+            $c = json_decode((string) $f['config'], true);
+            if (is_array($c)) $cfgs[$f['clave']] = $c;
+        }
+    } catch (Throwable $ex) {
+        // tabla o columna aún no creadas: se usan los formularios del código
+    }
+    return $cfgs;
+}
+
+/** Los formularios como los ve el sitio: el código + lo editado desde el panel. */
+function insc_formularios(): array {
+    static $defs = null;
+    if ($defs !== null) return $defs;
+    $defs = insc_formularios_base();
+    foreach (insc_configs() as $clave => $cfg) {
+        if (isset($defs[$clave])) $defs[$clave] = insc_aplicar_config($defs[$clave], $cfg);
+    }
+    return $defs;
+}
+
+// ============================================================
 //  BASE DE DATOS
 // ============================================================
 
@@ -397,9 +572,16 @@ function insc_asegurar_tablas(PDO $pdo): bool {
             habilitado   TINYINT(1)   NOT NULL DEFAULT 0,
             fecha_desde  DATE         NULL COMMENT 'Primer día en que se puede completar',
             fecha_hasta  DATE         NULL COMMENT 'Último día en que se puede completar',
+            config       LONGTEXT     NULL COMMENT 'JSON con lo editado desde el panel (gestion_formularios.php)',
             id_usuario   INT UNSIGNED NULL COMMENT 'Último usuario que lo cambió',
             actualizado  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+        // Bases creadas antes de que los formularios fueran editables
+        if (!$pdo->query("SHOW COLUMNS FROM inscripcion_formularios LIKE 'config'")->fetch()) {
+            $pdo->exec("ALTER TABLE inscripcion_formularios
+                ADD COLUMN config LONGTEXT NULL COMMENT 'JSON con lo editado desde el panel (gestion_formularios.php)' AFTER habilitado");
+        }
 
         // Bases creadas antes de que existieran las fechas
         if (!$pdo->query("SHOW COLUMNS FROM inscripcion_formularios LIKE 'fecha_desde'")->fetch()) {
@@ -436,7 +618,7 @@ function insc_asegurar_tablas(PDO $pdo): bool {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
         $ins = $pdo->prepare('INSERT IGNORE INTO inscripcion_formularios (clave, habilitado) VALUES (?, 0)');
-        foreach (array_keys(insc_formularios()) as $clave) {
+        foreach (array_keys(insc_formularios_base()) as $clave) {
             $ins->execute([$clave]);
         }
         $ok = true;
@@ -734,9 +916,8 @@ function insc_procesar(string $clave, array $post): array {
                 $filas[] = [$c['l'], $c['t'] === 'select' ? insc_texto_opcion($c['o'], $v) : insc_formatear($c, $v)];
             }
         }
-        $es_de_alumno = str_starts_with($sec['titulo'], 'Datos del/la') || in_array($sec['titulo'], ['Escuela de procedencia', 'Trayectoria escolar'], true);
-        if ($es_de_alumno) $datos_alumno[]  = ['seccion' => $sec['titulo'], 'campos' => $filas];
-        else               $datos_comunes[] = ['seccion' => $sec['titulo'], 'campos' => $filas];
+        if (!empty($sec['alumno'])) $datos_alumno[]  = ['seccion' => $sec['titulo'], 'campos' => $filas];
+        else                        $datos_comunes[] = ['seccion' => $sec['titulo'], 'campos' => $filas];
     }
 
     // Declaración jurada

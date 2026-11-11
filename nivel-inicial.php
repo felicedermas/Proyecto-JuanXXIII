@@ -6,7 +6,30 @@
 // ============================================================
 
 require_once __DIR__ . '/conexion.php';
-$pdo = db();
+$pdo = db_opcional();
+
+// Tablón: últimas novedades con etiqueta 'Inicial'
+$db_ok = $pdo !== null;
+$novedades = [];
+$imagenes_por_novedad = [];
+if ($db_ok) {
+    try {
+        $novedades = $pdo->query(
+            "SELECT id_novedad, titulo, descripcion, created_at
+             FROM novedades WHERE etiqueta = 'Inicial'
+             ORDER BY created_at DESC LIMIT 4"
+        )->fetchAll();
+        $ids = array_column($novedades, 'id_novedad');
+        if ($ids) {
+            $ph = implode(',', array_fill(0, count($ids), '?'));
+            $st = $pdo->prepare("SELECT id_novedad, url_imagen FROM imagenes_novedades WHERE id_novedad IN ($ph) ORDER BY id_novedad, orden ASC");
+            $st->execute($ids);
+            foreach ($st->fetchAll() as $img) $imagenes_por_novedad[$img['id_novedad']][] = $img['url_imagen'];
+        }
+    } catch (PDOException $e) {
+        $db_ok = false;
+    }
+}
 
 function ni_tiempo_relativo(string $fecha): string {
     $diff = time() - strtotime($fecha);
@@ -514,7 +537,7 @@ require __DIR__ . '/partials/header.php';
         <a href="#horarios" class="ni-acceso" style="--ac:var(--ni-amarillo);">
           <div class="ac-emoji">📅</div>
           <h3>Horarios</h3>
-          <p>Jornada simple y extendida, ingreso, salida, comedor y transporte.</p>
+          <p>Jornada simple y extendida, ingreso, salida y transporte.</p>
           <span class="ac-go">Ver horarios <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span>
         </a>
         <a href="#novedades" class="ni-acceso" style="--ac:var(--ni-rojo);">
@@ -545,51 +568,39 @@ require __DIR__ . '/partials/header.php';
         <span class="t-emoji">🎵</span>
         <h4>Música y Ritmo</h4>
         <p>Canciones, instrumentos y movimiento para desarrollar el oído y la expresión.</p>
-        <span class="t-dia">Lunes</span>
       </div>
       <div class="ni-taller" style="--tc:var(--ni-celeste);">
         <span class="t-emoji">🌍</span>
         <h4>Inglés Lúdico</h4>
         <p>Primer acercamiento al idioma a través de juegos, cuentos y canciones.</p>
-        <span class="t-dia">Martes</span>
       </div>
       <div class="ni-taller" style="--tc:var(--ni-amarillo);">
         <span class="t-emoji">🤸</span>
         <h4>Educación Física</h4>
         <p>Juegos motrices que desarrollan coordinación, equilibrio y trabajo en equipo.</p>
-        <span class="t-dia">Miércoles</span>
       </div>
       <div class="ni-taller" style="--tc:var(--ni-violeta);">
         <span class="t-emoji">🎭</span>
         <h4>Expresión y Teatro</h4>
         <p>Dramatización y juego de roles para la creatividad y la autoestima.</p>
-        <span class="t-dia">Jueves</span>
-      </div>
-      <div class="ni-taller" style="--tc:var(--ni-verde);">
-        <span class="t-emoji">🌱</span>
-        <h4>Huerta Escolar</h4>
-        <p>Sembrar, cuidar y cosechar para aprender sobre la naturaleza y el cuidado.</p>
-        <span class="t-dia">Viernes</span>
       </div>
       <div class="ni-taller" style="--tc:var(--ni-naranja);">
         <span class="t-emoji">🖌️</span>
         <h4>Taller de Plástica</h4>
         <p>Pintura, modelado y collage para explorar texturas, colores y formas.</p>
-        <span class="t-dia">Semanal</span>
       </div>
       <div class="ni-taller" style="--tc:var(--ni-celeste);">
         <span class="t-emoji">📖</span>
         <h4>Hora del Cuento</h4>
         <p>Narración de cuentos para despertar el amor por la lectura desde pequeños.</p>
-        <span class="t-dia">Diaria</span>
       </div>
       <div class="ni-taller" style="--tc:var(--ni-rosa);">
         <span class="t-emoji">🧩</span>
         <h4>Juego y Lógica</h4>
         <p>Rompecabezas y juegos de mesa que estimulan el pensamiento y la atención.</p>
-        <span class="t-dia">Semanal</span>
       </div>
     </div>
+    <p class="ni-talleres-nota" style="text-align:center;margin-top:1.4rem;font-weight:700;color:var(--ni-azul);">Días y horarios de los talleres: a confirmar.</p>
 
     <!-- Jornada extendida -->
     <div id="jornada" class="ni-jornada">
@@ -597,7 +608,7 @@ require __DIR__ . '/partials/header.php';
         <h3>🌟 Jornada Extendida Optativa</h3>
         <p>Para las familias que necesitan un acompañamiento de día completo, ofrecemos la jornada extendida: una propuesta opcional con almuerzo, descanso y talleres especiales por la tarde.</p>
         <div class="ni-jornada-features">
-          <div class="ni-jf"><span>🍽️</span> Almuerzo con menú elaborado por nutricionista</div>
+          <div class="ni-jf"><span>🍽️</span> Almuerzo</div>
           <div class="ni-jf"><span>😴</span> Espacio de descanso y siesta (sala de 3)</div>
           <div class="ni-jf"><span>🎨</span> Talleres especiales de arte, cocina y juego</div>
         </div>
@@ -626,9 +637,7 @@ require __DIR__ . '/partials/header.php';
           <div class="ni-espacio"><span>🏫</span> Aulas de sala 3, 4 y 5</div>
           <div class="ni-espacio"><span>📚</span> Biblioteca infantil</div>
           <div class="ni-espacio"><span>🤸</span> Patio de juegos</div>
-          <div class="ni-espacio"><span>🎨</span> Taller de plástica</div>
           <div class="ni-espacio"><span>🎵</span> Sala de música</div>
-          <div class="ni-espacio"><span>🌱</span> Huerta escolar</div>
         </div>
         <a href="recorrido-360" class="ni-btn-grande ni-btn-blanco" style="border-color:#fff;">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
@@ -639,7 +648,7 @@ require __DIR__ . '/partials/header.php';
         <div class="tf-icon">🎥</div>
         <span class="ni-tour-badge">Próximamente</span>
         <h4>Tour Virtual 360°</h4>
-        <p>Acá irá el recorrido interactivo del jardín.<br/>Reemplazá este bloque con el embed de tu plataforma 360° (Matterport, Google Street View, etc.).</p>
+        <p>Muy pronto vas a poder recorrer el jardín de forma virtual.</p>
       </div>
     </div>
   </section>
@@ -686,11 +695,6 @@ require __DIR__ . '/partials/header.php';
           <h4>Actos escolares</h4>
           <p>Los actos y eventos se informan con anticipación por el cuaderno de comunicaciones.</p>
         </div>
-        <div class="ni-hx" style="--hxc:var(--ni-rosa);">
-          <span class="hx-emoji">🍽️</span>
-          <h4>Servicio de comedor</h4>
-          <p>Menú equilibrado elaborado por nutricionista, adaptable a alergias o restricciones.</p>
-        </div>
         <div class="ni-hx" style="--hxc:var(--ni-celeste);">
           <span class="hx-emoji">🚌</span>
           <h4>Transporte escolar</h4>
@@ -732,7 +736,7 @@ require __DIR__ . '/partials/header.php';
         $d_imgs    = $imagenes_por_novedad[$destacada['id_novedad']] ?? [];
         $d_primera = $d_imgs[0] ?? null;
       ?>
-        <div class="ni-nov-grid">
+        <div class="ni-nov-grid" data-ed-no><?php // sale de la base: no se edita desde la página ?>
           <!-- Destacada -->
           <a href="novedad?id=<?= $destacada['id_novedad'] ?>" class="ni-nov-card destacada">
             <div class="ni-nov-img">
@@ -790,14 +794,8 @@ require __DIR__ . '/partials/header.php';
           <div class="ig-logo"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg></div>
           <h3>Seguinos en Instagram</h3>
         </div>
-        <div class="ni-ig-grid" id="igGrid">
-          <!-- Placeholders: se reemplazan dinámicamente vía Instagram Graph API -->
-          <div class="ni-ig-post">🎨<div class="ig-ov"></div></div>
-          <div class="ni-ig-post">🧩<div class="ig-ov"></div></div>
-          <div class="ni-ig-post">🎈<div class="ig-ov"></div></div>
-          <div class="ni-ig-post">🌟<div class="ig-ov"></div></div>
-        </div>
-        <p class="ni-ig-note">📸 Galería conectada a <strong>@juanxxiii.inicial</strong> — las publicaciones se sincronizan automáticamente desde la API de Instagram.</p>
+        <p class="ni-ig-note">📸 Seguí el día a día del jardín en
+          <a href="<?= cfg_e('instagram_inicial') ?>" target="_blank" rel="noopener"><strong>@jardinparroquialjuan23</strong></a>.</p>
       </div>
     </section>
   </div>

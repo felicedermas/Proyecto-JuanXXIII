@@ -18,6 +18,11 @@
 require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/menu.php';
 require_once __DIR__ . '/helpers.php';
+require_once __DIR__ . '/paginas.php';
+
+// Páginas editables desde el sitio (textos y bloques agregados): si esta
+// página lo es, su salida se captura acá y se procesa en footer.php.
+pag_iniciar();
 
 $page_title      = $page_title      ?? '';
 $page_desc       = $page_desc       ?? 'Colegio Parroquial Juan XXIII — Nivel Inicial, Primario y Secundario (Orientada y Técnica) en el oeste del Gran Buenos Aires. Educando desde 1962.';
@@ -172,6 +177,7 @@ function menu_es_actual(string $href): bool {
 
           <li class="nav-item mobile-only"><a href="novedades" class="nav-link">Novedades</a></li>
           <li class="nav-item mobile-only"><a href="agenda" class="nav-link">Agenda</a></li>
+          <li class="nav-item mobile-only"><a href="plataforma" class="nav-link">Plataforma</a></li>
 
         </ul>
       </nav>

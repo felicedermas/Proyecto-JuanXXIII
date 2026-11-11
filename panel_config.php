@@ -174,8 +174,10 @@ function nivel_actual(): ?array {
  * ¿El usuario actual tiene el permiso pedido?
  *   puede('pub_novedades')             → flag activado
  *   puede('pub_novedades', 'Primario') → flag + categoría habilitada
+ *   puede('edita_paginas', 'Inicial')  → flag + categoría habilitada
  * Permisos válidos: pub_novedades, pub_agenda, edita_tour,
- *                   alta_usuarios, inscripciones, mensajes.
+ *                   alta_usuarios, inscripciones, mensajes,
+ *                   edita_paginas, edita_formularios.
  * El admin siempre puede todo.
  *
  * IMPORTANTE: limitar las opciones del <select> con
@@ -189,15 +191,19 @@ function puede(string $permiso, ?string $categoria = null): bool {
     $n = nivel_actual();
     if (!$n || empty($n[$permiso])) return false;
     if ($categoria === null) return true;
-    $campoCats = $permiso === 'pub_novedades' ? 'cat_novedades'
-               : ($permiso === 'pub_agenda'   ? 'cat_agenda' : null);
+    $campoCats = match ($permiso) {
+        'pub_novedades' => 'cat_novedades',
+        'pub_agenda'    => 'cat_agenda',
+        'edita_paginas' => 'cat_paginas',
+        default         => null,
+    };
     if ($campoCats === null) return true;   // permiso sin categorías
     $cats = array_map('trim', explode(',', (string)($n[$campoCats] ?? '')));
     return in_array($categoria, $cats, true);
 }
 
 /**
- * Categorías habilitadas para un permiso ('pub_novedades' o 'pub_agenda').
+ * Categorías habilitadas para un permiso ('pub_novedades', 'pub_agenda' o 'edita_paginas').
  * Admin → todas. Sin nivel o permiso apagado → ninguna.
  * Útil para armar los <select> de etiqueta en novedades/agenda.
  */

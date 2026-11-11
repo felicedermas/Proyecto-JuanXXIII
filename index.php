@@ -20,7 +20,7 @@ require __DIR__ . '/partials/header.php';
   </section>
 
   <div class="stats-strip">
-    <div class="stat"><strong>+70</strong><span>años de trayectoria</span></div>
+    <div class="stat"><strong>+60</strong><span>años de trayectoria</span></div>
     <div class="stat-divider"></div>
     <div class="stat"><strong>1200+</strong><span>alumnos</span></div>
     <div class="stat-divider"></div>

@@ -10,11 +10,11 @@ require __DIR__ . '/partials/header.php';
 ?>
   
 
-  <?php page_hero(['Inicio' => './', 'Contacto' => 'contacto', 'Ubicación' => null], 'Cómo llegar', '<em>Ubicación</em> en el mapa', 'Nos encontramos en el corazón de Ramos Mejía, con fácil acceso en transporte público y privado.'); ?>
+  <?php page_hero(['Inicio' => './', 'Contacto' => 'contacto', 'Ubicación' => null], 'Cómo llegar', '<em>Ubicación</em> en el mapa', 'Estamos en ' . cfg_e('direccion') . (cfg('localidad') ? ', ' . cfg_e('localidad') : '') . '.'); ?>
 
   <section class="content-section">
     <?php /* El mapa se configura en el panel → Datos de contacto → "Mapa incrustado".
-             Si está vacío, cae en un mapa genérico de OpenStreetMap. */ ?>
+             Si está vacío, usa el mapa por defecto de CFG_DEFAULTS (conexion.php). */ ?>
     <iframe
       class="map-frame"
       src="<?= cfg_e('mapa_embed', 'https://www.openstreetmap.org/export/embed.html?bbox=-58.575%2C-34.645%2C-58.555%2C-34.635&layer=mapnik&marker=-34.64%2C-58.565') ?>"
@@ -31,8 +31,8 @@ require __DIR__ . '/partials/header.php';
     <div class="content-section">
       <div class="card-grid">
         <div class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><h3>Dirección</h3><p><?= cfg_e('direccion') ?><?= cfg('localidad') ? ', ' . cfg_e('localidad') : '' ?>.<?= cfg('codigo_postal') ? ' CP ' . cfg_e('codigo_postal') . '.' : '' ?></p></div>
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16M8 3v4M16 3v4M7 19l-2 2M17 19l2 2"/></svg></div><h3>En tren</h3><p>A 8 cuadras de la estación Ramos Mejía (Línea Sarmiento).</p></div>
-        <div class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M8 6v6M16 6v6M2 12h20M7 18h10M5 6h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg></div><h3>En colectivo</h3><p>Líneas 88, 96, 136 y 180 con parada cercana al colegio.</p></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16M8 3v4M16 3v4M7 19l-2 2M17 19l2 2"/></svg></div><h3>En tren</h3><p>Estación Ramos Mejía (Línea Sarmiento).</p></div>
+        <div class="info-card blue"><div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M8 6v6M16 6v6M2 12h20M7 18h10M5 6h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg></div><h3>En colectivo</h3><p>Líneas y paradas cercanas: a confirmar.</p></div>
       </div>
     </div>
   </section>

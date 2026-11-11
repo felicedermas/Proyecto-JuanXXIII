@@ -1,0 +1,209 @@
+/* ============================================================
+   paginas.css
+   1) Bloques que se agregan a las secciones desde el sitio
+      (mensajes, documentos PDF, información).
+   2) Interfaz del editor de páginas (solo la ve quien edita).
+   Se carga sola cuando la página tiene bloques o quien mira
+   puede editarla (partials/paginas.php).
+
+   Los colores van escritos (no con variables del sitio) porque
+   las páginas de nivel tienen cada una su propia paleta y los
+   bloques tienen que leerse igual sobre fondo claro u oscuro.
+   ============================================================ */
+
+/* ── 1. Bloques ───────────────────────────────────────────── */
+.pb-wrap {
+  box-sizing: border-box;
+  width: 100%; max-width: 1180px;
+  margin: 1.75rem auto 0;
+  /* Si el contenedor ocupa todo el ancho de la pantalla, deja 2rem de
+     aire a los costados; si ya está centrado y con margen, nada. */
+  padding-inline: clamp(0px, calc((100% - (100vw - 4rem - 20px)) / 2), 2rem);
+  display: grid; gap: .8rem;
+  /* Si cae dentro de una grilla o una fila flex de la página, ocupa todo el ancho */
+  grid-column: 1 / -1; flex: 0 0 100%;
+  text-align: left;
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+.pb-wrap:empty { display: none; }
+
+.pb {
+  position: relative; box-sizing: border-box;
+  display: flex; align-items: flex-start; gap: .9rem;
+  background: #fff; color: #1a1a2e;
+  border: 1px solid #e3e7ec; border-left: 5px solid #457B9D;
+  border-radius: 14px; padding: 1rem 1.15rem;
+  box-shadow: 0 2px 8px rgba(29,53,87,.10);
+  text-decoration: none; line-height: 1.55;
+}
+.pb .pb-ico {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  background: #eaf1f6; color: #457B9D;
+  font-weight: 800; font-size: 1.05rem; font-style: normal; line-height: 1;
+}
+.pb .pb-cuerpo { flex: 1; min-width: 0; display: block; }
+.pb .pb-titulo {
+  display: block; margin: 0 0 .2rem; padding: 0;
+  font-family: inherit; font-size: 1.02rem; font-weight: 800; line-height: 1.3;
+  color: #1D3557; text-transform: none; letter-spacing: 0; text-shadow: none;
+}
+.pb .pb-texto p { margin: 0 0 .5rem; font-size: .93rem; font-weight: 400; color: #3c4257; line-height: 1.6; max-width: none; text-align: left; }
+.pb .pb-texto p:last-child { margin-bottom: 0; }
+.pb .pb-texto a { color: #457B9D; font-weight: 700; text-decoration: underline; overflow-wrap: anywhere; }
+.pb .pb-enlace {
+  display: inline-block; margin-top: .55rem;
+  font-size: .88rem; font-weight: 800; color: #E63946; text-decoration: none;
+}
+.pb .pb-enlace:hover { text-decoration: underline; }
+
+/* Mensaje */
+.pb-mensaje { background: #f3f8fc; border-color: #d3e3ef; border-left-color: #457B9D; }
+.pb-mensaje.pb--importante { background: #fff5f5; border-color: #f5cdd0; border-left-color: #E63946; }
+.pb-mensaje.pb--importante .pb-ico { background: #E63946; color: #fff; }
+.pb-mensaje.pb--importante .pb-titulo { color: #c1121f; }
+
+/* Documento PDF */
+a.pb-pdf { align-items: center; border-left-color: #c1121f; transition: transform .2s, box-shadow .2s; cursor: pointer; }
+a.pb-pdf:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(29,53,87,.16); }
+a.pb-pdf:focus-visible { outline: 3px solid #457B9D; outline-offset: 2px; }
+.pb-pdf .pb-ico { background: #c1121f; color: #fff; font-size: .7rem; letter-spacing: .04em; width: 44px; height: 52px; border-radius: 8px; }
+.pb-pdf .pb-desc { display: block; font-size: .88rem; color: #3c4257; }
+.pb-pdf .pb-meta { display: block; font-size: .76rem; color: #7a8294; font-weight: 700; margin-top: .15rem; }
+.pb-pdf .pb-accion {
+  flex-shrink: 0; align-self: center;
+  font-size: .84rem; font-weight: 800; color: #fff; background: #1D3557;
+  padding: .5rem .95rem; border-radius: 999px; white-space: nowrap;
+}
+
+/* Información */
+.pb-info { border-left-color: #1D3557; }
+.pb-info .pb-ico { background: #1D3557; color: #fff; font-family: Georgia, serif; font-style: italic; }
+
+/* Oculto o vencido: solo lo ve quien edita */
+.pb--oculto { opacity: .55; border-style: dashed; }
+.pb .pb-estado {
+  display: inline-block; margin-top: .45rem;
+  font-size: .72rem; font-weight: 800; color: #7a5b00; background: #fff4d6;
+  padding: .12rem .55rem; border-radius: 999px;
+}
+
+@media (max-width: 560px) {
+  .pb { padding: .85rem .9rem; gap: .7rem; }
+  a.pb-pdf { flex-wrap: wrap; }
+  .pb-pdf .pb-accion { margin-left: calc(44px + .7rem); }
+}
+
+/* ── 2. Editor ────────────────────────────────────────────── */
+.pe-barra {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+  z-index: 2147483000;
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; justify-content: center;
+  max-width: calc(100vw - 24px); box-sizing: border-box;
+  background: #0d1b2a; color: #fff;
+  padding: .55rem .7rem .55rem 1rem; border-radius: 999px;
+  box-shadow: 0 10px 34px rgba(0,0,0,.38);
+  font-family: 'Nunito', system-ui, sans-serif; font-size: .88rem; line-height: 1.3;
+}
+.pe-barra .pe-txt { color: rgba(255,255,255,.82); font-weight: 600; }
+.pe-barra .pe-txt b { color: #fff; }
+.pe-btn {
+  font: inherit; font-weight: 800; cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,.28); background: transparent; color: #fff;
+  padding: .45rem .95rem; border-radius: 999px; white-space: nowrap; text-decoration: none;
+  display: inline-flex; align-items: center; gap: .35rem;
+}
+.pe-btn:hover { background: rgba(255,255,255,.12); }
+.pe-btn:focus-visible { outline: 3px solid #A8DADC; outline-offset: 2px; }
+.pe-btn--pri { background: #E63946; border-color: #E63946; }
+.pe-btn--pri:hover { background: #c1121f; border-color: #c1121f; }
+.pe-btn[disabled] { opacity: .45; cursor: not-allowed; }
+.pe-btn[hidden] { display: none; }
+@media (max-width: 640px) {
+  .pe-barra { border-radius: 18px; bottom: 10px; padding: .6rem; }
+  .pe-barra .pe-txt { flex-basis: 100%; text-align: center; }
+}
+
+/* Textos editables */
+body.pe-on [data-ed] {
+  outline: 1.5px dashed rgba(230,57,70,.6); outline-offset: 3px; border-radius: 3px;
+  cursor: text; transition: background .15s;
+  -webkit-user-select: text; user-select: text;
+}
+body.pe-on [data-ed]:hover { background: rgba(255,214,10,.22); }
+body.pe-on [data-ed]:focus { outline: 2.5px solid #E63946; background: rgba(255,214,10,.16); }
+body.pe-on [data-ed][data-ed-mod] { outline-color: rgba(69,123,157,.85); }
+body.pe-on [data-ed].pe-pend { outline: 2.5px solid #1b9a55; }
+body.pe-on [data-ed]:empty { display: inline-block; min-width: 3em; min-height: 1em; }
+body.pe-on [data-ed-btn] { cursor: pointer; }
+/* Lo que normalmente se ve al pasar el mouse no tiene que tapar el texto */
+body.pe-on main a { cursor: text; }
+
+/* Agregar / herramientas de cada bloque */
+.pe-add {
+  font-family: 'Nunito', system-ui, sans-serif; font-size: .88rem; font-weight: 800; cursor: pointer;
+  width: 100%; box-sizing: border-box;
+  background: rgba(255,255,255,.92); color: #1D3557;
+  border: 2px dashed #457B9D; border-radius: 14px; padding: .8rem 1rem;
+  display: flex; align-items: center; justify-content: center; gap: .5rem; flex-wrap: wrap;
+}
+.pe-add:hover { background: #eaf1f6; border-color: #1D3557; }
+.pe-add small { font-weight: 600; color: #5c6577; font-size: .8rem; }
+.pe-tools {
+  position: absolute; top: -13px; right: 10px; z-index: 5;
+  display: flex; gap: 2px; background: #0d1b2a; border-radius: 999px; padding: 3px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.3);
+}
+.pe-tools button {
+  font: 700 .74rem/1 'Nunito', system-ui, sans-serif; cursor: pointer;
+  background: transparent; color: #fff; border: 0; border-radius: 999px; padding: .38rem .6rem;
+}
+.pe-tools button:hover { background: rgba(255,255,255,.18); }
+.pe-tools button.pe-peligro:hover { background: #E63946; }
+body.pe-on .pb-wrap { padding-top: 6px; }
+
+/* Ventana de alta / edición de un bloque */
+.pe-dlg {
+  border: 0; border-radius: 18px; padding: 0; margin: auto; width: min(560px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px); overflow: auto;
+  box-shadow: 0 24px 70px rgba(0,0,0,.4);
+  font-family: 'Nunito', system-ui, sans-serif; color: #1a1a2e; background: #fff;
+}
+.pe-dlg::backdrop { background: rgba(13,27,42,.6); }
+.pe-dlg form { padding: 1.4rem 1.5rem 1.3rem; margin: 0; }
+.pe-dlg h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.3rem; color: #1D3557; margin: 0 0 .2rem; line-height: 1.25; }
+.pe-dlg .pe-sub { font-size: .84rem; color: #667; margin: 0 0 1.1rem; }
+.pe-tipos { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1.1rem; }
+.pe-tipos label {
+  display: flex; flex-direction: column; align-items: center; gap: .25rem; text-align: center;
+  border: 2px solid #dfe3e8; border-radius: 12px; padding: .75rem .4rem; cursor: pointer;
+  font-size: .84rem; font-weight: 800; color: #1D3557;
+}
+.pe-tipos label span { font-size: 1.4rem; line-height: 1; }
+.pe-tipos label small { font-weight: 600; color: #7a8294; font-size: .72rem; line-height: 1.3; }
+.pe-tipos input { position: absolute; opacity: 0; width: 0; height: 0; }
+.pe-tipos label:has(input:checked) { border-color: #E63946; background: #fff5f5; }
+.pe-tipos label:has(input:focus-visible) { outline: 3px solid #457B9D; outline-offset: 2px; }
+.pe-campo { margin-bottom: .9rem; }
+.pe-campo[hidden] { display: none; }
+.pe-campo > label { display: block; font-size: .82rem; font-weight: 800; color: #1D3557; margin-bottom: .3rem; }
+.pe-campo > label i { font-style: normal; font-weight: 600; color: #7a8294; }
+.pe-campo input[type=text], .pe-campo input[type=date], .pe-campo input[type=file], .pe-campo select, .pe-campo textarea {
+  width: 100%; box-sizing: border-box; font: inherit; font-size: .93rem;
+  padding: .6rem .75rem; border: 1.5px solid #dfe3e8; border-radius: 10px; background: #fff; color: #1a1a2e;
+}
+.pe-campo textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+.pe-campo input:focus, .pe-campo select:focus, .pe-campo textarea:focus { outline: none; border-color: #457B9D; box-shadow: 0 0 0 3px rgba(69,123,157,.18); }
+.pe-campo .pe-ayuda { display: block; font-size: .76rem; color: #7a8294; margin-top: .25rem; }
+.pe-fila { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.pe-fila[hidden] { display: none; }
+.pe-error { background: #fdecee; color: #c1121f; border-radius: 10px; padding: .6rem .8rem; font-size: .86rem; font-weight: 700; margin-bottom: .9rem; }
+.pe-error[hidden] { display: none; }
+.pe-acciones { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.2rem; }
+.pe-acciones button {
+  font: inherit; font-weight: 800; cursor: pointer; border-radius: 999px; padding: .6rem 1.3rem;
+  border: 1.5px solid #cfd4da; background: #fff; color: #1D3557;
+}
+.pe-acciones button[type=submit] { background: #E63946; border-color: #E63946; color: #fff; }
+.pe-acciones button[disabled] { opacity: .55; cursor: wait; }
+@media (max-width: 480px) { .pe-tipos, .pe-fila { grid-template-columns: 1fr; } }

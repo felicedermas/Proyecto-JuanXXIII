@@ -20,18 +20,27 @@ $anio        = date('Y');
       <div class="footer-brand">
         <img src="img/logo.png" alt="" class="footer-logo" width="86" height="90"/>
         <p><?= cfg_e('pie_descripcion') ?></p>
-        <?php if (cfg('facebook') || cfg('instagram') || cfg('youtube')): ?>
+        <?php
+          // Instagram: una cuenta por nivel (se cargan en el panel → Datos de contacto)
+          $ig_cuentas_pie = array_filter([
+              'Jardín'     => cfg('instagram_inicial'),
+              'Primaria'   => cfg('instagram_primario'),
+              'Secundaria' => cfg('instagram'),
+          ]);
+        ?>
+        <?php if (cfg('facebook') || $ig_cuentas_pie || cfg('youtube')): ?>
         <div class="footer-social">
           <?php if (cfg('facebook')): ?>
             <a href="<?= cfg_e('facebook') ?>" target="_blank" rel="noopener" aria-label="Facebook">
               <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </a>
           <?php endif; ?>
-          <?php if (cfg('instagram')): ?>
-            <a href="<?= cfg_e('instagram') ?>" target="_blank" rel="noopener" aria-label="Instagram">
+          <?php foreach ($ig_cuentas_pie as $ig_nivel => $ig_url): ?>
+            <a href="<?= e($ig_url) ?>" target="_blank" rel="noopener" class="fs-ig" aria-label="Instagram · <?= e($ig_nivel) ?>">
               <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              <span><?= e($ig_nivel) ?></span>
             </a>
-          <?php endif; ?>
+          <?php endforeach; ?>
           <?php if (cfg('youtube')): ?>
             <a href="<?= cfg_e('youtube') ?>" target="_blank" rel="noopener" aria-label="YouTube">
               <svg viewBox="0 0 24 24"><path d="M22.5 7.2a2.8 2.8 0 0 0-2-2C18.8 4.7 12 4.7 12 4.7s-6.8 0-8.5.5a2.8 2.8 0 0 0-2 2A29 29 0 0 0 1 12a29 29 0 0 0 .5 4.8 2.8 2.8 0 0 0 2 2c1.7.5 8.5.5 8.5.5s6.8 0 8.5-.5a2.8 2.8 0 0 0 2-2A29 29 0 0 0 23 12a29 29 0 0 0-.5-4.8z"/><polygon points="9.8 15.3 15.5 12 9.8 8.7"/></svg>
@@ -128,10 +137,28 @@ $anio        = date('Y');
     var toggle = document.getElementById('menuToggle');
     var nav    = document.getElementById('mainNav');
     if (toggle && nav) {
-      toggle.addEventListener('click', function () {
-        var abierto = nav.classList.toggle('open');
+      var ponerMenu = function (abierto) {
+        if (abierto && cab) {
+          // El panel arranca justo donde termina el header visible
+          // (si la página está un poco scrolleada, no queda un hueco).
+          document.documentElement.style.setProperty(
+            '--nav-top', Math.max(0, Math.round(cab.getBoundingClientRect().bottom)) + 'px');
+        }
+        nav.classList.toggle('open', abierto);
         toggle.classList.toggle('active', abierto);
         toggle.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+        toggle.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+        // Mientras el menú está abierto, la página de atrás no se mueve.
+        document.documentElement.classList.toggle('menu-abierto', abierto);
+      };
+      toggle.addEventListener('click', function () {
+        ponerMenu(!nav.classList.contains('open'));
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape' && nav.classList.contains('open')) { ponerMenu(false); toggle.focus(); }
+      });
+      window.addEventListener('resize', function () {
+        if (!esMobile() && nav.classList.contains('open')) ponerMenu(false);
       });
     }
 
@@ -283,3 +310,4 @@ $anio        = date('Y');
 <?php endif; ?>
 </body>
 </html>
+<?php pag_terminar();   // aplica los textos editados y los bloques agregados (partials/paginas.php)

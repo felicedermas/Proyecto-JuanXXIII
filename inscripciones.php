@@ -193,8 +193,10 @@ function ih_tarjeta(string $clave, array $f, array $est, bool $ancha = false): v
   </div>
 
   <p class="ih-pie">
-    ¿Dudas sobre vacantes o requisitos? Escribinos a
-    <a href="mailto:<?= cfg_e('email_admisiones') ?>"><?= cfg_e('email_admisiones') ?></a><?php if (cfg('horario_admision')): ?>
+    ¿Dudas sobre vacantes o requisitos?
+    <?php if (cfg('email_admisiones')): ?>Escribinos a
+    <a href="mailto:<?= cfg_e('email_admisiones') ?>"><?= cfg_e('email_admisiones') ?></a><?php else: ?>Llamanos al
+    <a href="tel:<?= e(tel_href()) ?>"><?= cfg_e('telefono') ?></a><?php endif; ?><?php if (cfg('horario_admision')): ?>
     · Atención de admisiones: <?= cfg_e('horario_admision') ?><?php endif; ?>.
   </p>
 </section>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/panel_config.php';
+require_once __DIR__ . '/partials/paginas.php';
 exigir_login();
 
 $u = usuario_actual();
@@ -37,6 +38,9 @@ try {
 } catch (Throwable $e) {
     $n_msj_nuevos = 0;
 }
+
+// Páginas del sitio que este usuario puede editar
+$pags_mias = pag_paginas_permitidas();
 
 // Categorías habilitadas (se muestran en las tarjetas de Novedades y Agenda)
 $cats_nov = categorias_permitidas('pub_novedades');
@@ -143,7 +147,7 @@ require __DIR__ . '/panel_header.php';
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
         </div>
         <h3>Inscripciones</h3>
-        <p>Habilitá los formularios y revisá lo que enviaron las familias por nivel, modalidad y año.
+        <p><?= puede('edita_formularios') ? 'Editá y habilitá los formularios, y revisá' : 'Revisá' ?> lo que enviaron las familias por nivel, modalidad y año.
           <?php if ($n_ins_nuevas > 0): ?>Hay <strong><?= $n_ins_nuevas ?></strong> nueva<?= $n_ins_nuevas === 1 ? '' : 's' ?> sin revisar.<?php endif; ?></p>
         <span class="ac-cta">Ir a inscripciones
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -194,6 +198,35 @@ require __DIR__ . '/panel_header.php';
       </div>
       <?php endif; ?>
 
+      <?php if ($pags_mias): ?>
+      <!-- Páginas del sitio -->
+      <a href="gestion_paginas" class="action-card">
+        <div class="ac-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </div>
+        <h3>Páginas del sitio</h3>
+        <p>Cambiá los textos de tus páginas haciendo clic sobre ellos y agregá mensajes, documentos PDF e información a cada sección.
+          Podés editar <strong><?= count($pags_mias) ?></strong> página<?= count($pags_mias) === 1 ? '' : 's' ?>.</p>
+        <span class="ac-cta">Ir a las páginas
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </a>
+      <?php else: ?>
+      <!-- Páginas del sitio (sin permiso) -->
+      <div class="action-card muted is-locked" aria-disabled="true">
+        <span class="lock-badge">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sin permiso
+        </span>
+        <div class="ac-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </div>
+        <h3>Páginas del sitio</h3>
+        <p>Tu nivel de permisos no incluye la edición de páginas.</p>
+        <span class="ac-cta" style="color:var(--gray-500);">Pedile acceso a un administrador</span>
+      </div>
+      <?php endif; ?>
+
       <?php if (es_admin()): ?>
       <!-- Usuarios (solo admin) -->
       <a href="gestion_usuarios" class="action-card">
@@ -237,7 +270,7 @@ require __DIR__ . '/panel_header.php';
           <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.6"/></svg>
         </div>
         <h3>Permisos</h3>
-        <p>Creá niveles de permiso y definí qué puede hacer cada uno: novedades, agenda, recorrido 360°, usuarios, inscripciones y mensajes.</p>
+        <p>Creá niveles de permiso y definí qué puede hacer cada uno: novedades, agenda, recorrido 360°, usuarios, inscripciones, mensajes, páginas y formularios.</p>
         <span class="ac-cta">Gestionar permisos
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </span>

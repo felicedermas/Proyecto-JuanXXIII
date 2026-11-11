@@ -13,7 +13,7 @@ require __DIR__ . '/partials/header.php';
 
   
 
-  <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Becas' => null], 'Comunidad', 'Equipo de <em>Psicopedagogía</em>', 'Contamos con profesionales para acompañar a nuestros estudiantes y familias en su trayectoria escolar, disponibles los días lunes y miércoles en el establecimiento.'); ?>
+  <?php page_hero(['Inicio' => './', 'Comunidad' => null, 'Psicopedagogía' => null], 'Comunidad', 'Equipo de <em>Psicopedagogía</em>', 'Contamos con profesionales para acompañar a nuestros estudiantes y familias en su trayectoria escolar, disponibles los días lunes y miércoles en el establecimiento.'); ?>
 
   <section class="content-section narrow">
     <div class="prose">

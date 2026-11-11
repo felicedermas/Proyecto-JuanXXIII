@@ -3,7 +3,9 @@
 //  gestion_inscripciones.php
 //  Panel de Control — Inscripciones
 //
-//  - Habilitar / deshabilitar cada formulario (solo administradores).
+//  - Habilitar / deshabilitar cada formulario y ponerle fechas
+//    (permiso "Edición de formularios"; el contenido de cada uno
+//    se edita en gestion_formularios.php).
 //  - Ver lo que se envió, clasificado por nivel → modalidad → año.
 //  - Cambiar el estado de cada inscripción y dejar notas internas.
 //  - Exportar a CSV (se abre con Excel).
@@ -26,6 +28,7 @@ if (!insc_asegurar_tablas($pdo)) {
 
 $formularios = insc_formularios();
 $yo          = (int) usuario_actual()['id_usuario'];
+$edita_form  = puede('edita_formularios');   // habilitar, fechas y contenido de los formularios
 
 // ============================================================
 //  ACCIONES (POST)
@@ -36,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $volver = 'gestion_inscripciones';
 
     if ($accion === 'formulario') {
-        if (!es_admin()) {
-            flash('error', 'Solo un administrador puede habilitar o deshabilitar formularios.');
+        if (!$edita_form) {
+            flash('error', 'Tu nivel de permisos no incluye la edición de formularios.');
         } else {
             $clave = (string) ($_POST['clave'] ?? '');
             $nuevo = ($_POST['habilitar'] ?? '') === '1' ? 1 : 0;
@@ -53,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $clave = (string) ($_POST['clave'] ?? '');
         $desde = trim((string) ($_POST['fecha_desde'] ?? ''));
         $hasta = trim((string) ($_POST['fecha_hasta'] ?? ''));
-        if (!es_admin()) {
-            flash('error', 'Solo un administrador puede cambiar las fechas de los formularios.');
+        if (!$edita_form) {
+            flash('error', 'Tu nivel de permisos no incluye la edición de formularios.');
         } elseif (isset($formularios[$clave])) {
             if (($desde !== '' && !insc_fecha_valida($desde)) || ($hasta !== '' && !insc_fecha_valida($hasta))) {
                 flash('error', 'Alguna de las fechas no es válida.');
@@ -332,8 +335,8 @@ require __DIR__ . '/panel_header.php';
 
   <!-- ── Formularios del sitio ── -->
   <h2 class="ins-titulo">Formularios del sitio</h2>
-  <?php if (!es_admin()): ?>
-    <p class="ins-aclara">Solo un administrador puede habilitarlos o deshabilitarlos.</p>
+  <?php if (!$edita_form): ?>
+    <p class="ins-aclara">Para habilitarlos o editarlos hace falta el permiso «Edición de formularios». Pedíselo a un administrador.</p>
   <?php endif; ?>
   <div class="ins-forms">
     <?php foreach ($formularios as $clave => $fd):
@@ -346,13 +349,16 @@ require __DIR__ . '/panel_header.php';
           <div>
             <h3><?= e($fd['nombre']) ?></h3>
             <a href="<?= e($fd['archivo']) ?>" target="_blank" rel="noopener" class="ins-form-link">Ver en el sitio ↗</a>
+            <?php if ($edita_form): ?>
+              · <a href="gestion_formularios?f=<?= e($clave) ?>" class="ins-form-link">Editar formulario</a>
+            <?php endif; ?>
           </div>
         </div>
         <p class="ins-form-cnt">
           <b><?= (int) $cnt['total'] ?></b> recibida<?= (int) $cnt['total'] === 1 ? '' : 's' ?>
           <?php if ((int) $cnt['nuevas'] > 0): ?><span class="ins-pill-nueva"><?= (int) $cnt['nuevas'] ?> nueva<?= (int) $cnt['nuevas'] === 1 ? '' : 's' ?></span><?php endif; ?>
         </p>
-        <?php if (es_admin()): ?>
+        <?php if ($edita_form): ?>
           <form method="post" class="ins-toggle-form">
             <?= csrf_input() ?>
             <input type="hidden" name="accion" value="formulario"/>
@@ -369,7 +375,7 @@ require __DIR__ . '/panel_header.php';
           <span class="ins-switch-txt ins-switch-ro"><?= $on ? '● Habilitado' : '○ Deshabilitado' ?></span>
         <?php endif; ?>
 
-        <?php if (es_admin()): ?>
+        <?php if ($edita_form): ?>
           <form method="post" class="ins-fechas">
             <?= csrf_input() ?>
             <input type="hidden" name="accion" value="fechas"/>

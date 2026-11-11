@@ -59,17 +59,23 @@ $page_style = <<<'CSS'
     }
 
     /* ---- ANCHOR NAV ---- */
+    /* Barra fija en su lugar: no acompaña el scroll (el header del sitio ya es sticky). */
     .so-anchor-nav {
-      position: sticky; top: 78px; z-index: 900;
+      position: relative; z-index: 2;
       background: #fff; border-bottom: 2px solid var(--gray-200);
       box-shadow: 0 2px 12px rgba(29,53,87,.08);
     }
+    /* Centrado con márgenes automáticos en vez de justify-content:
+       center, que con overflow cortaba los primeros links en pantallas
+       angostas y no se podía scrollear hasta ellos. */
     .so-anchor-list {
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center;
       gap: .4rem; padding: .7rem 2rem;
       max-width: 1300px; margin: 0 auto;
       overflow-x: auto; scrollbar-width: none;
     }
+    .so-anchor-list > li:first-child { margin-left: auto; }
+    .so-anchor-list > li:last-child  { margin-right: auto; }
     .so-anchor-list::-webkit-scrollbar { display: none; }
     .so-anchor-link {
       display: inline-flex; align-items: center; gap: .4rem;
@@ -87,9 +93,7 @@ $page_style = <<<'CSS'
     /* ---- SHARED ---- */
     .so-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
     .so-alt { background: var(--gray-100); }
-    .so-alt > .so-section { padding: 5rem 2rem; }
     .so-dark { background: var(--or-main); }
-    .so-dark > .so-section { padding: 5rem 2rem; }
 
     .tag-teal {
       display: inline-block;
@@ -402,6 +406,12 @@ $page_style = <<<'CSS'
     @media (max-width: 1024px) {
       .org-grid     { grid-template-columns: 1fr; }
       .agenda-layout{ grid-template-columns: 1fr; }
+      /* Meses en fila (con salto) en lugar de una columna de 10 botones */
+      .agenda-meses { display: flex; flex-wrap: wrap; gap: .4rem; }
+      .agenda-meses h3,
+      .agenda-meses .agenda-nota { flex-basis: 100%; }
+      .agenda-meses h3 { margin-bottom: .6rem; }
+      .mes-btn      { width: auto; margin-bottom: 0; text-align: center; }
       .inscr-grid   { grid-template-columns: 1fr; }
       .lab-grid     { grid-template-columns: 1fr; }
       .ce-grid      { grid-template-columns: 1fr; }
@@ -413,6 +423,7 @@ $page_style = <<<'CSS'
       .so-section { padding: 3.5rem 1.25rem; }
     }
 CSS;
+require_once __DIR__ . '/partials/bloques_nivel.php';
 require __DIR__ . '/partials/header.php';
 ?>
   <!-- HERO -->
@@ -429,7 +440,7 @@ require __DIR__ . '/partials/header.php';
       <p class="so-hero-desc">Bachillerato de 6 años con ciclo básico común y orientaciones en Economía o Ciencias Naturales. Formación integral para el ingreso universitario y la vida ciudadana.</p>
       <div class="hero-cta">
         <a href="#estructura" class="btn btn-primary">Conocer la estructura</a>
-        <a href="nivel-secundario" class="btn btn-outline">← Ver modalidad Técnica</a>
+        <a href="sec-tecnica" class="btn btn-outline">Ver modalidad Técnica →</a>
       </div>
     </div>
   </section>
@@ -458,36 +469,8 @@ require __DIR__ . '/partials/header.php';
         <div class="autoridad-card">
           <div class="autoridad-avatar">👤</div>
           <div>
-            <h4>Nombre del Director/a</h4>
-            <p>Dirección — Secundaria Orientada</p>
-          </div>
-        </div>
-        <div class="autoridad-card">
-          <div class="autoridad-avatar">👤</div>
-          <div>
-            <h4>Nombre del Vicedirector/a</h4>
-            <p>Vicedirección</p>
-          </div>
-        </div>
-        <div class="autoridad-card">
-          <div class="autoridad-avatar">👤</div>
-          <div>
-            <h4>Nombre del/la Secretario/a</h4>
-            <p>Secretaría académica</p>
-          </div>
-        </div>
-        <div class="autoridad-card">
-          <div class="autoridad-avatar">👤</div>
-          <div>
-            <h4>Nombre del/la Preceptor/a</h4>
-            <p>Preceptoría — Ciclo Básico</p>
-          </div>
-        </div>
-        <div class="autoridad-card">
-          <div class="autoridad-avatar">👤</div>
-          <div>
-            <h4>Nombre del/la Preceptor/a</h4>
-            <p>Preceptoría — Ciclo Orientado</p>
+            <h4>Carlos Alcaro</h4>
+            <p>Director — Secundaria Orientada</p>
           </div>
         </div>
       </div>
@@ -556,85 +539,8 @@ require __DIR__ . '/partials/header.php';
         <span class="tag-teal">Organización del año</span>
         <h2>Agenda escolar</h2>
       </div>
-      <div class="agenda-layout">
-        <div class="agenda-meses">
-          <h3>Seleccioná el mes</h3>
-          <button class="mes-btn active" data-mes="marzo">Marzo</button>
-          <button class="mes-btn" data-mes="abril">Abril</button>
-          <button class="mes-btn" data-mes="mayo">Mayo</button>
-          <button class="mes-btn" data-mes="junio">Junio</button>
-          <button class="mes-btn" data-mes="julio">Julio</button>
-          <button class="mes-btn" data-mes="agosto">Agosto</button>
-          <button class="mes-btn" data-mes="septiembre">Septiembre</button>
-          <button class="mes-btn" data-mes="octubre">Octubre</button>
-          <button class="mes-btn" data-mes="noviembre">Noviembre</button>
-          <button class="mes-btn" data-mes="diciembre">Diciembre</button>
-          <div class="agenda-nota">Las fechas se actualizan al inicio de cada ciclo lectivo. Ante dudas, consultá en secretaría.</div>
-        </div>
-        <div>
-          <!-- MARZO -->
-          <div class="agenda-eventos active" id="ev-marzo">
-            <p class="agenda-mes-title">Marzo</p>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Mar</span></div><div class="evento-info"><h4>Inicio del ciclo lectivo</h4><p>Primer día de clases. Completar con fecha real.</p><span class="evento-tag tag-inscr">Inicio de clases</span></div></div>
-            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Mar</span></div><div class="evento-info"><h4>Reunión de padres de 1° año</h4><p>Presentación de docentes, reglamento y organización del año. Completar con fecha y hora.</p><span class="evento-tag tag-acto">Reunión</span></div></div>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Mar</span></div><div class="evento-info"><h4>Apertura de inscripción a materias libres</h4><p>Plazo para inscribirse a materias pendientes del ciclo anterior. Completar con fechas.</p><span class="evento-tag tag-inscr">Inscripción</span></div></div>
-          </div>
-          <!-- ABRIL -->
-          <div class="agenda-eventos" id="ev-abril">
-            <p class="agenda-mes-title">Abril</p>
-            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Abr</span></div><div class="evento-info"><h4>Acto por el Día del Veterano</h4><p>2 de abril. Acto institucional con participación de todos los cursos. Completar con detalles.</p><span class="evento-tag tag-acto">Acto escolar</span></div></div>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Abr</span></div><div class="evento-info"><h4>Reunión de padres — 1er. bimestre</h4><p>Entrega de notas y comunicación del desempeño. Completar con fecha y horarios.</p><span class="evento-tag tag-acto">Reunión</span></div></div>
-            <div class="evento-item"><div class="evento-dia nat"><strong>DD</strong><span>Abr</span></div><div class="evento-info"><h4>Inicio de prácticas de laboratorio — CN</h4><p>Comienzo del registro de horas de laboratorio certificadas. Completar con fecha.</p><span class="evento-tag tag-lab">Laboratorio</span></div></div>
-          </div>
-          <!-- MAYO -->
-          <div class="agenda-eventos" id="ev-mayo">
-            <p class="agenda-mes-title">Mayo</p>
-            <div class="evento-item"><div class="evento-dia acento"><strong>25</strong><span>May</span></div><div class="evento-info"><h4>Acto por el 25 de Mayo</h4><p>Acto escolar conmemorativo de la Revolución de Mayo. Todos los cursos participan.</p><span class="evento-tag tag-acto">Acto escolar</span></div></div>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>May</span></div><div class="evento-info"><h4>Evaluaciones de medio término</h4><p>Período de evaluaciones integradoras. Completar con fechas por área.</p><span class="evento-tag tag-examen">Evaluación</span></div></div>
-          </div>
-          <!-- JUNIO -->
-          <div class="agenda-eventos" id="ev-junio">
-            <p class="agenda-mes-title">Junio</p>
-            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Jun</span></div><div class="evento-info"><h4>Cierre del 1er. trimestre</h4><p>Últimas fechas de entrega de trabajos y acreditación del primer período. Completar.</p><span class="evento-tag tag-examen">Cierre trimestre</span></div></div>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Jun</span></div><div class="evento-info"><h4>Solicitud de becas — apertura</h4><p>Inicio del período de solicitud de becas para el ciclo siguiente. Completar con fecha.</p><span class="evento-tag tag-beca">Becas</span></div></div>
-          </div>
-          <!-- JULIO -->
-          <div class="agenda-eventos" id="ev-julio">
-            <p class="agenda-mes-title">Julio</p>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Jul</span></div><div class="evento-info"><h4>Receso invernal</h4><p>Período de vacaciones de invierno. Completar con fechas exactas según calendario oficial.</p><span class="evento-tag tag-acto">Receso</span></div></div>
-          </div>
-          <!-- AGOSTO -->
-          <div class="agenda-eventos" id="ev-agosto">
-            <p class="agenda-mes-title">Agosto</p>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Ago</span></div><div class="evento-info"><h4>Regreso de clases</h4><p>Inicio del 2do. semestre. Completar con fecha exacta.</p><span class="evento-tag tag-inscr">Inicio de clases</span></div></div>
-            <div class="evento-item"><div class="evento-dia nat"><strong>DD</strong><span>Ago</span></div><div class="evento-info"><h4>Entrega parcial de libreta de laboratorio — CN</h4><p>Revisión del registro de horas acumuladas en el primer semestre. Completar con fecha.</p><span class="evento-tag tag-lab">Laboratorio</span></div></div>
-          </div>
-          <!-- SEPTIEMBRE -->
-          <div class="agenda-eventos" id="ev-septiembre">
-            <p class="agenda-mes-title">Septiembre</p>
-            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Sep</span></div><div class="evento-info"><h4>Acto por el Día del Estudiante</h4><p>Celebración del día del estudiante con actividades institucionales. Completar.</p><span class="evento-tag tag-acto">Acto escolar</span></div></div>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Sep</span></div><div class="evento-info"><h4>Reunión de padres — 2do. trimestre</h4><p>Entrega de notas del segundo trimestre. Completar con fecha y horarios.</p><span class="evento-tag tag-acto">Reunión</span></div></div>
-          </div>
-          <!-- OCTUBRE -->
-          <div class="agenda-eventos" id="ev-octubre">
-            <p class="agenda-mes-title">Octubre</p>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Oct</span></div><div class="evento-info"><h4>Inscripción a materias — período ordinario</h4><p>Período para inscripción a materias del ciclo siguiente y materias libres. Completar.</p><span class="evento-tag tag-inscr">Inscripción</span></div></div>
-            <div class="evento-item"><div class="evento-dia eco"><strong>DD</strong><span>Oct</span></div><div class="evento-info"><h4>Jornada de orientación vocacional — Economía</h4><p>Actividad especial para alumnos de orientación Economía con referentes universitarios. Completar.</p><span class="evento-tag tag-acto">Orientación</span></div></div>
-          </div>
-          <!-- NOVIEMBRE -->
-          <div class="agenda-eventos" id="ev-noviembre">
-            <p class="agenda-mes-title">Noviembre</p>
-            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Nov</span></div><div class="evento-info"><h4>Acto de colación — 6° año</h4><p>Ceremonia de egreso de los alumnos de 6° año. Completar con fecha y lugar.</p><span class="evento-tag tag-acto">Colación</span></div></div>
-            <div class="evento-item"><div class="evento-dia nat"><strong>DD</strong><span>Nov</span></div><div class="evento-info"><h4>Cierre de registro de horas de laboratorio — CN</h4><p>Fecha límite para acreditar horas de laboratorio del ciclo lectivo. Completar.</p><span class="evento-tag tag-lab">Laboratorio</span></div></div>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Nov</span></div><div class="evento-info"><h4>Mesas de examen — período regular</h4><p>Fechas de mesas de examen para materias libres o previas. Completar con días.</p><span class="evento-tag tag-examen">Mesa de examen</span></div></div>
-          </div>
-          <!-- DICIEMBRE -->
-          <div class="agenda-eventos" id="ev-diciembre">
-            <p class="agenda-mes-title">Diciembre</p>
-            <div class="evento-item"><div class="evento-dia"><strong>DD</strong><span>Dic</span></div><div class="evento-info"><h4>Cierre del ciclo lectivo</h4><p>Último día de clases. Completar con fecha según calendario oficial.</p><span class="evento-tag tag-acto">Cierre</span></div></div>
-            <div class="evento-item"><div class="evento-dia acento"><strong>DD</strong><span>Dic</span></div><div class="evento-info"><h4>Mesas de examen — período diciembre</h4><p>Mesas de examen de fin de año para materias libres y previas. Completar.</p><span class="evento-tag tag-examen">Mesa de examen</span></div></div>
-          </div>
-        </div>
+      <div style="--nb-acento:#2a9d8f;max-width:860px;margin:0 auto;">
+        <?php nb_agenda(['Orientada', 'Secundario'], 'Orientada'); ?>
       </div>
     </div>
   </div>
@@ -701,7 +607,7 @@ require __DIR__ . '/partials/header.php';
           <div style="font-size:1.8rem;margin-bottom:.6rem;">❓</div>
           <h4>Consultas sobre materias y estado académico</h4>
           <p>Para consultar el estado de materias, previas o cualquier duda sobre la trayectoria escolar.</p>
-          <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-so" style="background:#b5861d;">
+          <a href="contacto" class="btn-so" style="background:#b5861d;">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             Enviar consulta
           </a>
@@ -721,17 +627,13 @@ require __DIR__ . '/partials/header.php';
       <div class="lab-grid">
         <div class="lab-info">
           <p>A lo largo de 4°, 5° y 6° año, los estudiantes de Ciencias Naturales acumulan horas de trabajo experimental en el laboratorio del colegio. Las prácticas son guiadas por los docentes de Biología, Química y Física, y quedan registradas en una libreta personal de laboratorio.</p>
-          <p>Al finalizar el nivel, el colegio emite un <strong>certificado oficial</strong> con el total de horas acreditadas, el detalle de las prácticas realizadas y la calificación obtenida en cada una. Este documento es reconocido por diversas universidades de la región como antecedente para ingreso a carreras de ciencias.</p>
+          <p>Al finalizar el nivel, el colegio emite un <strong>certificado oficial</strong> con el total de horas acreditadas, el detalle de las prácticas realizadas y la calificación obtenida en cada una. </p>
           <div class="lab-req-list">
             <div class="lab-req-item">Asistencia regular a las clases de laboratorio</div>
             <div class="lab-req-item">Presentación de informes de práctica por cada sesión</div>
             <div class="lab-req-item">Cumplimiento de las normas de bioseguridad del laboratorio</div>
             <div class="lab-req-item">Mínimo de (completar) horas anuales para acreditación</div>
             <div class="lab-req-item">Aprobación de las evaluaciones prácticas integradoras</div>
-          </div>
-          <div class="lab-nota">
-            <strong>📄 Certificación al egreso:</strong>
-            El certificado es emitido por la dirección del nivel junto al título de bachiller. Completar con la normativa provincial o resolución que avala la certificación.
           </div>
         </div>
         <div>
@@ -760,7 +662,7 @@ require __DIR__ . '/partials/header.php';
           <h3>¿Qué es el Centro de Estudiantes?</h3>
           <p>El Centro de Estudiantes es el organismo de representación de los alumnos de la Secundaria Orientada. Es elegido anualmente por voto secreto y directo de todos los estudiantes del nivel.</p>
           <p>Su función es representar los intereses de los alumnos ante la institución, organizar actividades estudiantiles, y promover la participación democrática y la convivencia escolar.</p>
-          <p>Cualquier alumno a partir de (completar) año puede postularse para integrar la comisión directiva. Las elecciones se realizan en (completar mes) de cada año.</p>
+          <p>Cualquier alumno a partir de 2° año puede postularse para integrar la comisión directiva. El Centro de Estudiantes se creó en 2025 y se renueva todos los años.</p>
           <div class="ce-comision">
             <div class="ce-rol"><div class="ce-rol-icon">🏛️</div><div><h4>Presidente/a</h4><p>Representa al centro ante la dirección y coordina las actividades generales.</p></div></div>
             <div class="ce-rol"><div class="ce-rol-icon">🤝</div><div><h4>Vicepresidente/a</h4><p>Apoya al presidente y coordina comisiones internas.</p></div></div>
@@ -783,10 +685,30 @@ require __DIR__ . '/partials/header.php';
     <h2>¿Querés conocer la Secundaria Orientada?</h2>
     <p>Coordiná una visita o envianos tu consulta. Te respondemos a la brevedad.</p>
     <div class="contacto-btns">
-      <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn btn-white">Solicitar información</a>
+      <a href="contacto" class="btn btn-white">Solicitar información</a>
       <a href="nivel-secundario" class="btn btn-outline">← Volver al selector</a>
     </div>
   </div>
 
-  
-<?php require __DIR__ . '/partials/footer.php';
+<?php
+$page_script = <<<'JS'
+  (function () {
+    'use strict';
+
+    // Agenda: cada botón de mes muestra su lista (#ev-<mes>).
+    var btns = document.querySelectorAll('.mes-btn');
+    Array.prototype.forEach.call(btns, function (btn) {
+      btn.addEventListener('click', function () {
+        var panel = document.getElementById('ev-' + btn.getAttribute('data-mes'));
+        if (!panel) return;
+        Array.prototype.forEach.call(btns, function (b) { b.classList.remove('active'); });
+        Array.prototype.forEach.call(document.querySelectorAll('.agenda-eventos'), function (p) {
+          p.classList.remove('active');
+        });
+        btn.classList.add('active');
+        panel.classList.add('active');
+      });
+    });
+  })();
+JS;
+require __DIR__ . '/partials/footer.php';

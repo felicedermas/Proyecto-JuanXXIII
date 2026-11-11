@@ -9,6 +9,8 @@
 //  para poder volver al inicio.
 // ============================================================
 require_once __DIR__ . '/conexion.php';
+require_once __DIR__ . '/partials/paginas.php';
+pag_iniciar();   // textos editables desde el sitio (esta página no usa header.php)
 
 $colegio = cfg('nombre_colegio');
 ?>
@@ -145,3 +147,4 @@ $colegio = cfg('nombre_colegio');
 
 </body>
 </html>
+<?php pag_terminar();

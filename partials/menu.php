@@ -55,7 +55,7 @@ const MENU_PRINCIPAL = [
             ['egresados',               'Egresados',                  'Historias de ex-alumnos'],
             ['psicopedagogia',          'Equipo de Psicopedagogía',   'Acompañamiento y orientación'],
             ['heading', 'Vida escolar'],
-            ['deportes',                'Deportes',                   'Disciplinas y equipos'],
+            ['deportes',                'Deportes',                   'Patín'],
             ['trabaja-con-nosotros',    'Trabajá con Nosotros',       'Sumate a nuestro equipo'],
             ['recorrido-360',           'Recorrido Virtual 360°',     'Conocé las instalaciones'],
             ['vinculos-institucionales','Vínculos Institucionales',   'Instituciones y empresas aliadas'],

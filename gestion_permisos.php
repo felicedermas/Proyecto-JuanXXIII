@@ -1,11 +1,13 @@
 <?php
 require_once __DIR__ . '/panel_config.php';
 require_once __DIR__ . '/partials/mensajes.php';
+require_once __DIR__ . '/partials/paginas.php';
 exigir_admin();   // ← solo administradores
 
 $u   = usuario_actual();
 $pdo = db();
 msj_asegurar_tabla($pdo);   // agrega la columna `mensajes` si falta
+pag_asegurar_tablas($pdo);  // agrega edita_paginas, cat_paginas y edita_formularios si faltan
 
 // Categorías válidas para novedades y agenda (mismo enum del sitio)
 $CATS = ETIQUETAS_VALIDAS;   // ['Inicial','Primario','Secundario','Técnica','Orientada','Global']
@@ -63,6 +65,8 @@ $val = [
     'alta_usuarios' => 0,
     'inscripciones' => 0,
     'mensajes'      => 0,
+    'edita_paginas'     => 0, 'cat_paginas' => [],
+    'edita_formularios' => 0,
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guardar') {
@@ -76,13 +80,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
     $val['alta_usuarios'] = isset($_POST['alta_usuarios']) ? 1 : 0;
     $val['inscripciones'] = isset($_POST['inscripciones']) ? 1 : 0;
     $val['mensajes']      = isset($_POST['mensajes'])      ? 1 : 0;
+    $val['edita_paginas']     = isset($_POST['edita_paginas'])     ? 1 : 0;
+    $val['edita_formularios'] = isset($_POST['edita_formularios']) ? 1 : 0;
 
     // Acceso total: habilita todo automáticamente
     if ($val['es_admin'] === 1) {
         $val['pub_novedades'] = $val['pub_agenda'] = $val['edita_tour'] = 1;
         $val['alta_usuarios'] = $val['inscripciones'] = $val['mensajes'] = 1;
+        $val['edita_paginas'] = $val['edita_formularios'] = 1;
         $_POST['cat_novedades'] = $CATS;
         $_POST['cat_agenda']    = $CATS;
+        $_POST['cat_paginas']   = $CATS;
     }
 
     // Categorías: solo valen si el permiso está activado
@@ -90,12 +98,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
         ? array_values(array_intersect((array)($_POST['cat_novedades'] ?? []), $CATS)) : [];
     $val['cat_agenda'] = $val['pub_agenda']
         ? array_values(array_intersect((array)($_POST['cat_agenda'] ?? []), $CATS)) : [];
+    $val['cat_paginas'] = $val['edita_paginas']
+        ? array_values(array_intersect((array)($_POST['cat_paginas'] ?? []), $CATS)) : [];
 
     if ($val['nombre'] === '') $errores[] = 'El nombre del nivel es obligatorio.';
     if ($val['pub_novedades'] && !$val['cat_novedades'])
         $errores[] = 'Seleccioná al menos una categoría para la publicación de novedades.';
     if ($val['pub_agenda'] && !$val['cat_agenda'])
         $errores[] = 'Seleccioná al menos una categoría para la publicación de agenda.';
+    if ($val['edita_paginas'] && !$val['cat_paginas'])
+        $errores[] = 'Seleccioná al menos una categoría para la edición de páginas.';
 
     // Nombre único (excluyendo el propio registro si es edición)
     if (!$errores) {
@@ -121,6 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
             ':au' => $val['alta_usuarios'],
             ':i'  => $val['inscripciones'],
             ':m'  => $val['mensajes'],
+            ':ep' => $val['edita_paginas'], ':cp' => implode(',', $val['cat_paginas']),
+            ':ef' => $val['edita_formularios'],
         ];
         $setAdmin = $tiene_es_admin ? ', es_admin=:adm'  : '';
         $colAdmin = $tiene_es_admin ? ', es_admin'       : '';
@@ -133,7 +147,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
                 "UPDATE niveles_permiso
                     SET nombre=:n, pub_novedades=:pn, cat_novedades=:cn,
                         pub_agenda=:pa, cat_agenda=:ca, edita_tour=:t,
-                        alta_usuarios=:au, inscripciones=:i, mensajes=:m$setAdmin
+                        alta_usuarios=:au, inscripciones=:i, mensajes=:m,
+                        edita_paginas=:ep, cat_paginas=:cp, edita_formularios=:ef$setAdmin
                   WHERE id_nivel=:id"
             )->execute($params);
             // Sincronizar el rol legado de los usuarios que tienen este nivel
@@ -146,8 +161,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
             $pdo->prepare(
                 "INSERT INTO niveles_permiso
                    (nombre, pub_novedades, cat_novedades, pub_agenda, cat_agenda,
-                    edita_tour, alta_usuarios, inscripciones, mensajes$colAdmin)
-                 VALUES (:n, :pn, :cn, :pa, :ca, :t, :au, :i, :m$valAdmin)"
+                    edita_tour, alta_usuarios, inscripciones, mensajes,
+                    edita_paginas, cat_paginas, edita_formularios$colAdmin)
+                 VALUES (:n, :pn, :cn, :pa, :ca, :t, :au, :i, :m, :ep, :cp, :ef$valAdmin)"
             )->execute($params);
             flash('ok', 'Nivel de permiso creado correctamente.');
         }
@@ -173,6 +189,9 @@ if (!$errores && isset($_GET['editar'])) {
             'alta_usuarios' => (int)$row['alta_usuarios'],
             'inscripciones' => (int)$row['inscripciones'],
             'mensajes'      => (int)($row['mensajes'] ?? 0),
+            'edita_paginas'     => (int)($row['edita_paginas'] ?? 0),
+            'cat_paginas'       => cats_de_csv((string)($row['cat_paginas'] ?? '')),
+            'edita_formularios' => (int)($row['edita_formularios'] ?? 0),
         ];
     }
 }
@@ -251,7 +270,10 @@ require __DIR__ . '/panel_header.php';
       </h2>
       <p style="color:#667;font-size:.86rem;margin-bottom:1.3rem;">
         Activá cada permiso con el interruptor. En novedades y agenda podés limitar
-        las <strong>categorías</strong> sobre las que el nivel puede publicar.
+        las <strong>categorías</strong> sobre las que el nivel puede publicar. En la edición de páginas,
+        la categoría define qué páginas puede editar: <strong>Inicial</strong>, <strong>Primario</strong>,
+        <strong>Secundario</strong> (las dos modalidades), <strong>Técnica</strong>, <strong>Orientada</strong>
+        y <strong>Global</strong> (páginas institucionales y de comunidad).
       </p>
 
       <?php if ($errores): ?>
@@ -281,6 +303,8 @@ require __DIR__ . '/panel_header.php';
             ['alta_usuarios', 'Alta de usuarios',              false, 'alta-usuarios'],
             ['inscripciones', 'Inscripciones',                 false, 'inscripciones'],
             ['mensajes',      'Mensajes de contacto',          false, 'mensajes'],
+            ['edita_paginas', 'Edición de páginas del sitio (textos, mensajes y PDF)', true, 'paginas'],
+            ['edita_formularios', 'Edición de formularios de inscripción (campos, textos, fechas y habilitación)', false, 'formularios'],
         ]);
         foreach ($filas as [$name, $label, $tieneCats, $code]):
             $on   = (int)$val[$name] === 1;
@@ -342,6 +366,7 @@ require __DIR__ . '/panel_header.php';
         <tr>
           <th>Nombre</th><th>Novedades</th><th>Agenda</th>
           <th>Recorrido 360°</th><th>Usuarios</th><th>Inscripciones</th><th>Mensajes</th>
+          <th>Páginas</th><th>Formularios</th>
           <th style="text-align:right;">Acciones</th>
         </tr>
       </thead>
@@ -370,6 +395,13 @@ require __DIR__ . '/panel_header.php';
           <td><span class="perm-flag <?= $row['alta_usuarios'] ? 'on">✓' : 'off">✗' ?></span></td>
           <td><span class="perm-flag <?= $row['inscripciones'] ? 'on">✓' : 'off">✗' ?></span></td>
           <td><span class="perm-flag <?= !empty($row['mensajes']) ? 'on">✓' : 'off">✗' ?></span></td>
+          <td>
+            <span class="perm-flag <?= !empty($row['edita_paginas']) ? 'on">✓' : 'off">✗' ?></span>
+            <?php if (!empty($row['edita_paginas'])): ?>
+              <span class="perm-cats-mini"><?= e(implode(', ', cats_de_csv((string)($row['cat_paginas'] ?? '')))) ?></span>
+            <?php endif; ?>
+          </td>
+          <td><span class="perm-flag <?= !empty($row['edita_formularios']) ? 'on">✓' : 'off">✗' ?></span></td>
           <td>
             <div class="mng-actions" style="justify-content:flex-end;">
               <a href="gestion_permisos?editar=<?= (int)$row['id_nivel'] ?>" class="icon-btn" title="Editar nivel">

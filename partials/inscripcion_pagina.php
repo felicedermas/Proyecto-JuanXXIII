@@ -43,6 +43,16 @@ if ($pdo !== null && insc_asegurar_tablas($pdo)) {
 $estado     = insc_estado($fila);
 $habilitado = $estado['abierto'];
 
+// ── Vista previa (panel → Editar formulario) ──
+//  Quien edita el formulario lo puede ver aunque esté cerrado, para
+//  revisar cómo quedó. En vista previa no se envía nada.
+$vista_previa = false;
+if (isset($_GET['vista'])) {
+    require_once __DIR__ . '/../panel_config.php';
+    $vista_previa = esta_logueado() && puede('edita_formularios');
+    if ($vista_previa) $habilitado = true;
+}
+
 if (empty($_SESSION['insc_token'])) {
     $_SESSION['insc_token'] = bin2hex(random_bytes(24));
 }
@@ -53,7 +63,7 @@ $error_envio = '';
 $enviado     = null;
 
 // ── Envío ────────────────────────────────────────────────────
-if ($habilitado && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($habilitado && !$vista_previa && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $ip = substr((string) ($_SERVER['REMOTE_ADDR'] ?? ''), 0, 45);
 
     $token_ok = is_string($_POST['insc_token'] ?? null)
@@ -288,6 +298,13 @@ $colegio = cfg('nombre_colegio');
       <div class="insc-alerta" role="alert"><?= e($error_envio) ?></div>
     <?php endif; ?>
 
+    <?php if ($vista_previa): ?>
+      <div class="insc-alerta" role="status">
+        Vista previa: así lo ven las familias. Desde acá no se envía nada.
+        <?= $estado['abierto'] ? '' : 'En el sitio el formulario está cerrado.' ?>
+      </div>
+    <?php endif; ?>
+
     <form class="insc-form" method="post" action="<?= e($def['archivo']) ?>">
       <input type="hidden" name="insc_token" value="<?= e($_SESSION['insc_token']) ?>"/>
       <div class="insc-hp" aria-hidden="true">
@@ -322,13 +339,13 @@ $colegio = cfg('nombre_colegio');
 
       <label class="insc-check<?= isset($errores['acepto']) ? ' has-error' : '' ?>">
         <input type="checkbox" name="acepto" value="1"<?= !empty($valores['acepto']) ? ' checked' : '' ?> required/>
-        <span>Declaro que los datos consignados son correctos y acepto ser contactado/a por la institución.
+        <span><?= e($def['declaracion'] ?? INSC_DECLARACION) ?>
           <?php if (isset($errores['acepto'])): ?><span class="field-error"><?= e($errores['acepto']) ?></span><?php endif; ?>
         </span>
       </label>
 
       <div class="insc-actions">
-        <button type="submit" class="insc-submit">Enviar preinscripción</button>
+        <button type="submit" class="insc-submit"<?= $vista_previa ? ' disabled' : '' ?>><?= e($def['boton'] ?? INSC_BOTON) ?></button>
         <span class="insc-note">* Campos obligatorios</span>
       </div>
     </form>
@@ -338,8 +355,8 @@ $colegio = cfg('nombre_colegio');
 
   <footer class="insc-pie">
     <p>
-      ¿Dudas? Escribinos a <a href="mailto:<?= cfg_e('email_admisiones') ?>"><?= cfg_e('email_admisiones') ?></a>
-      <?php if (cfg('telefono')): ?> o llamanos al <a href="tel:<?= e(preg_replace('/[^0-9+]/', '', cfg('telefono_link'))) ?>"><?= cfg_e('telefono') ?></a><?php endif; ?>.
+      ¿Dudas?<?php if (cfg('email_admisiones')): ?> Escribinos a <a href="mailto:<?= cfg_e('email_admisiones') ?>"><?= cfg_e('email_admisiones') ?></a><?php endif; ?>
+      <?php if (cfg('telefono')): ?><?= cfg('email_admisiones') ? ' o llamanos' : ' Llamanos' ?> al <a href="tel:<?= e(preg_replace('/[^0-9+]/', '', cfg('telefono_link'))) ?>"><?= cfg_e('telefono') ?></a><?php endif; ?>.
     </p>
     <p class="insc-pie-copy">© <?= date('Y') ?> <?= e($colegio) ?></p>
   </footer>

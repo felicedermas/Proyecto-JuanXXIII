@@ -14,34 +14,18 @@ require __DIR__ . '/partials/header.php';
 
   <section class="content-section">
     <div class="section-header">
-      <span class="section-tag">Equipo Directivo</span>
-      <h2 class="section-title">Dirección general</h2>
+      <span class="section-tag">Representación legal</span>
+      <h2 class="section-title">Representante legal</h2>
+      <p class="section-sub">El colegio es propiedad del Obispado de San Justo.</p>
     </div>
-    <div class="people-grid">
-      <div class="person-card">
-        <div class="image-placeholder person-photo"><span>Foto</span></div>
-        <div class="person-body">
-          <h3>Pbro. Ricardo Domínguez</h3>
-          <span class="person-role">Representante Legal</span>
-          <p>Referente espiritual y legal de la institución, vínculo con la parroquia.</p>
+    <div class="people-grid is-single">
+        <div class="person-card">
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="person-body">
+            <h3>Juan Carlos Quiroga</h3>
+            <span class="person-role">Representante Legal</span>
+          </div>
         </div>
-      </div>
-      <div class="person-card">
-        <div class="image-placeholder person-photo"><span>Foto</span></div>
-        <div class="person-body">
-          <h3>Lic. Marta Sánchez</h3>
-          <span class="person-role">Directora General</span>
-          <p>Coordina el proyecto educativo integral de los tres niveles.</p>
-        </div>
-      </div>
-      <div class="person-card">
-        <div class="image-placeholder person-photo"><span>Foto</span></div>
-        <div class="person-body">
-          <h3>Prof. Daniel Quiroga</h3>
-          <span class="person-role">Vicedirector</span>
-          <p>Acompaña la gestión administrativa y la articulación entre niveles.</p>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -49,34 +33,68 @@ require __DIR__ . '/partials/header.php';
     <div class="content-section">
       <div class="section-header">
         <span class="section-tag">Por nivel</span>
-        <h2 class="section-title">Equipos directivos de cada nivel</h2>
+        <h2 class="section-title">Nivel Inicial y Nivel Primario</h2>
       </div>
       <div class="people-grid">
         <div class="person-card">
-          <div class="image-placeholder person-photo"><span>Foto</span></div>
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
           <div class="person-body">
-            <h3>Prof. Laura Giménez</h3>
+            <h3>Natalia Cruz</h3>
             <span class="person-role">Directora · Nivel Inicial</span>
-            <p>Responsable del Jardín de Infantes y las salas de 3, 4 y 5 años.</p>
           </div>
         </div>
         <div class="person-card">
-          <div class="image-placeholder person-photo"><span>Foto</span></div>
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
           <div class="person-body">
-            <h3>Prof. Sergio Medina</h3>
-            <span class="person-role">Director · Nivel Primario</span>
-            <p>Conduce la propuesta de 1° a 6° grado y el equipo docente.</p>
+            <h3>María Nazaret Rodríguez</h3>
+            <span class="person-role">Directora · Nivel Primario</span>
           </div>
         </div>
         <div class="person-card">
-          <div class="image-placeholder person-photo"><span>Foto</span></div>
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
           <div class="person-body">
-            <h3>Lic. Verónica Paredes</h3>
-            <span class="person-role">Directora · Nivel Secundario</span>
-            <p>A cargo de la secundaria orientada y la modalidad técnica.</p>
+            <h3>Marcela García</h3>
+            <span class="person-role">Coordinadora · Nivel Primario</span>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="section-header">
+      <span class="section-tag">Por nivel</span>
+      <h2 class="section-title">Nivel Secundario</h2>
+    </div>
+    <div class="people-grid cols-4">
+        <div class="person-card">
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="person-body">
+            <h3>Carlos Alcaro</h3>
+            <span class="person-role">Director · Secundaria Orientada</span>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="person-body">
+            <h3>Oscar Villarruel</h3>
+            <span class="person-role">Director · Secundaria Técnica</span>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="person-body">
+            <h3>Sebastián De Jesús</h3>
+            <span class="person-role">Vicedirector · Secundaria Técnica</span>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="person-photo person-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="person-body">
+            <h3>Alejo Salzman</h3>
+            <span class="person-role">Secretario · Secundaria Técnica</span>
+          </div>
+        </div>
     </div>
   </section>
 

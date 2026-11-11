@@ -13,16 +13,9 @@ require __DIR__ . '/partials/header.php';
   <?php page_hero(['Inicio' => './', 'Institucional' => null, 'Historia' => null], 'Institucional', 'Más de seis décadas <em>formando comunidad</em>', 'Desde 1962 acompañamos a miles de familias del oeste del Gran Buenos Aires con una propuesta educativa centrada en la persona, los valores y la excelencia.'); ?>
 
   <section class="content-section">
-    <div class="split">
-      <div class="prose">
-        <h2>Nuestros orígenes</h2>
-        <p>El Colegio Parroquial Juan XXIII nació en 1962 por iniciativa de la parroquia local, que soñaba con un espacio donde la educación y la fe caminaran juntas. Comenzó con apenas dos aulas y un puñado de docentes comprometidos con el barrio.</p>
-        <p>Con el correr de los años, la institución creció hasta consolidar los tres niveles educativos que hoy ofrece, manteniendo siempre el espíritu cercano y familiar de sus primeros días.</p>
-      </div>
-      <div class="split-media">
-        <div class="image-placeholder split-img"><span>Foto histórica del colegio</span></div>
-      </div>
-    </div>
+    <figure class="foto-ancha">
+      <img src="img/imgs/Colegio-Historia.png" alt="Fachada del Colegio Parroquial Juan XXIII" width="1391" height="423" loading="lazy"/>
+    </figure>
   </section>
 
   <section class="band">
@@ -63,7 +56,7 @@ require __DIR__ . '/partials/header.php';
 
   <section class="cta-band">
     <h2>Una historia que seguís escribiendo vos</h2>
-    <p>Sumate a una comunidad educativa con más de 70 años de trayectoria y proyecto a futuro.</p>
+    <p>Sumate a una comunidad educativa con más de 60 años de trayectoria y proyecto a futuro.</p>
     <a href="contacto" class="btn btn-white">Conocé el colegio</a>
   </section>
 
