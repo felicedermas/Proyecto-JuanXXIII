@@ -22,7 +22,7 @@ require __DIR__ . '/partials/header.php';
       loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     <?php if (cfg('mapa_link')): ?>
       <p style="text-align:center;margin-top:1.2rem;">
-        <a href="<?= cfg_e('mapa_link') ?>" target="_blank" rel="noopener" class="btn btn-outline">Abrir en Google Maps</a>
+        <a href="<?= cfg_e('mapa_link') ?>" target="_blank" rel="noopener" class="btn btn-primary">Abrir en Google Maps</a>
       </p>
     <?php endif; ?>
   </section>

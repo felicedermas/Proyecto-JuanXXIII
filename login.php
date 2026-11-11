@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="field">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" required autofocus
-                 placeholder="usuario@juanxxiii.edu.ar"
+                 placeholder="tu-email@ejemplo.com"
                  value="<?= e($_POST['email'] ?? '') ?>"/>
         </div>
         <div class="field">

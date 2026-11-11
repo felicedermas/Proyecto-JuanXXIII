@@ -256,10 +256,11 @@ $page_style = <<<'CSS'
       display: block;
     }
     .nov-card:hover .nov-img-wrap img { transform: scale(1.04); }
+    /* Sin foto: fondo del colegio con el escudo, en vez de un ícono suelto */
     .nov-img-placeholder {
       width: 100%; height: 100%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; opacity: .25;
+      background: linear-gradient(135deg, #1D3557 0%, #2f5585 100%);
     }
     .nov-img-count {
       position: absolute; bottom: .5rem; right: .5rem;
@@ -413,7 +414,7 @@ require __DIR__ . '/partials/header.php';
               <span class="nov-img-count">+<?= count($d_imgs)-1 ?> foto<?= count($d_imgs)>2?'s':'' ?></span>
             <?php endif; ?>
           <?php else: ?>
-            <div class="nov-img-placeholder">🖼</div>
+            <div class="nov-img-placeholder"><img src="img/logo.png" alt="" class="ph-logo"/></div>
           <?php endif; ?>
         </div>
         <div class="nov-body">
@@ -446,7 +447,7 @@ require __DIR__ . '/partials/header.php';
               <span class="nov-img-count">+<?= count($imgs)-1 ?></span>
             <?php endif; ?>
           <?php else: ?>
-            <div class="nov-img-placeholder">🖼</div>
+            <div class="nov-img-placeholder"><img src="img/logo.png" alt="" class="ph-logo"/></div>
           <?php endif; ?>
         </div>
         <div class="nov-body">

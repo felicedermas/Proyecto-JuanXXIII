@@ -333,7 +333,7 @@ $page_style = <<<'CSS'
         padding-top: 0; border-top: none;
       }
       .ag-track { padding: 2.5rem 4.5rem 1.25rem; }
-      .ag-day { flex-basis: 82vw; }
+      .ag-day { flex-basis: 82vw; align-self: flex-start; max-height: 100%; }
       .ag-arrow { width: 44px; height: 44px; }
       .ag-arrow.prev { left: .5rem; } .ag-arrow.next { right: .5rem; }
     }
@@ -457,7 +457,7 @@ require __DIR__ . '/partials/header.php';
                 <?php if ($auto): ?>
                   <span class="ag-event-link">🔗 Ir al formulario</span>
                 <?php elseif (!empty($ev['enlace'])): ?>
-                  <span class="ag-event-link">🔗 Abrir formulario / enlace</span>
+                  <span class="ag-event-link">🔗 Más información</span>
                 <?php endif; ?>
               </div>
             </a>

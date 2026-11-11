@@ -1925,3 +1925,9 @@ img.split-img { display: block; height: auto; object-fit: cover; }
   border-left: 4px solid var(--blue-dark); font-size: 1.02rem;
 }
 .feria-aviso--hoy { background: rgba(230,57,70,.08); border-left-color: var(--red); color: #9b1c27; font-size: 1.1rem; }
+
+/* Escudo del colegio como imagen de reemplazo (novedades sin foto) */
+img.ph-logo { width: 64px !important; height: auto !important; object-fit: contain !important; opacity: .92;
+              filter: drop-shadow(0 4px 10px rgba(0,0,0,.25)); transform: none !important; }
+
+img.nivel-img { display: block; height: auto; object-fit: cover; }

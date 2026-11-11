@@ -164,7 +164,7 @@ require __DIR__ . '/partials/header.php';
   <!-- Enlace / Formulario -->
   <?php if (!empty($ev['enlace'])): ?>
     <a href="<?= htmlspecialchars($ev['enlace']) ?>" class="ev-cta" target="_blank" rel="noopener noreferrer">
-      🔗 Abrir formulario / enlace
+      🔗 Más información
     </a>
   <?php endif; ?>
 

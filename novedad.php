@@ -260,9 +260,8 @@ $page_style = <<<'CSS'
     }
     .rel-img-placeholder {
       aspect-ratio: 16/9;
-      background: linear-gradient(135deg, var(--gray-200), #dde3ec);
+      background: linear-gradient(135deg, #1D3557 0%, #2f5585 100%);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; opacity: .3;
     }
     .rel-body { padding: .7rem .85rem .85rem; }
     .rel-badge {
@@ -356,7 +355,7 @@ require __DIR__ . '/partials/header.php';
         <?php if ($rel['portada']): ?>
           <img src="<?= htmlspecialchars($rel['portada']) ?>" alt="<?= htmlspecialchars($rel['titulo']) ?>" class="rel-img" loading="lazy"/>
         <?php else: ?>
-          <div class="rel-img-placeholder">🖼</div>
+          <div class="rel-img-placeholder"><img src="img/logo.png" alt="" class="ph-logo"/></div>
         <?php endif; ?>
         <div class="rel-body">
           <span class="rel-badge" style="background:<?= $rel_color ?>"><?= htmlspecialchars($rel['etiqueta']) ?></span>

@@ -95,7 +95,7 @@ function nb_estilos(): void {
   .nb-nov { display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden;
             border: 1px solid rgba(29,53,87,.1); color: #1D3557; text-decoration: none; transition: transform .2s; }
   .nb-nov:hover { transform: translateY(-3px); }
-  .nb-nov-img { aspect-ratio: 16/10; background: #e8edf3; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+  .nb-nov-img { aspect-ratio: 16/10; background: linear-gradient(135deg, #1D3557 0%, #2f5585 100%); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
   .nb-nov-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .nb-nov-body { padding: .9rem 1rem 1.1rem; display: flex; flex-direction: column; gap: .3rem; }
   .nb-nov-body h4 { margin: 0; font-size: .98rem; }
@@ -157,7 +157,7 @@ function nb_novedades(array $etiquetas, string $etiqueta_link): void {
       <div class="nb-novs">
       <?php foreach ($novs as $n): ?>
         <a class="nb-nov" href="novedad?id=<?= (int) $n['id_novedad'] ?>">
-          <div class="nb-nov-img"><?php if ($n['imagen']): ?><img src="<?= e($n['imagen']) ?>" alt="" loading="lazy"/><?php else: ?>📰<?php endif; ?></div>
+          <div class="nb-nov-img"><?php if ($n['imagen']): ?><img src="<?= e($n['imagen']) ?>" alt="" loading="lazy"/><?php else: ?><img src="img/logo.png" alt="" class="ph-logo"/><?php endif; ?></div>
           <div class="nb-nov-body">
             <small><?= e(date('d/m/Y', strtotime($n['created_at']))) ?> · <?= e($n['etiqueta']) ?></small>
             <h4><?= e($n['titulo']) ?></h4>

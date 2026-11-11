@@ -427,6 +427,16 @@ $page_style = <<<'CSS'
       .ni-pilares{ grid-template-columns:1fr; }
       .ni-sec{ padding:3rem 1.25rem; }
     }
+
+    /* Celular: los emojis decorativos del inicio se van a las esquinas, más chicos
+       y por detrás del texto, para que no tapen el título ni los botones. */
+    @media (max-width: 600px){
+      .ni-float{ font-size:1.5rem !important; opacity:.6; z-index:0; }
+      .ni-float:nth-child(1){ top:4% !important; left:4% !important; }
+      .ni-float:nth-child(2){ top:5% !important; right:4% !important; left:auto !important; }
+      .ni-float:nth-child(3){ bottom:3% !important; left:5% !important; top:auto !important; }
+      .ni-float:nth-child(4){ bottom:3% !important; right:5% !important; top:auto !important; left:auto !important; }
+    }
 CSS;
 require __DIR__ . '/partials/header.php';
 ?>

@@ -13,8 +13,8 @@ require __DIR__ . '/partials/header.php';
   <?php page_hero(['Inicio' => './', 'Comunidad' => null, 'Trabajá con Nosotros' => null], 'Comunidad', 'Trabajá <em>con nosotros</em>', '¿Compartís nuestra vocación educativa? Sumate a un equipo humano comprometido con la formación de las nuevas generaciones.'); ?>
 
   <section class="content-section">
-    <div class="split">
-      <div class="prose">
+    <div>
+      <div class="prose" style="max-width:760px;margin:0 auto;">
         <h2>Por qué elegirnos</h2>
         <p>En el Colegio Juan XXIII valoramos a nuestros docentes y no docentes como protagonistas del proyecto educativo. Ofrecemos un ambiente de trabajo cálido, oportunidades de formación continua y un fuerte sentido de comunidad.</p>
         <ul class="bullets">
@@ -22,9 +22,6 @@ require __DIR__ . '/partials/header.php';
           <li>Clima institucional basado en el respeto y la colaboración.</li>
           <li>Estabilidad y acompañamiento en la tarea docente.</li>
         </ul>
-      </div>
-      <div class="split-media">
-        <div class="image-placeholder split-img"><span>Foto del equipo docente</span></div>
       </div>
     </div>
   </section>

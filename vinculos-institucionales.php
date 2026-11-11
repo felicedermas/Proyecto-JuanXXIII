@@ -22,6 +22,12 @@ require __DIR__ . '/partials/header.php';
     </div>
   </section>
 
+  <?php
+    // Se muestra cuando haya logos reales de instituciones y empresas aliadas
+    // (reemplazar cada <span class="logo-placeholder"> por un <img> y pasar a true).
+    $mostrar_aliados = false;
+    if ($mostrar_aliados):
+  ?>
   <section class="band">
     <div class="content-section">
       <div class="section-header">
@@ -42,6 +48,7 @@ require __DIR__ . '/partials/header.php';
       </div>
     </div>
   </section>
+  <?php endif; ?>
 
   <section class="content-section">
     <div class="section-header">

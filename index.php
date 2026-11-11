@@ -37,7 +37,7 @@ require __DIR__ . '/partials/header.php';
     <div class="niveles-grid">
       <div class="nivel-card" id="inicialCard">
         <div class="nivel-badge" style="--accent:#E63946;">Inicial</div>
-        <div class="image-placeholder nivel-img"><span>Foto Nivel Inicial</span></div>
+        <img class="nivel-img" src="img/imgs/Colegio-Jardin.png" alt="Chicos del Jardín en una actividad en la sala" loading="lazy"/>
         <div class="nivel-body">
           <h3>Nivel Inicial</h3>
           <p>Un espacio de juego, descubrimiento y afecto donde los más pequeños dan sus primeros pasos en el aprendizaje.</p>
@@ -46,7 +46,7 @@ require __DIR__ . '/partials/header.php';
       </div>
       <div class="nivel-card" id="primarioCard">
         <div class="nivel-badge" style="--accent:#1D3557;">Primario</div>
-        <div class="image-placeholder nivel-img"><span>Foto Nivel Primario</span></div>
+        <img class="nivel-img" src="img/imgs/Actividad-Primaria.png" alt="Alumnos en un acto del colegio" loading="lazy"/>
         <div class="nivel-body">
           <h3 id="primario">Nivel Primario</h3>
           <p>Consolidamos hábitos de estudio, valores y conocimientos con metodologías activas y docentes comprometidos.</p>
@@ -55,7 +55,7 @@ require __DIR__ . '/partials/header.php';
       </div>
       <div class="nivel-card" id="secundarioCard">
         <div class="nivel-badge" style="--accent:#E63946;">Secundario</div>
-        <div class="image-placeholder nivel-img"><span>Foto Nivel Secundario</span></div>
+        <img class="nivel-img" src="img/imgs/Lujan-Basilica-Interior.jpg" alt="Alumnos del colegio en la Basílica de Luján" loading="lazy"/>
         <div class="nivel-body">
           <h3 id="secundario">Nivel Secundario</h3>
           <p>Preparamos a nuestros jóvenes para el mundo universitario y laboral con orientación, excelencia y autonomía.</p>

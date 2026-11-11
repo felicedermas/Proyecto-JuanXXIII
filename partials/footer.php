@@ -93,7 +93,7 @@ $anio        = date('Y');
             <li><a href="mailto:<?= cfg_e('email') ?>"><?= cfg_e('email') ?></a></li>
           <?php endif; ?>
           <?php if (cfg('horario_atencion')): ?>
-            <li class="fc-horario"><?= cfg_e('horario_atencion') ?></li>
+            <li class="fc-horario">Horario: <?= cfg_e('horario_atencion') ?></li>
           <?php endif; ?>
           <li><a href="contacto">Formulario de contacto</a></li>
           <li><a href="ubicacion">Ubicación en el mapa</a></li>
