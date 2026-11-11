@@ -820,7 +820,7 @@ require __DIR__ . '/partials/header.php';
       </div>
       <div class="proyecto-visual">
         <div class="proyecto-img-wrap">
-          <img src="img/imgs/Actividad-Primaria.png" alt="Alumnos del Nivel Primario en una actividad del colegio" width="376" height="499" loading="lazy" style="display:block;width:100%;height:100%;max-height:520px;object-fit:cover;"/>
+          <img src="img/imgs/Actividad-Primaria.png" alt="Alumnos en un acto del colegio" width="376" height="499" loading="lazy" style="display:block;width:100%;height:100%;max-height:520px;object-fit:cover;"/>
         </div>
         <div class="proyecto-badge">
           <strong>1°–6°</strong>
