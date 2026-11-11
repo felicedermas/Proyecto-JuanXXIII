@@ -1694,9 +1694,12 @@ ul { list-style: none; }
 .breadcrumb--hero .bc-actual { color: rgba(255,255,255,.62); }
 
 .breadcrumb--banda {
+  /* La franja ocupa todo el ancho; el contenido se centra en .breadcrumb-inner */
+  max-width: none; margin: 0; padding: 0;
   background: var(--gray-100, #f4f6f8);
   border-bottom: 1px solid rgba(29,53,87,.08);
 }
+.breadcrumb--banda .bc-actual { color: var(--blue-dark); font-weight: 600; }
 .breadcrumb--banda .breadcrumb-inner {
   max-width: 1200px; margin: 0 auto; padding: .75rem 2rem;
   display: flex; flex-wrap: wrap; align-items: center;

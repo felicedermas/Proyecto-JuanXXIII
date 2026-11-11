@@ -79,11 +79,6 @@ $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     /* ── BREADCRUMB ── */
-    .breadcrumb { background: var(--blue-dark); padding: .7rem 2rem; display: flex; align-items: center; gap: .5rem; font-size: .78rem; border-bottom: 1px solid rgba(255,255,255,.1); }
-    .breadcrumb a { color: rgba(255,255,255,.6); text-decoration: none; transition: color .18s; }
-    .breadcrumb a:hover { color: #fff; }
-    .breadcrumb-sep { color: rgba(255,255,255,.3); font-size: .7rem; }
-    .breadcrumb-current { color: rgba(255,255,255,.9); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 340px; }
 
     /* ── LAYOUT ── */
     .ev-wrap { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
@@ -125,13 +120,7 @@ CSS;
 require __DIR__ . '/partials/header.php';
 ?>
 <!-- ══ BREADCRUMB ══════════════════════════════════════════ -->
-<div class="breadcrumb">
-  <a href="./">Inicio</a>
-  <span class="breadcrumb-sep">›</span>
-  <a href="agenda">Agenda</a>
-  <span class="breadcrumb-sep">›</span>
-  <span class="breadcrumb-current"><?= htmlspecialchars($ev['titulo']) ?></span>
-</div>
+<?php breadcrumb(['Inicio' => './', 'Agenda' => 'agenda', $ev['titulo'] => null]); ?>
 
 <!-- ══ CONTENIDO ═══════════════════════════════════════════ -->
 <div class="ev-wrap">

@@ -79,34 +79,6 @@ $header_compacto = true;
 $page_style = <<<'CSS'
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── BREADCRUMB ── */
-    .breadcrumb {
-      background: var(--blue-dark);
-      padding: .7rem 2rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      font-size: .78rem;
-      border-bottom: 1px solid rgba(255,255,255,.1);
-    }
-    .breadcrumb a {
-      color: rgba(255,255,255,.6);
-      text-decoration: none;
-      transition: color .18s;
-    }
-    .breadcrumb a:hover { color: #fff; }
-    .breadcrumb-sep {
-      color: rgba(255,255,255,.3);
-      font-size: .7rem;
-    }
-    .breadcrumb-current {
-      color: rgba(255,255,255,.9);
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 340px;
-    }
 
     /* ── LAYOUT ── */
     .nov-detail-wrap {
@@ -327,13 +299,7 @@ CSS;
 require __DIR__ . '/partials/header.php';
 ?>
 <!-- ══ BREADCRUMB ══════════════════════════════════════════ -->
-<div class="breadcrumb">
-  <a href="./">Inicio</a>
-  <span class="breadcrumb-sep">›</span>
-  <a href="novedades">Novedades</a>
-  <span class="breadcrumb-sep">›</span>
-  <span class="breadcrumb-current"><?= htmlspecialchars($nov['titulo']) ?></span>
-</div>
+<?php breadcrumb(['Inicio' => './', 'Novedades' => 'novedades', $nov['titulo'] => null]); ?>
 
 <!-- ══ CONTENIDO ═══════════════════════════════════════════ -->
 <div class="nov-detail-wrap">
@@ -357,10 +323,9 @@ require __DIR__ . '/partials/header.php';
   </div>
 
   <!-- Imagen portada -->
+  <?php /* Sin foto no se muestra ningún recuadro: el texto sube directo. */ ?>
   <?php if ($portada): ?>
     <img src="<?= htmlspecialchars($portada) ?>" alt="<?= htmlspecialchars($nov['titulo']) ?>" class="nov-detail-portada"/>
-  <?php else: ?>
-    <div class="nov-detail-portada-placeholder">🖼</div>
   <?php endif; ?>
 
   <!-- Descripción completa -->
