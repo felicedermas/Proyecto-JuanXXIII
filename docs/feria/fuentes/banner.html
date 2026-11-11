@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Banner horizontal Feria de Ciencias 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* Banner A4 apaisado: a la izquierda la fachada con el título,
+     a la derecha qué tiene el sitio y el QR, abajo el equipo. */
+  @page { size: A4 landscape; margin: 0; }
+  :root {
+    --navy: #1D3557; --red: #E63946; --cream: #F7F3EC; --ink: #1B2433; --muted: #5d6878; --line: rgba(29,53,87,.14);
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Nunito', 'Segoe UI', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 297mm; height: 210mm; }
+  body { font-family: var(--body); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .hoja { width: 297mm; height: 210mm; display: grid; grid-template-columns: 118mm 1fr; grid-template-rows: 1fr auto; overflow: hidden; background: var(--cream); }
+
+  /* Izquierda: fachada + título */
+  .izq { position: relative; grid-row: 1; color: #fff; background: var(--navy); overflow: hidden; }
+  .izq img.fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% center; opacity: .45; }
+  .izq::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(29,53,87,.55) 0%, rgba(29,53,87,.97) 72%); }
+  .izq-in { position: relative; z-index: 1; height: 100%; padding: 13mm 12mm 12mm; display: flex; flex-direction: column; }
+  .marca { display: flex; align-items: center; gap: 3.5mm; }
+  .marca img { width: 16mm; height: auto; }
+  .marca b { font-family: var(--display); font-size: 15pt; line-height: 1.08; display: block; }
+  .marca span { font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+  .chip { margin-top: auto; align-self: flex-start; background: var(--red); border-radius: 999px; padding: 2mm 4.2mm; font-weight: 800; font-size: 10pt; }
+  h1 { font-family: var(--display); font-weight: 900; font-size: 35pt; line-height: 1.02; margin-top: 5mm; }
+  h1 em { color: #ffb3b9; }
+  .sub { margin-top: 5mm; font-size: 11.5pt; line-height: 1.5; opacity: .9; max-width: 100mm; }
+
+  /* Derecha: funciones + QR */
+  .der { grid-row: 1; padding: 12mm 13mm 9mm 12mm; display: grid; grid-template-columns: 1fr 64mm; gap: 9mm; align-items: center; }
+  .der h2 { font-family: var(--display); font-size: 19pt; color: var(--navy); line-height: 1.15; }
+  .der h2 em { color: var(--red); }
+  .der .bajada { font-size: 10.5pt; line-height: 1.5; color: var(--muted); margin-top: 3mm; }
+  ul.items { list-style: none; margin-top: 6mm; display: grid; grid-template-columns: 1fr; gap: 4.5mm; }
+  ul.items li { display: grid; grid-template-columns: 11mm 1fr; gap: 3mm; align-items: start; }
+  .ico { width: 11mm; height: 11mm; border-radius: 3mm; background: #fff; border: .4mm solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--red); }
+  .ico svg { width: 6mm; height: 6mm; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  ul.items b { display: block; font-size: 11pt; color: var(--navy); line-height: 1.2; }
+  ul.items span { display: block; font-size: 8.8pt; color: var(--muted); line-height: 1.38; margin-top: .8mm; }
+
+  .qr { background: #fff; border-radius: 5mm; padding: 5.5mm 5.5mm 5mm; text-align: center; border-top: 2mm solid var(--red); box-shadow: 0 2mm 6mm rgba(29,53,87,.14); }
+  .qr img { width: 100%; display: block; }
+  .qr .esc { margin-top: 3.5mm; font-weight: 900; font-size: 12pt; color: var(--navy); }
+  .qr .url { margin-top: .8mm; font-weight: 800; font-size: 10pt; color: var(--red); }
+
+  /* Pie */
+  .pie { grid-column: 1 / -1; background: var(--navy); color: #fff; padding: 5.5mm 13mm 5.5mm 12mm; display: flex; align-items: center; justify-content: space-between; gap: 8mm; border-top: 1.6mm solid var(--red); }
+  .pie small { font-size: 8pt; letter-spacing: .14em; text-transform: uppercase; opacity: .7; margin-right: 4mm; }
+  .pie .nombres { font-family: var(--display); font-size: 13.5pt; }
+  .pie .curso { font-size: 10pt; text-align: right; }
+  .pie .curso b { font-size: 11.5pt; margin-right: 3mm; }
+</style>
+</head>
+<body>
+<div class="hoja">
+  <section class="izq">
+    <img class="fondo" src="../../../img/imgs/Colegio-Historia.png" alt="">
+    <div class="izq-in">
+      <div class="marca">
+        <img src="../../../img/logo.png" alt="">
+        <div><b>Colegio Parroquial<br>Juan XXIII</b><span>Ramos Mejía · desde 1962</span></div>
+      </div>
+      <span class="chip">Feria de Ciencias 2026 · Proyecto de 7° C</span>
+      <h1>Conocé la <em>nueva página</em> del colegio</h1>
+      <p class="sub">La diseñamos y programamos a partir de entrevistas con los directivos de los tres niveles.</p>
+    </div>
+  </section>
+
+  <section class="der">
+    <div>
+      <h2>Todo lo que una familia necesita, <em>desde el celular</em></h2>
+      <p class="bajada">Y el colegio la mantiene al día desde un panel, sin tocar código.</p>
+      <ul class="items">
+        <li><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h13a2 2 0 0 1 2 2v13a1 1 0 0 0 2 0V8"/><path d="M4 4v15a2 2 0 0 0 2 2h14"/><path d="M8 8h7M8 12h7M8 16h4"/></svg></div>
+          <div><b>Novedades de cada nivel</b><span>Jardín, Primaria, Secundaria Orientada y Técnica.</span></div></li>
+        <li><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+          <div><b>Agenda del colegio</b><span>Actos, feria, colaciones y fechas de inscripción.</span></div></li>
+        <li><div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></div>
+          <div><b>Inscripciones en línea</b><span>Jardín, Primaria, Secundaria, hermanos, becas y mesas.</span></div></li>
+        <li><div class="ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div><b>Recorrido virtual 360°</b><span>Pasillos, laboratorios y patios, sin salir de casa.</span></div></li>
+      </ul>
+    </div>
+    <aside class="qr">
+      <img src="qr.svg" alt="Código QR del sitio del colegio">
+      <p class="esc">Escaneá con la cámara</p>
+      <p class="url">colegiojuan23.site.je</p>
+    </aside>
+  </section>
+
+  <footer class="pie">
+    <div><small>Hecho por</small><span class="nombres">Álvarez · Cedermas · Lerer · Mejuto · Pantaleo</span></div>
+    <div class="curso"><b>7° C</b>Prof. Julieta Navarro</div>
+  </footer>
+</div>
+</body>
+</html>
